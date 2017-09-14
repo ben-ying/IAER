@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="fragment_options">
+        <item>列表</item>
+        <item>图表</item>
+    </string-array>
+</resources>

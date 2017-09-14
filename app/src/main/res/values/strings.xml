@@ -1,0 +1,28 @@
+<resources>
+    <string name="app_name">收支记录器</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <string name="action_settings">设置</string>
+    <string name="action_sorted_by_date">按日期显示</string>
+    <string name="action_sorted_by_amount">按金额显示</string>
+    <string name="action_sorted_by_category">按种类显示</string>
+    <string name="action_sort">排序</string>
+    <string name="category_others">其它交易</string>
+    <string name="percentage">%.2s%</string>
+
+    <string name="transactions">交易</string>
+    <string name="transaction_remark">备注</string>
+    <string name="transaction_from">交易来自于</string>
+    <string name="transaction_money">交易金额(元)</string>
+    <string name="transaction_total">%1$,d个交易，总计%2$,d(元)</string>
+    <string name="transaction_yuan">%,d(元)</string>
+    <string name="delete_transaction_alert">点击确定将永久删除此交易，是否确定删除？</string>
+
+    <string name="ok">确定</string>
+    <string name="cancel">取消</string>
+    <string name="confirm">确定</string>
+    <string name="non_empty_field">输入框不能为空</string>
+
+</resources>
