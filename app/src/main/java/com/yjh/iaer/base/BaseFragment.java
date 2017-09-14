@@ -39,8 +39,15 @@ public abstract class BaseFragment extends Fragment implements LifecycleRegistry
     }
 
     protected void replaceFragment(BaseFragment newFragment) {
+        replaceFragment(newFragment, false);
+    }
+
+    protected void replaceFragment(BaseFragment newFragment, boolean addToBackStack) {
         FragmentTransaction transaction = getFragmentManager().beginTransaction();
         transaction.replace(R.id.container, newFragment);
+        if (addToBackStack) {
+            transaction.addToBackStack(null);
+        }
         transaction.commit();
     }
 

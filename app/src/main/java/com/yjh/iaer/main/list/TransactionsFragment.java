@@ -1,7 +1,6 @@
 package com.yjh.iaer.main.list;
 
 
-import android.app.AlertDialog;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -12,13 +11,10 @@ import android.support.v4.widget.NestedScrollView;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.AutoCompleteTextView;
-import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -34,7 +30,6 @@ import java.util.Comparator;
 import java.util.List;
 
 import butterknife.BindView;
-import butterknife.ButterKnife;
 import io.reactivex.Observable;
 import io.reactivex.ObservableEmitter;
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -265,56 +260,5 @@ public class TransactionsFragment extends BaseDaggerFragment
         } else {
             mAdapter.setData(transactions);
         }
-    }
-
-    public void addRedEnvelopDialog() {
-        final DialogViews dialogViews = new DialogViews();
-        View view = View.inflate(getActivity(), R.layout.dialog_add_transaction, null);
-        ButterKnife.bind(dialogViews, view);
-        final AlertDialog dialog = new AlertDialog.Builder(getActivity(), R.style.MyDialogTheme)
-                .setTitle(R.string.transactions)
-                .setView(view)
-                .setPositiveButton(R.string.ok, (dialogInterface, which) -> {
-                })
-                .setNegativeButton(R.string.cancel, null)
-                .create();
-        dialog.setCancelable(true);
-        dialog.show();
-
-        dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(v ->  {
-            if (isValid(dialogViews)) {
-                dialog.dismiss();
-                progressBar.setVisibility(View.VISIBLE);
-                mViewModel.add(dialogViews.fromEditText.getText().toString(),
-                        dialogViews.moneyEditText.getText().toString(),
-                        dialogViews.remarkEditText.getText().toString());
-            }
-        });
-    }
-
-    private boolean isValid(DialogViews dialogViews) {
-        if (TextUtils.isEmpty(dialogViews.fromEditText.getText().toString().trim())) {
-            dialogViews.fromEditText.setError(getString(R.string.non_empty_field));
-            return false;
-        }
-        if (TextUtils.isEmpty(dialogViews.moneyEditText.getText().toString().trim())) {
-            dialogViews.moneyEditText.setError(getString(R.string.non_empty_field));
-            return false;
-        }
-        if (TextUtils.isEmpty(dialogViews.remarkEditText.getText().toString().trim())) {
-            dialogViews.remarkEditText.setError(getString(R.string.non_empty_field));
-            return false;
-        }
-
-        return true;
-    }
-
-    class DialogViews {
-        @BindView(R.id.et_from)
-        EditText fromEditText;
-        @BindView(R.id.et_money)
-        EditText moneyEditText;
-        @BindView(R.id.et_remark)
-        AutoCompleteTextView remarkEditText;
     }
 }

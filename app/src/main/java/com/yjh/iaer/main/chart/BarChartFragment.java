@@ -46,8 +46,13 @@ public class BarChartFragment extends BaseDaggerFragment {
         XAxis xAxis = chart.getXAxis();
         xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
         xAxis.setTextSize(7);
-        xAxis.setValueFormatter((value, axis) ->
-            String.valueOf(transactions.get((int) value).getMoneyFrom()));
+        xAxis.setValueFormatter((value, axis) -> {
+            if (transactions != null && transactions.size() > 0) {
+                return String.valueOf(transactions.get((int) value).getMoneyFrom());
+            } else {
+                return null;
+            }
+        });
         chart.setDoubleTapToZoomEnabled(false);
     }
 
@@ -73,7 +78,7 @@ public class BarChartFragment extends BaseDaggerFragment {
             barEntry.setData(transaction.getCreatedDate() + "\n"
                     + transaction.getMoneyFrom()
                     + ": " + Utils.formatNumber(
-                            transaction.getMoneyInt(), 0, true));
+                    transaction.getMoneyInt(), 0, true));
             entries.add(barEntry);
         }
 

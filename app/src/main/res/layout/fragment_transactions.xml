@@ -5,7 +5,6 @@
 
     <TextView
         android:id="@+id/tv_total"
-        android:visibility="gone"
         android:textColor="@color/default_text_color"
         android:textSize="@dimen/setting_text_size"
         android:paddingStart="@dimen/recycler_view_padding"
