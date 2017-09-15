@@ -47,8 +47,6 @@ public class TransactionsFragment extends BaseDaggerFragment
     private static final int SCROLL_VIEW_BRING_FRONT = 2;
     private static final String FIRST_OPEN_APP = "first_open_app";
 
-    @BindView(R.id.tv_total)
-    TextView totalTextView;
     @BindView(R.id.recycler_view)
     RecyclerView recyclerView;
     @BindView(R.id.swipe_refresh_layout)
@@ -168,26 +166,6 @@ public class TransactionsFragment extends BaseDaggerFragment
             mViewModel.load("1");
             progressBar.setVisibility(View.VISIBLE);
         });
-
-        mDisposable = createScrollViewObservable()
-                .filter(integer -> mScrollViewState != integer)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(integer -> {
-                    mScrollViewState = integer;
-                    switch (integer) {
-                        case SCROLL_UP:
-                            ((MainActivity) getActivity()).fab.hide();
-                            totalTextView.bringToFront();
-                            break;
-                        case SCROLL_DOWN:
-                            ((MainActivity) getActivity()).fab.show();
-                            break;
-                        case SCROLL_VIEW_BRING_FRONT:
-                            swipeRefreshLayout.bringToFront();
-                            break;
-                    }
-                });
     }
 
     private Observable<Integer> createScrollViewObservable() {
@@ -227,11 +205,6 @@ public class TransactionsFragment extends BaseDaggerFragment
             for (Transaction transaction : transactions) {
                 total += transaction.getMoneyInt();
             }
-            if (totalTextView.getVisibility() == View.GONE) {
-                totalTextView.setVisibility(View.VISIBLE);
-            }
-            totalTextView.setText(String.format(getString(
-                    R.string.transaction_total), transactions.size(), total));
             if (reverseSorting) {
                 Collections.reverse(transactions);
             }
@@ -255,7 +228,7 @@ public class TransactionsFragment extends BaseDaggerFragment
     private void setAdapter() {
         if (mAdapter == null) {
             mAdapter = new TransactionAdapter(getActivity(),
-                    transactions, totalTextView, TransactionsFragment.this);
+                    transactions, TransactionsFragment.this);
             recyclerView.setAdapter(mAdapter);
         } else {
             mAdapter.setData(transactions);

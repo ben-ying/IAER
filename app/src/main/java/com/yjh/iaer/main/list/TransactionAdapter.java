@@ -23,7 +23,6 @@ public class TransactionAdapter extends RecyclerView.Adapter<
 
     private Context mContext;
     private List<Transaction> mTransactions;
-    private TextView mTotalTextView;
     private TransactionInterface mInterface;
 
     interface TransactionInterface {
@@ -31,10 +30,9 @@ public class TransactionAdapter extends RecyclerView.Adapter<
     }
 
     TransactionAdapter(Context context, List<Transaction> transactions,
-                       TextView totalTextView, TransactionInterface transactionInterface) {
+                       TransactionInterface transactionInterface) {
         this.mContext = context;
         this.mTransactions = transactions;
-        this.mTotalTextView = totalTextView;
         this.mInterface = transactionInterface;
     }
 
@@ -55,8 +53,9 @@ public class TransactionAdapter extends RecyclerView.Adapter<
         final Transaction transaction = mTransactions.get(position);
         holder.fromTextView.setText(transaction.getMoneyFrom());
         holder.dateTextView.setText(transaction.getCreatedDate());
-        holder.moneyTextView.setText(String.format(mContext.getString(R.string.transaction_yuan),
-                transaction.getMoneyInt()) + ", " + transaction.getRemark());
+        holder.moneyTextView.setText(String.format(
+                mContext.getString(R.string.transaction_yuan),
+                transaction.getMoneyInt(), transaction.getRemark()));
         holder.rootView.setTag(transaction);
     }
 

@@ -39,7 +39,7 @@ public class PieChartFragment extends BaseDaggerFragment implements OnChartValue
     public void initView() {
         pieChart.getDescription().setEnabled(false);
         pieChart.setCenterText(getString(R.string.action_sorted_by_category));
-        pieChart.setCenterTextColor(getResources().getColor(R.color.default_text_color));
+        pieChart.setCenterTextColor(getResources().getColor(R.color.black_text));
         pieChart.setCenterTextSize(14f);
         pieChart.setDrawEntryLabels(false);
         pieChart.setHoleRadius(45f);

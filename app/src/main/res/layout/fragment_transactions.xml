@@ -5,11 +5,12 @@
 
     <TextView
         android:id="@+id/tv_total"
-        android:textColor="@color/default_text_color"
+        android:textColor="@color/black_text"
         android:textSize="@dimen/setting_text_size"
+        android:visibility="gone"
         android:paddingStart="@dimen/recycler_view_padding"
         android:paddingEnd="@dimen/recycler_view_padding"
-        android:background="@color/light_bg_color"
+        android:background="@color/hint_disabled_black_text"
         android:gravity="center_vertical"
         android:layout_width="match_parent"
         android:layout_height="@dimen/sticky_height" />
@@ -27,7 +28,6 @@
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/recycler_view"
                 android:background="@android:color/transparent"
-                android:paddingTop="@dimen/sticky_height"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
 

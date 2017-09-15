@@ -21,7 +21,7 @@
     <style name="default_input_layout">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
-        <item name="android:textColorHint">@color/hint_color</item>
+        <item name="android:textColorHint">@color/hint_disabled_black_text</item>
     </style>
 
     <style name="MyDialogTheme" parent="@android:style/Theme.DeviceDefault.Light.Dialog.NoActionBar.MinWidth">
