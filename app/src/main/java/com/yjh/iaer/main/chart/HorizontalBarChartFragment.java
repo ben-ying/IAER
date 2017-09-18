@@ -1,5 +1,7 @@
 package com.yjh.iaer.main.chart;
 
+import android.os.Bundle;
+
 import com.github.mikephil.charting.charts.HorizontalBarChart;
 import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.components.YAxis;
@@ -29,9 +31,15 @@ public class HorizontalBarChartFragment extends BaseDaggerFragment {
 
     private Disposable mDisposable;
 
-    public static HorizontalBarChartFragment newInstance() {
-        return new HorizontalBarChartFragment();
+    public static HorizontalBarChartFragment newInstance(int i) {
+
+        Bundle args = new Bundle();
+        args.putInt(ChartActivity.CHART_TYPE_KEY, i);
+        HorizontalBarChartFragment fragment = new HorizontalBarChartFragment();
+        fragment.setArguments(args);
+        return fragment;
     }
+
 
     @Override
     public int getLayoutId() {

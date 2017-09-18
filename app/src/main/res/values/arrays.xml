@@ -4,4 +4,10 @@
         <item>列表</item>
         <item>图表</item>
     </string-array>
+
+    <string-array name="chart_options">
+        <item>全部</item>
+        <item>按月显示</item>
+        <item>按年显示</item>
+    </string-array>
 </resources>

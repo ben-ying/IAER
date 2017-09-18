@@ -1,5 +1,7 @@
 package com.yjh.iaer.main.chart;
 
+import android.os.Bundle;
+
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.components.YAxis;
@@ -25,6 +27,15 @@ public class BarChartFragment extends BaseDaggerFragment {
 
     public static BarChartFragment newInstance() {
         return new BarChartFragment();
+    }
+
+    public static BarChartFragment newInstance(int i) {
+
+        Bundle args = new Bundle();
+        args.putInt(ChartActivity.CHART_TYPE_KEY, i);
+        BarChartFragment fragment = new BarChartFragment();
+        fragment.setArguments(args);
+        return fragment;
     }
 
     @Override

@@ -9,12 +9,13 @@ import com.yjh.iaer.base.BaseFragment;
 
 import java.util.List;
 
-public class HomeViewPagerAdapter extends FragmentStatePagerAdapter {
+public class ChartPagerAdapter extends FragmentStatePagerAdapter {
 
     private List<BaseFragment> mFragments;
     private Context mContext;
 
-    public HomeViewPagerAdapter(Context context, FragmentManager fm, List<BaseFragment> fragments) {
+    public ChartPagerAdapter(Context context,
+                             FragmentManager fm, List<BaseFragment> fragments) {
         super(fm);
         this.mContext = context;
         this.mFragments = fragments;
@@ -33,6 +34,6 @@ public class HomeViewPagerAdapter extends FragmentStatePagerAdapter {
     @Override
     public CharSequence getPageTitle(int position) {
         return mContext.getApplicationContext().getResources()
-                .getStringArray(R.array.fragment_options)[position];
+                .getStringArray(R.array.chart_options)[position];
     }
 }

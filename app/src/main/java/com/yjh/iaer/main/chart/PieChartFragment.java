@@ -1,6 +1,7 @@
 package com.yjh.iaer.main.chart;
 
 import android.graphics.Color;
+import android.os.Bundle;
 
 import com.github.mikephil.charting.charts.PieChart;
 import com.github.mikephil.charting.components.Legend;
@@ -26,8 +27,13 @@ public class PieChartFragment extends BaseDaggerFragment implements OnChartValue
     @BindView(R.id.pie_chart)
     PieChart pieChart;
 
-    public static PieChartFragment newInstance() {
-        return new PieChartFragment();
+    public static PieChartFragment newInstance(int i) {
+
+        Bundle args = new Bundle();
+        args.putInt(ChartActivity.CHART_TYPE_KEY, i);
+        PieChartFragment fragment = new PieChartFragment();
+        fragment.setArguments(args);
+        return fragment;
     }
 
     @Override

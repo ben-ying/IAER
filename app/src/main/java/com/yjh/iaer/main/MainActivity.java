@@ -4,26 +4,17 @@ import android.content.Intent;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
-import android.support.design.widget.TabLayout;
 import android.support.v4.view.GravityCompat;
-import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.view.MenuItem;
 
-import com.jakewharton.rxbinding2.support.v4.view.RxViewPager;
 import com.yjh.iaer.MyApplication;
 import com.yjh.iaer.R;
 import com.yjh.iaer.base.BaseDaggerActivity;
-import com.yjh.iaer.base.BaseFragment;
 import com.yjh.iaer.main.chart.ChartActivity;
-import com.yjh.iaer.main.chart.ChartFragment;
 import com.yjh.iaer.main.list.AddTransactionActivity;
-import com.yjh.iaer.main.list.HomeViewPagerAdapter;
 import com.yjh.iaer.main.list.TransactionsFragment;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import butterknife.BindView;
 import butterknife.OnClick;
