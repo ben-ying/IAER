@@ -75,7 +75,7 @@ public class BarChartFragment extends BaseDaggerFragment {
         chart.invalidate();
         if (transactions.size() > 0) {
             // if data is empty set this, when has data chart always not shown
-            chart.setVisibleXRangeMaximum(ChartFragment.CHART_PAGE_SIZE);
+            chart.setVisibleXRangeMaximum(ChartActivity.CHART_PAGE_SIZE);
         }
     }
 

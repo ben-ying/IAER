@@ -79,7 +79,7 @@ public class HorizontalBarChartFragment extends BaseDaggerFragment {
         sortByAmount(transactions);
         chart.setData(generateBarData());
         chart.invalidate();
-        chart.setVisibleXRangeMaximum(ChartFragment.CHART_PAGE_SIZE);
+        chart.setVisibleXRangeMaximum(ChartActivity.CHART_PAGE_SIZE);
         chart.moveViewTo(0, 0, YAxis.AxisDependency.LEFT);
     }
 

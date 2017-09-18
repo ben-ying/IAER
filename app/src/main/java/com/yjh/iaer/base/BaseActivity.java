@@ -4,15 +4,12 @@ import android.arch.lifecycle.LifecycleRegistry;
 import android.arch.lifecycle.LifecycleRegistryOwner;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 
-import com.squareup.haha.perflib.Main;
 import com.yjh.iaer.R;
 import com.yjh.iaer.main.MainActivity;
-import com.yjh.iaer.main.chart.ChartFragment;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
