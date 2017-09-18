@@ -201,27 +201,10 @@ public class TransactionsFragment extends BaseDaggerFragment
             progressBar.setVisibility(View.GONE);
             swipeRefreshLayout.setRefreshing(false);
             transactions = listResource.getData();
-            int total = 0;
-            for (Transaction transaction : transactions) {
-                total += transaction.getMoneyInt();
-            }
             if (reverseSorting) {
                 Collections.reverse(transactions);
             }
             setAdapter();
-
-            // init chart data when first open app
-            if (mIsFirstOpen && transactions.size() > 0) {
-                Fragment fragment = getActivity().getSupportFragmentManager()
-                        .findFragmentById(R.id.container);
-                if (fragment != null && fragment.isAdded()
-                        && fragment instanceof BaseDaggerFragment) {
-                    mSharedPreferences.edit().putBoolean(
-                            FIRST_OPEN_APP, false).apply();
-                    mIsFirstOpen = false;
-                    ((BaseDaggerFragment) fragment).setData(transactions);
-                }
-            }
         }
     }
 

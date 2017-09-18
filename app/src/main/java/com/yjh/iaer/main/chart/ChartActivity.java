@@ -6,18 +6,17 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 
-import com.github.mikephil.charting.charts.HorizontalBarChart;
 import com.jakewharton.rxbinding2.support.v4.view.RxViewPager;
 import com.yjh.iaer.R;
 import com.yjh.iaer.base.BaseDaggerActivity;
-import com.yjh.iaer.base.BaseFragment;
+import com.yjh.iaer.base.BaseDaggerFragment;
 import com.yjh.iaer.main.list.ChartPagerAdapter;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
 
@@ -35,6 +34,10 @@ public class ChartActivity extends BaseDaggerActivity {
     @BindView(R.id.spinner)
     Spinner spinner;
 
+    private int mMonthSelection;
+    private int mYearSelection;
+    private ChartPagerAdapter mChartPagerAdapter;
+
     @Override
     public int getLayoutId() {
         return R.layout.activity_chart;
@@ -42,54 +45,28 @@ public class ChartActivity extends BaseDaggerActivity {
 
     @Override
     public void initView() {
-        List<BaseFragment> fragments = new ArrayList<>();
+        List<BaseDaggerFragment> fragments = new ArrayList<>();
         for (int i = 0; i < CHART_TYPE.values().length; i++) {
             HorizontalBarChartFragment fragment = HorizontalBarChartFragment.newInstance(i);
             fragments.add(fragment);
         }
-        ChartPagerAdapter chartPagerAdapter = new ChartPagerAdapter(
+        mChartPagerAdapter = new ChartPagerAdapter(
                 this, getSupportFragmentManager(), fragments);
         viewPager.setOffscreenPageLimit(1);
-        viewPager.setAdapter(chartPagerAdapter);
+        viewPager.setAdapter(mChartPagerAdapter);
         tabLayout.setupWithViewPager(viewPager);
         tabLayout.setVisibility(View.VISIBLE);
 
         RxViewPager.pageSelections(viewPager).subscribe(integer -> {
             switch (integer) {
                 case 0:
-                    spinner.setVisibility(View.GONE);
+                    showAll();
                     break;
                 case 1:
-                    spinner.setVisibility(View.VISIBLE);
-                    String[] monthArray = new String[12];
-                    int year = Calendar.getInstance().get(Calendar.YEAR);
-                    int month = Calendar.getInstance().get(Calendar.MONTH);
-                    for (int i = monthArray.length - 1; i >= 0; i--) {
-                        if (month < 0) {
-                            month = monthArray.length - 1;
-                            year--;
-                        }
-                        monthArray[i] = String.format(
-                                getString(R.string.chart_month), year, month + 1);
-                        month--;
-                    }
-
-                    ArrayAdapter<String> monthAdapter = new ArrayAdapter<>(this,
-                            android.R.layout.simple_spinner_dropdown_item, monthArray);
-                    spinner.setAdapter(monthAdapter);
-                    spinner.setSelection(monthArray.length - 1);
+                    showChartByMonth();
                     break;
                 case 2:
-                    spinner.setVisibility(View.VISIBLE);
-                    int chartYear = Calendar.getInstance().get(Calendar.YEAR);
-                    String[] yearArray = new String[3];
-                    for (int i = yearArray.length - 1; i >= 0; i--) {
-                        yearArray[i] = String.format(getString(R.string.chart_year), chartYear);
-                        chartYear--;
-                    }
-                    ArrayAdapter<String> yearAdapter = new ArrayAdapter<>(this,
-                            android.R.layout.simple_spinner_dropdown_item, yearArray);
-                    spinner.setAdapter(yearAdapter);
+                    showChartByYear();
                     break;
             }
         });
@@ -104,19 +81,9 @@ public class ChartActivity extends BaseDaggerActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem menuItem) {
-        List<BaseFragment> fragments = new ArrayList<>();
+        List<BaseDaggerFragment> fragments = new ArrayList<>();
 
         switch (menuItem.getItemId()) {
-            case R.id.action_sorted_by_date:
-//                for (int i = 0; i < CHART_TYPE.values().length; i++) {
-//                    BarChartFragment fragment = BarChartFragment.newInstance(i);
-//                    fragments.add(fragment);
-//                }
-                for (int i = 0; i < CHART_TYPE.values().length; i++) {
-                    HorizontalBarChartFragment fragment = HorizontalBarChartFragment.newInstance(i);
-                    fragments.add(fragment);
-                }
-                break;
             case R.id.action_sort_by_amount:
                 for (int i = 0; i < CHART_TYPE.values().length; i++) {
                     HorizontalBarChartFragment fragment = HorizontalBarChartFragment.newInstance(i);
@@ -131,13 +98,90 @@ public class ChartActivity extends BaseDaggerActivity {
                 break;
         }
 
-        if (fragments.size() > 0) {
-            ChartPagerAdapter chartPagerAdapter = new ChartPagerAdapter(
-                    this, getSupportFragmentManager(), fragments);
-            viewPager.setAdapter(chartPagerAdapter);
-            tabLayout.setupWithViewPager(viewPager);
-        }
+        mChartPagerAdapter = new ChartPagerAdapter(
+                this, getSupportFragmentManager(), fragments);
+        viewPager.setAdapter(mChartPagerAdapter);
+        tabLayout.setupWithViewPager(viewPager);
 
         return super.onOptionsItemSelected(menuItem);
+    }
+
+    private void showAll() {
+        spinner.setVisibility(View.GONE);
+        getCurrentFragment().setChartDate(0, 0);
+    }
+
+    private void showChartByMonth() {
+        spinner.setVisibility(View.VISIBLE);
+        String[] monthArray = new String[12];
+        int year = Calendar.getInstance().get(Calendar.YEAR);
+        int month = Calendar.getInstance().get(Calendar.MONTH);
+        for (int i = 0; i < monthArray.length; i++) {
+            if (month < 0) {
+                month = monthArray.length - 1;
+                year--;
+            }
+            monthArray[i] = String.format(
+                    getString(R.string.chart_month), year, month + 1);
+            month--;
+        }
+
+        ArrayAdapter<String> monthAdapter = new ArrayAdapter<>(this,
+                android.R.layout.simple_spinner_dropdown_item, monthArray);
+        spinner.setAdapter(monthAdapter);
+        spinner.setSelection(mMonthSelection);
+        final int currentYear = Calendar.getInstance().get(Calendar.YEAR);
+        final int currentMonth = Calendar.getInstance().get(Calendar.MONTH);
+        boolean thisYear = currentMonth - mMonthSelection > 0;
+        getCurrentFragment().setChartDate(
+                thisYear ? currentYear : currentYear - 1, mMonthSelection + 1);
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                mMonthSelection = i;
+                boolean thisYear = currentMonth - mMonthSelection > 0;
+                int month = currentMonth - mMonthSelection + 1;
+                getCurrentFragment().setChartDate(
+                        thisYear ? currentYear : currentYear - 1, month > 0 ? month : month + 12);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
+    }
+
+    private void showChartByYear() {
+        spinner.setVisibility(View.VISIBLE);
+        int chartYear = Calendar.getInstance().get(Calendar.YEAR);
+        String[] yearArray = new String[3];
+        for (int i = 0; i < yearArray.length; i++) {
+            yearArray[i] = String.format(getString(R.string.chart_year), chartYear);
+            chartYear--;
+        }
+        ArrayAdapter<String> yearAdapter = new ArrayAdapter<>(this,
+                android.R.layout.simple_spinner_dropdown_item, yearArray);
+        spinner.setAdapter(yearAdapter);
+        spinner.setSelection(mYearSelection);
+        getCurrentFragment().setChartDate(
+                Calendar.getInstance().get(Calendar.YEAR) - mYearSelection, 0);
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                mYearSelection = i;
+                getCurrentFragment().setChartDate(
+                        Calendar.getInstance().get(Calendar.YEAR) - mYearSelection, 0);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
+    }
+
+    private BaseDaggerFragment getCurrentFragment() {
+        return mChartPagerAdapter.getItem(viewPager.getCurrentItem());
     }
 }

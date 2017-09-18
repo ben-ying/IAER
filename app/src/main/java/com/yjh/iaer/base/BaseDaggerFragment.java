@@ -12,6 +12,7 @@ import com.yjh.iaer.injection.Injectable;
 import com.yjh.iaer.room.entity.Transaction;
 import com.yjh.iaer.viewmodel.TransactionViewModel;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -23,6 +24,7 @@ public abstract class BaseDaggerFragment extends BaseFragment
     public ViewModelProvider.Factory viewModelFactory;
 
     public List<Transaction> transactions;
+    public List<Transaction> allTransactions;
 
     @Nullable
     @Override
@@ -32,10 +34,39 @@ public abstract class BaseDaggerFragment extends BaseFragment
 
         TransactionViewModel viewModel = ViewModelProviders.of(
                 this, viewModelFactory).get(TransactionViewModel.class);
-        viewModel.getTransactions().observe(this, this::setData);
+        viewModel.getTransactions().observe(this, transactions1 -> {
+            allTransactions = transactions1;
+            setData(allTransactions);
+        });
 
         return view;
     }
 
-    public void setData(List<Transaction> transactions) {}
+    public void setChartDate(int year, int month) {
+        if (allTransactions != null) {
+            List<Transaction> transactionList = new ArrayList<>();
+
+            if (year == 0 && month == 0) {
+                transactionList = allTransactions;
+            } else if (month == 0) {
+                for (Transaction transaction : allTransactions) {
+                    if (transaction.getYear() == year) {
+                        transactionList.add(transaction);
+                    }
+                }
+            } else {
+                for (Transaction transaction : allTransactions) {
+                    if (transaction.getYear() == year && transaction.getMonth() == month) {
+                        transactionList.add(transaction);
+                    }
+                }
+            }
+
+            setData(transactionList);
+        }
+    }
+
+    public void setData(List<Transaction> transactions) {
+        this.transactions = transactions;
+    }
 }

@@ -61,7 +61,7 @@ public class PieChartFragment extends BaseDaggerFragment implements OnChartValue
 
     @Override
     public void setData(List<Transaction> transactions) {
-        this.transactions = transactions;
+        super.setData(transactions);
         pieChart.setData(generatePieData());
         pieChart.invalidate();
     }

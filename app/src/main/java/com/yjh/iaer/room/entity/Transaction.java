@@ -50,7 +50,15 @@ public class Transaction {
     }
 
     public String getCreatedDate() {
-        return created == null ? "" : created.split(" ")[0];
+        return created.split(" ")[0];
+    }
+
+    public int getYear() {
+        return Integer.valueOf(created.split("-")[0]);
+    }
+
+    public int getMonth() {
+        return Integer.valueOf(created.split("-")[1]);
     }
 
     public Transaction() {

@@ -54,28 +54,23 @@ public class BarChartFragment extends BaseDaggerFragment {
         YAxis leftAxis = chart.getAxisLeft();
         leftAxis.setAxisMinimum(0f);
         chart.getAxisRight().setEnabled(false);
-        XAxis xAxis = chart.getXAxis();
-        xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
-        xAxis.setTextSize(7);
-        xAxis.setValueFormatter((value, axis) -> {
-            if (transactions != null && transactions.size() > 0) {
-                return String.valueOf(transactions.get((int) value).getMoneyFrom());
-            } else {
-                return null;
-            }
-        });
         chart.setDoubleTapToZoomEnabled(false);
     }
 
     @Override
     public void setData(List<Transaction> transactions) {
         super.setData(transactions);
-        this.transactions = transactions;
         chart.setData(generateBarData());
         chart.invalidate();
         if (transactions.size() > 0) {
             // if data is empty set this, when has data chart always not shown
-            chart.setVisibleXRangeMaximum(ChartActivity.CHART_PAGE_SIZE);
+            chart.setVisibleXRange(ChartActivity.CHART_PAGE_SIZE, ChartActivity.CHART_PAGE_SIZE);
+            XAxis xAxis = chart.getXAxis();
+            xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
+            xAxis.setTextSize(7);
+            xAxis.setValueFormatter((value, axis) ->
+                    String.valueOf(transactions.get((int) value).getMoneyFrom())
+            );
         }
     }
 

@@ -23,6 +23,7 @@ import butterknife.BindView;
 import io.reactivex.Observable;
 import io.reactivex.ObservableEmitter;
 import io.reactivex.disposables.Disposable;
+import timber.log.Timber;
 
 public class HorizontalBarChartFragment extends BaseDaggerFragment {
 
@@ -57,12 +58,6 @@ public class HorizontalBarChartFragment extends BaseDaggerFragment {
         YAxis leftAxis = chart.getAxisLeft();
         leftAxis.setAxisMinimum(0f);
         chart.getAxisRight().setEnabled(false);
-        XAxis xAxis = chart.getXAxis();
-        xAxis.setTextSize(7);
-        xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
-        xAxis.setValueFormatter((value, axis) ->
-                String.valueOf(transactions.get((int) value).getMoneyFrom()));
-        chart.setDoubleTapToZoomEnabled(false);
     }
 
     @Override
@@ -79,8 +74,24 @@ public class HorizontalBarChartFragment extends BaseDaggerFragment {
         sortByAmount(transactions);
         chart.setData(generateBarData());
         chart.invalidate();
-        chart.setVisibleXRangeMaximum(ChartActivity.CHART_PAGE_SIZE);
-        chart.moveViewTo(0, 0, YAxis.AxisDependency.LEFT);
+        if (transactions.size() > 0) {
+            // if data is empty set this, when has data chart always not shown
+            chart.setVisibleXRange(ChartActivity.CHART_PAGE_SIZE, ChartActivity.CHART_PAGE_SIZE);
+            chart.moveViewTo(0, 0, YAxis.AxisDependency.LEFT);
+            XAxis xAxis = chart.getXAxis();
+            xAxis.setTextSize(7);
+            xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
+            xAxis.setValueFormatter((value, axis) -> {
+                        Timber.d("value: %s, count: %s", value, transactions.size());
+                        if (transactions.size() > value && value == Math.round(value)) {
+                            Timber.d("value: 1: %s", transactions.get((int) value).getMoneyFrom());
+                            return transactions.get((int) value).getMoneyFrom();
+                        }
+                        return ""   ;
+                    }
+            );
+            chart.setDoubleTapToZoomEnabled(false);
+        }
     }
 
     private void sortByAmount(final List<Transaction> transactions) {
@@ -106,6 +117,12 @@ public class HorizontalBarChartFragment extends BaseDaggerFragment {
                     + transaction.getMoneyFrom()
                     + ": " + Utils.formatNumber(
                     transaction.getMoneyInt(), 0, true));
+            entries.add(barEntry);
+        }
+
+        for (int i = 0; i < ChartActivity.CHART_PAGE_SIZE - transactions.size(); i++) {
+            BarEntry barEntry = new BarEntry(transactions.size() + i, 0);
+            barEntry.setData(null);
             entries.add(barEntry);
         }
 
