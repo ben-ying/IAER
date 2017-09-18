@@ -1,6 +1,7 @@
 package com.yjh.iaer.main;
 
 import android.content.Intent;
+import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
@@ -15,6 +16,7 @@ import com.yjh.iaer.MyApplication;
 import com.yjh.iaer.R;
 import com.yjh.iaer.base.BaseDaggerActivity;
 import com.yjh.iaer.base.BaseFragment;
+import com.yjh.iaer.main.chart.ChartActivity;
 import com.yjh.iaer.main.chart.ChartFragment;
 import com.yjh.iaer.main.list.AddTransactionActivity;
 import com.yjh.iaer.main.list.HomeViewPagerAdapter;
@@ -31,10 +33,6 @@ public class MainActivity extends BaseDaggerActivity
 
     @BindView(R.id.drawer_layout)
     DrawerLayout drawer;
-    @BindView(R.id.view_pager)
-    ViewPager viewPager;
-    @BindView(R.id.tab_layout_main)
-    TabLayout tabLayout;
     @BindView(R.id.nav_view)
     NavigationView navigationView;
     @BindView(R.id.fab)
@@ -47,30 +45,12 @@ public class MainActivity extends BaseDaggerActivity
 
     @Override
     public void initView() {
-        setSupportActionBar(toolbar);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer,
                 toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
         toggle.syncState();
         navigationView.setNavigationItemSelectedListener(this);
-        List<BaseFragment> fragments = new ArrayList<>();
-        TransactionsFragment transactionsFragment = TransactionsFragment.newInstance();
-        fragments.add(transactionsFragment);
-        ChartFragment chartFragment = ChartFragment.newInstance();
-        fragments.add(chartFragment);
-        HomeViewPagerAdapter homeViewPagerAdapter = new HomeViewPagerAdapter(
-                this, getSupportFragmentManager(), fragments);
-        viewPager.setOffscreenPageLimit(1);
-        viewPager.setAdapter(homeViewPagerAdapter);
-        tabLayout.setupWithViewPager(viewPager);
-
-        RxViewPager.pageSelections(viewPager).subscribe(integer -> {
-            if (integer == 0) {
-                fab.show();
-            } else {
-                fab.hide();
-            }
-        });
+        setFragment(TransactionsFragment.newInstance());
     }
 
     @Override
@@ -96,22 +76,26 @@ public class MainActivity extends BaseDaggerActivity
 
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
-    public boolean onNavigationItemSelected(MenuItem item) {
-        int id = item.getItemId();
+    public boolean onNavigationItemSelected(@Nullable MenuItem item) {
+        Intent intent;
 
-        if (id == R.id.nav_camera) {
-
-        } else if (id == R.id.nav_gallery) {
-
-        } else if (id == R.id.nav_slideshow) {
-
-        } else if (id == R.id.nav_manage) {
-
-        } else if (id == R.id.nav_share) {
-
-        } else if (id == R.id.nav_send) {
-
+        switch (item.getItemId()) {
+            case R.id.nav_camera:
+                break;
+            case R.id.nav_gallery:
+                intent = new Intent(this, ChartActivity.class);
+                startActivity(intent);
+                break;
+            case R.id.nav_slideshow:
+                break;
+            case R.id.nav_manage:
+                break;
+            case R.id.nav_share:
+                break;
+            case R.id.nav_send:
+                break;
         }
+
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }

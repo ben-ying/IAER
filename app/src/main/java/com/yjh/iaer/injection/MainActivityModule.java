@@ -1,6 +1,8 @@
 package com.yjh.iaer.injection;
 
+import com.github.mikephil.charting.charts.Chart;
 import com.yjh.iaer.main.MainActivity;
+import com.yjh.iaer.main.chart.ChartActivity;
 
 import dagger.Module;
 import dagger.android.ContributesAndroidInjector;
@@ -9,4 +11,6 @@ import dagger.android.ContributesAndroidInjector;
 public abstract class MainActivityModule {
     @ContributesAndroidInjector(modules = FragmentBuildersModule.class)
     abstract MainActivity contributeMainActivity();
+    @ContributesAndroidInjector(modules = FragmentBuildersModule.class)
+    abstract ChartActivity contributeChartActivity();
 }

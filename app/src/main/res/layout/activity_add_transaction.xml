@@ -4,5 +4,5 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="com.yjh.iaer.main.list.AddTransactionActivity">
-    <include layout="@layout/toolbar" />
+    <include layout="@layout/appbar" />
 </android.support.constraint.ConstraintLayout>

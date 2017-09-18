@@ -13,10 +13,7 @@ public class AddTransactionActivity extends BaseActivity {
     @Override
     @SuppressWarnings("ConstantConditions")
     public void initView() {
-        setSupportActionBar(toolbar);
         getSupportActionBar().setTitle(R.string.add_transaction);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setHomeButtonEnabled(true);
         AddTransactionFragment.newInstance();
     }
 }
