@@ -43,7 +43,9 @@ public class ChartActivity extends BaseActivity {
     }
 
     @Override
+    @SuppressWarnings("ConstantConditions")
     public void initView() {
+        getSupportActionBar().setTitle(R.string.chart);
         List<BaseChartFragment> fragments = new ArrayList<>();
         for (int i = 0; i < CHART_TYPE.values().length; i++) {
             HorizontalBarChartFragment fragment = HorizontalBarChartFragment.newInstance(i);
@@ -97,9 +99,11 @@ public class ChartActivity extends BaseActivity {
                 break;
         }
 
+        int selection = viewPager.getCurrentItem();
         mChartPagerAdapter = new ChartPagerAdapter(
                 this, getSupportFragmentManager(), fragments);
         viewPager.setAdapter(mChartPagerAdapter);
+        viewPager.setCurrentItem(selection);
         tabLayout.setupWithViewPager(viewPager);
 
         return super.onOptionsItemSelected(menuItem);
@@ -107,7 +111,7 @@ public class ChartActivity extends BaseActivity {
 
     private void showAll() {
         spinner.setVisibility(View.GONE);
-//        getCurrentFragment().setChartDate(0, 0);
+        getCurrentFragment().setChartDate(0, 0);
     }
 
     private void showChartByMonth() {

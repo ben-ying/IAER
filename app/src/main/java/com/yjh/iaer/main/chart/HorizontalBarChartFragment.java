@@ -26,8 +26,6 @@ public class HorizontalBarChartFragment extends BaseChartFragment {
 
     @BindView(R.id.horizontal_bar_chart)
     HorizontalBarChart chart;
-    @BindView(R.id.tv_no_data)
-    TextView noDataTextView;
 
     public static HorizontalBarChartFragment newInstance(int i) {
 
@@ -62,8 +60,6 @@ public class HorizontalBarChartFragment extends BaseChartFragment {
         super.setData(transactions);
         int size = transactions.size();
         chart.setVisibility(size > 0 ? View.VISIBLE : View.GONE);
-        noDataTextView.setVisibility(size > 0 ? View.GONE : View.VISIBLE);
-        noDataTextView.setText(getNoDataHint());
 
         if (size > 0) {
             if (size < ChartActivity.CHART_PAGE_SIZE) {
@@ -75,6 +71,7 @@ public class HorizontalBarChartFragment extends BaseChartFragment {
             transactions.sort(Comparator.comparing(Transaction::getMoneyInt));
             chart.setData(generateBarData());
             chart.invalidate();
+            chart.animateY(ANIMATION_MILLIS);
             // if data is empty set this, when has data chart always not shown
             chart.setVisibleXRange(ChartActivity.CHART_PAGE_SIZE, ChartActivity.CHART_PAGE_SIZE);
             chart.moveViewTo(0, 0, YAxis.AxisDependency.LEFT);

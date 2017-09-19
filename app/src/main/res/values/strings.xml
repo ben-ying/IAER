@@ -20,6 +20,8 @@
     <string name="transaction_yuan">%,d, %s</string>
     <string name="delete_transaction_alert">点击确定将永久删除此交易记录，是否确定删除？</string>
 
+    <string name="list">列表</string>
+    <string name="chart">图表</string>
     <string name="chart_month">%1$d年%2$d月</string>
     <string name="chart_year">%d年</string>
     <string name="no_data">没有收支记录</string>

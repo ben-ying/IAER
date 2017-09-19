@@ -6,6 +6,7 @@ import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.yjh.iaer.R;
 import com.yjh.iaer.base.BaseFragment;
@@ -16,11 +17,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindString;
+import butterknife.BindView;
 
 public abstract class BaseChartFragment extends BaseFragment {
 
     public List<Transaction> transactions;
+    public static final int ANIMATION_MILLIS = 1500;
 
+    @BindView(R.id.tv_no_data)
+    TextView noDataTextView;
     @BindString(R.string.no_data)
     String noDataHint;
 
@@ -76,11 +81,9 @@ public abstract class BaseChartFragment extends BaseFragment {
         return mDateString;
     }
 
-    public String getNoDataHint() {
-        return noDataHint;
-    }
-
     public void setData(List<Transaction> transactions) {
         this.transactions = transactions;
+        noDataTextView.setVisibility(transactions.size() > 0 ? View.GONE : View.VISIBLE);
+        noDataTextView.setText(noDataHint);
     }
 }

@@ -2,6 +2,7 @@ package com.yjh.iaer.main.chart;
 
 import android.graphics.Color;
 import android.os.Bundle;
+import android.view.View;
 
 import com.github.mikephil.charting.charts.PieChart;
 import com.github.mikephil.charting.components.Legend;
@@ -15,6 +16,7 @@ import com.github.mikephil.charting.utils.Utils;
 import com.yjh.iaer.R;
 import com.yjh.iaer.room.entity.Transaction;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -22,7 +24,8 @@ import java.util.Map;
 
 import butterknife.BindView;
 
-public class PieChartFragment extends BaseChartFragment implements OnChartValueSelectedListener {
+public class PieChartFragment extends BaseChartFragment
+        implements OnChartValueSelectedListener {
 
     @BindView(R.id.pie_chart)
     PieChart pieChart;
@@ -62,11 +65,16 @@ public class PieChartFragment extends BaseChartFragment implements OnChartValueS
     @Override
     public void setData(List<Transaction> transactions) {
         super.setData(transactions);
+        pieChart.setVisibility(transactions.size() > 0 ? View.VISIBLE : View.GONE);
         pieChart.setData(generatePieData());
         pieChart.invalidate();
+        pieChart.animateY(ANIMATION_MILLIS);
     }
 
     protected PieData generatePieData() {
+        final DecimalFormat format = new DecimalFormat("###,###,###");
+        int income = 0;
+        int consumption = 0;
         Map<String, Integer> map = new HashMap<>();
         Map<String, Integer> sortedMap = new HashMap<>();
         sortedMap.put(getString(R.string.category_others), 0);
@@ -76,6 +84,11 @@ public class PieChartFragment extends BaseChartFragment implements OnChartValueS
             // if mapValue == null, mapValue = transaction.getMoneyInt(),
             // else mapValue += transaction.getMoneyInt()
             map.merge(transaction.getRemark(), transaction.getMoneyInt(), Integer::sum);
+            if (transaction.getMoneyInt() > 0) {
+                income += transaction.getMoneyInt();
+            } else {
+                consumption -= transaction.getMoneyInt();
+            }
         }
 
         ArrayList<Integer> colors = new ArrayList<Integer>();
@@ -94,9 +107,7 @@ public class PieChartFragment extends BaseChartFragment implements OnChartValueS
                     if (sortedMap.size() <= colors.size() - 1
                             && (float) entry.getValue() / totalMoney > 0.02) {
                         entries.add(new PieEntry(entry.getValue(),
-                                entry.getKey() + "\n: " +
-                                        Utils.formatNumber(entry.getValue(),
-                                                0, true)));
+                                entry.getKey() + "\n: " + format.format(entry.getValue())));
                         sortedMap.put(entry.getKey(), entry.getValue());
                     } else {
                         sortedMap.put(getString(R.string.category_others),
@@ -106,19 +117,20 @@ public class PieChartFragment extends BaseChartFragment implements OnChartValueS
 
         if (sortedMap.get(getString(R.string.category_others)) > 0) {
             entries.add(new PieEntry(sortedMap.get(getString(R.string.category_others)),
-                    getString(R.string.category_others) + "\n: " +
-                            Utils.formatNumber(sortedMap.get(
-                                    getString(R.string.category_others)),
-                                    0, true)));
+                    getString(R.string.category_others) + "\n: " + format.format(sortedMap.get(
+                            getString(R.string.category_others)))));
         }
 
         PieDataSet pieDataSet = new PieDataSet(
-                entries, getString(R.string.action_sorted_by_category));
+                entries, getDateString() +
+                String.format(getString(R.string.summary),
+                        format.format(income), format.format(consumption),
+                        format.format(income - consumption)));
         pieDataSet.setSliceSpace(2f);
         pieDataSet.setValueTextColor(Color.WHITE);
         pieDataSet.setValueTextSize(12f);
         pieDataSet.setValueFormatter((value, entry, datasetIndex, viewPortHandler)
-                -> Utils.formatNumber(value, 1, true) + "%");
+                -> format.format(value) + "%");
         pieDataSet.setColors(colors);
 
         return new PieData(pieDataSet);
