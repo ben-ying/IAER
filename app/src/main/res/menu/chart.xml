@@ -2,12 +2,6 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <!--<item-->
-        <!--android:id="@+id/action_sorted_by_date"-->
-        <!--android:orderInCategory="100"-->
-        <!--android:title="@string/action_sorted_by_date"-->
-        <!--app:showAsAction="never" />-->
-
     <item
         android:id="@+id/action_sort_by_amount"
         android:orderInCategory="100"

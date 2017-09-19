@@ -34,14 +34,6 @@ import io.reactivex.disposables.Disposable;
 public class TransactionsFragment extends BaseFragment
         implements TransactionAdapter.TransactionInterface {
 
-    private static final String TAG =
-            TransactionsFragment.class.getSimpleName();
-
-    private static final int SCROLL_UP = 0;
-    private static final int SCROLL_DOWN = 1;
-    private static final int SCROLL_VIEW_BRING_FRONT = 2;
-    private static final String FIRST_OPEN_APP = "first_open_app";
-
     @BindView(R.id.recycler_view)
     RecyclerView recyclerView;
     @BindView(R.id.swipe_refresh_layout)
@@ -54,10 +46,7 @@ public class TransactionsFragment extends BaseFragment
     private TransactionViewModel mViewModel;
     private TransactionAdapter mAdapter;
     private Disposable mDisposable;
-    private int mScrollViewState = -1;
     private boolean reverseSorting;
-    private boolean mIsFirstOpen;
-    private SharedPreferences mSharedPreferences;
     public List<Transaction> mTransactions;
 
     public static TransactionsFragment newInstance() {
@@ -82,10 +71,6 @@ public class TransactionsFragment extends BaseFragment
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mSharedPreferences =
-                getActivity().getSharedPreferences(getActivity().getApplicationContext()
-                        .getPackageName(), Context.MODE_PRIVATE);
-        mIsFirstOpen = mSharedPreferences.getBoolean(FIRST_OPEN_APP, true);
         setHasOptionsMenu(true);
     }
 
@@ -161,26 +146,6 @@ public class TransactionsFragment extends BaseFragment
         swipeRefreshLayout.setOnRefreshListener(() -> {
             mViewModel.load("1");
             progressBar.setVisibility(View.VISIBLE);
-        });
-    }
-
-    private Observable<Integer> createScrollViewObservable() {
-        return Observable.create((ObservableEmitter<Integer> emitter) -> {
-            scrollView.setOnScrollChangeListener((
-                    View view, int scrollX, int scrollY, int oldX, int oldY) -> {
-                if (scrollY > oldY) {
-                    emitter.onNext(SCROLL_UP);
-                } else if (scrollY < oldY) {
-                    emitter.onNext(SCROLL_DOWN);
-                    if (scrollY < 10) {
-                        emitter.onNext(SCROLL_VIEW_BRING_FRONT);
-                    }
-                }
-            });
-            emitter.setCancellable(() -> {
-//                        scrollView.setOnScrollChangeListener(
-//                                (NestedScrollView.OnScrollChangeListener) null);
-            });
         });
     }
 

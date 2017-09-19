@@ -27,4 +27,13 @@
     <style name="MyDialogTheme" parent="@android:style/Theme.DeviceDefault.Light.Dialog.NoActionBar.MinWidth">
         <item name="android:windowSoftInputMode">adjustResize</item>
     </style>
+
+    <style name="default_edit_text">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textColor">@color/black_text</item>
+        <item name="android:inputType">text</item>
+        <item name="android:imeOptions">actionNext</item>
+        <item name="android:maxLines">1</item>
+    </style>
 </resources>
