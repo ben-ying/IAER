@@ -8,7 +8,7 @@
             android:title="@string/list" />
         <item
             android:id="@+id/nav_gallery"
-            android:icon="@mipmap/ic_insert_chart_black_24dp"
+            android:icon="@mipmap/ic_multiline_chart_black_24dp"
             android:title="@string/chart" />
         <!--<item-->
             <!--android:id="@+id/nav_slideshow"-->
