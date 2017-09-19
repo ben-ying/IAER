@@ -22,6 +22,8 @@
 
     <string name="chart_month">%1$d年%2$d月</string>
     <string name="chart_year">%d年</string>
+    <string name="no_data">没有收支记录</string>
+    <string name="summary">总收入%1$s，总支出%2$s，结余%3$s</string>
 
 
     <string name="ok">确定</string>

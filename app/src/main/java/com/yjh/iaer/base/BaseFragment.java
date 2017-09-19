@@ -2,6 +2,7 @@ package com.yjh.iaer.base;
 
 import android.arch.lifecycle.LifecycleRegistry;
 import android.arch.lifecycle.LifecycleRegistryOwner;
+import android.arch.lifecycle.ViewModelProvider;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -13,11 +14,18 @@ import android.view.ViewGroup;
 import com.squareup.leakcanary.RefWatcher;
 import com.yjh.iaer.MyApplication;
 import com.yjh.iaer.R;
+import com.yjh.iaer.injection.Injectable;
+
+import javax.inject.Inject;
 
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 
-public abstract class BaseFragment extends Fragment implements LifecycleRegistryOwner {
+public abstract class BaseFragment extends Fragment
+        implements LifecycleRegistryOwner, Injectable {
+
+    @Inject
+    public ViewModelProvider.Factory viewModelFactory;
 
     private LifecycleRegistry mLifecycleRegistry = new LifecycleRegistry(this);
     private Unbinder mUnBinder;

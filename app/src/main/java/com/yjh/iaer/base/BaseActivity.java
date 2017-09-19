@@ -4,6 +4,7 @@ import android.arch.lifecycle.LifecycleRegistry;
 import android.arch.lifecycle.LifecycleRegistryOwner;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
@@ -11,15 +12,18 @@ import android.view.MenuItem;
 import com.yjh.iaer.R;
 import com.yjh.iaer.main.MainActivity;
 
+import javax.inject.Inject;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import dagger.android.DispatchingAndroidInjector;
+import dagger.android.support.HasSupportFragmentInjector;
 
-public abstract class BaseActivity extends AppCompatActivity implements
-        LifecycleRegistryOwner {
+public abstract class BaseActivity extends AppCompatActivity
+        implements LifecycleRegistryOwner, HasSupportFragmentInjector {
 
-    private final LifecycleRegistry mLifecycleRegistry = new LifecycleRegistry(this);
-    @BindView(R.id.toolbar)
-    public Toolbar toolbar;
+    @Inject
+    DispatchingAndroidInjector<Fragment> dispatchingAndroidInjector;
 
     @Override
     @SuppressWarnings("ConstantConditions")
@@ -48,6 +52,15 @@ public abstract class BaseActivity extends AppCompatActivity implements
     @Override
     public LifecycleRegistry getLifecycle() {
         return mLifecycleRegistry;
+    }
+
+    private final LifecycleRegistry mLifecycleRegistry = new LifecycleRegistry(this);
+    @BindView(R.id.toolbar)
+    public Toolbar toolbar;
+
+    @Override
+    public DispatchingAndroidInjector<Fragment> supportFragmentInjector() {
+        return dispatchingAndroidInjector;
     }
 
     public abstract int getLayoutId();

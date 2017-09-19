@@ -11,7 +11,7 @@ import android.view.MenuItem;
 
 import com.yjh.iaer.MyApplication;
 import com.yjh.iaer.R;
-import com.yjh.iaer.base.BaseDaggerActivity;
+import com.yjh.iaer.base.BaseActivity;
 import com.yjh.iaer.main.chart.ChartActivity;
 import com.yjh.iaer.main.list.AddTransactionActivity;
 import com.yjh.iaer.main.list.TransactionsFragment;
@@ -19,7 +19,7 @@ import com.yjh.iaer.main.list.TransactionsFragment;
 import butterknife.BindView;
 import butterknife.OnClick;
 
-public class MainActivity extends BaseDaggerActivity
+public class MainActivity extends BaseActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
     @BindView(R.id.drawer_layout)

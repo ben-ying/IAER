@@ -1,8 +1,8 @@
 package com.yjh.iaer.main.chart;
 
 import android.os.Bundle;
-import android.view.MotionEvent;
 import android.view.View;
+import android.widget.TextView;
 
 import com.github.mikephil.charting.charts.HorizontalBarChart;
 import com.github.mikephil.charting.components.XAxis;
@@ -11,31 +11,23 @@ import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
 import com.github.mikephil.charting.interfaces.datasets.IBarDataSet;
-import com.github.mikephil.charting.listener.ChartTouchListener;
-import com.github.mikephil.charting.listener.OnChartGestureListener;
-import com.github.mikephil.charting.utils.Utils;
 import com.yjh.iaer.R;
-import com.yjh.iaer.base.BaseDaggerFragment;
 import com.yjh.iaer.custom.MyMarkerView;
 import com.yjh.iaer.room.entity.Transaction;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
 import butterknife.BindView;
-import io.reactivex.Observable;
-import io.reactivex.ObservableEmitter;
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.disposables.Disposable;
-import timber.log.Timber;
 
-public class HorizontalBarChartFragment extends BaseDaggerFragment {
+public class HorizontalBarChartFragment extends BaseChartFragment {
 
     @BindView(R.id.horizontal_bar_chart)
     HorizontalBarChart chart;
+    @BindView(R.id.tv_no_data)
+    TextView noDataTextView;
 
     public static HorizontalBarChartFragment newInstance(int i) {
 
@@ -70,6 +62,8 @@ public class HorizontalBarChartFragment extends BaseDaggerFragment {
         super.setData(transactions);
         int size = transactions.size();
         chart.setVisibility(size > 0 ? View.VISIBLE : View.GONE);
+        noDataTextView.setVisibility(size > 0 ? View.GONE : View.VISIBLE);
+        noDataTextView.setText(getNoDataHint());
 
         if (size > 0) {
             if (size < ChartActivity.CHART_PAGE_SIZE) {
@@ -88,7 +82,7 @@ public class HorizontalBarChartFragment extends BaseDaggerFragment {
             xAxis.setTextSize(7);
             xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
             xAxis.setValueFormatter((value, axis) -> {
-                        if (transactions.size() > value && value == Math.round(value) && value != 0) {
+                        if (transactions.size() > value && value == Math.round(value)) {
                             return transactions.get((int) value).getMoneyFrom();
                         }
                         return "";
@@ -99,8 +93,11 @@ public class HorizontalBarChartFragment extends BaseDaggerFragment {
     }
 
     private BarData generateBarData() {
+        final DecimalFormat format = new DecimalFormat("###,###,###");
         ArrayList<IBarDataSet> sets = new ArrayList<>();
         ArrayList<BarEntry> entries = new ArrayList<>();
+        int income = 0;
+        int consumption = 0;
 
         for (int i = 0; i < transactions.size(); i++) {
             Transaction transaction = transactions.get(i);
@@ -108,19 +105,26 @@ public class HorizontalBarChartFragment extends BaseDaggerFragment {
             if (transaction.getMoneyInt() != 0) {
                 barEntry.setData(transaction.getCreatedDate() + "\n"
                         + transaction.getMoneyFrom()
-                        + ": " + Utils.formatNumber(
-                        transaction.getMoneyInt(), 0, true, ','));
+                        + ": " + format.format(transaction.getMoneyInt()));
             }
             entries.add(barEntry);
+            if (transaction.getMoneyInt() > 0) {
+                income += transaction.getMoneyInt();
+            } else {
+                consumption -= transaction.getMoneyInt();
+            }
         }
 
-        BarDataSet ds = new BarDataSet(entries, getString(R.string.action_sorted_by_amount));
+        BarDataSet ds = new BarDataSet(entries, getDateString() +
+                String.format(getString(R.string.summary),
+                        format.format(income), format.format(consumption),
+                        format.format(income - consumption)));
         ds.setColor(getActivity().getColor(R.color.colorPrimary));
         sets.add(ds);
         BarData barData = new BarData(sets);
         barData.setValueFormatter((value, entry, dataSetIndex, viewPortHandler) -> {
-            if (value > 0) {
-                return new DecimalFormat("###,###,###").format(value);
+            if (value != 0) {
+                return format.format(value);
             } else {
                 return "";
             }

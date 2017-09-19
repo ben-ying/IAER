@@ -6,7 +6,6 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
@@ -16,11 +15,9 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ProgressBar;
-import android.widget.TextView;
 
 import com.yjh.iaer.R;
-import com.yjh.iaer.base.BaseDaggerFragment;
-import com.yjh.iaer.main.MainActivity;
+import com.yjh.iaer.base.BaseFragment;
 import com.yjh.iaer.network.Resource;
 import com.yjh.iaer.room.entity.Transaction;
 import com.yjh.iaer.viewmodel.TransactionViewModel;
@@ -32,11 +29,9 @@ import java.util.List;
 import butterknife.BindView;
 import io.reactivex.Observable;
 import io.reactivex.ObservableEmitter;
-import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
-import io.reactivex.schedulers.Schedulers;
 
-public class TransactionsFragment extends BaseDaggerFragment
+public class TransactionsFragment extends BaseFragment
         implements TransactionAdapter.TransactionInterface {
 
     private static final String TAG =
@@ -63,6 +58,7 @@ public class TransactionsFragment extends BaseDaggerFragment
     private boolean reverseSorting;
     private boolean mIsFirstOpen;
     private SharedPreferences mSharedPreferences;
+    public List<Transaction> mTransactions;
 
     public static TransactionsFragment newInstance() {
         Bundle args = new Bundle();
@@ -131,14 +127,14 @@ public class TransactionsFragment extends BaseDaggerFragment
     }
 
     public List<Transaction> getData() {
-        return transactions;
+        return mTransactions;
     }
 
     private void sortDataByTime() {
-        if (transactions != null && mAdapter != null) {
+        if (mTransactions != null && mAdapter != null) {
             mDisposable = Observable
                     .create((ObservableEmitter<Transaction> e) -> {
-                        for (Transaction transaction : transactions) {
+                        for (Transaction transaction : mTransactions) {
                             e.onNext(transaction);
                         }
                         e.onComplete();
@@ -149,7 +145,7 @@ public class TransactionsFragment extends BaseDaggerFragment
                     .subscribe(transactionList -> {
                         reverseSorting = !reverseSorting;
                         getActivity().invalidateOptionsMenu();
-                        transactions = transactionList;
+                        mTransactions = transactionList;
                         setAdapter();
                     });
         }
@@ -200,9 +196,9 @@ public class TransactionsFragment extends BaseDaggerFragment
         if (listResource != null && listResource.getData() != null) {
             progressBar.setVisibility(View.GONE);
             swipeRefreshLayout.setRefreshing(false);
-            transactions = listResource.getData();
+            mTransactions = listResource.getData();
             if (reverseSorting) {
-                Collections.reverse(transactions);
+                Collections.reverse(mTransactions);
             }
             setAdapter();
         }
@@ -211,10 +207,10 @@ public class TransactionsFragment extends BaseDaggerFragment
     private void setAdapter() {
         if (mAdapter == null) {
             mAdapter = new TransactionAdapter(getActivity(),
-                    transactions, TransactionsFragment.this);
+                    mTransactions, TransactionsFragment.this);
             recyclerView.setAdapter(mAdapter);
         } else {
-            mAdapter.setData(transactions);
+            mAdapter.setData(mTransactions);
         }
     }
 }

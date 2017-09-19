@@ -5,25 +5,24 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 
 import com.yjh.iaer.R;
-import com.yjh.iaer.base.BaseDaggerFragment;
-import com.yjh.iaer.base.BaseFragment;
+import com.yjh.iaer.main.chart.BaseChartFragment;
 
 import java.util.List;
 
 public class ChartPagerAdapter extends FragmentStatePagerAdapter {
 
-    private List<BaseDaggerFragment> mFragments;
+    private List<BaseChartFragment> mFragments;
     private Context mContext;
 
     public ChartPagerAdapter(Context context,
-                             FragmentManager fm, List<BaseDaggerFragment> fragments) {
+                             FragmentManager fm, List<BaseChartFragment> fragments) {
         super(fm);
         this.mContext = context;
         this.mFragments = fragments;
     }
 
     @Override
-    public BaseDaggerFragment getItem(int position) {
+    public BaseChartFragment getItem(int position) {
         return mFragments.get(position);
     }
 

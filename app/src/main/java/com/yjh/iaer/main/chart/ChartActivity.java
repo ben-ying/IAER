@@ -12,8 +12,7 @@ import android.widget.Spinner;
 
 import com.jakewharton.rxbinding2.support.v4.view.RxViewPager;
 import com.yjh.iaer.R;
-import com.yjh.iaer.base.BaseDaggerActivity;
-import com.yjh.iaer.base.BaseDaggerFragment;
+import com.yjh.iaer.base.BaseActivity;
 import com.yjh.iaer.main.list.ChartPagerAdapter;
 
 import java.util.ArrayList;
@@ -22,7 +21,7 @@ import java.util.List;
 
 import butterknife.BindView;
 
-public class ChartActivity extends BaseDaggerActivity {
+public class ChartActivity extends BaseActivity {
 
     public static final String CHART_TYPE_KEY = "chart_type_key";
     public static final int CHART_PAGE_SIZE = 8;
@@ -45,7 +44,7 @@ public class ChartActivity extends BaseDaggerActivity {
 
     @Override
     public void initView() {
-        List<BaseDaggerFragment> fragments = new ArrayList<>();
+        List<BaseChartFragment> fragments = new ArrayList<>();
         for (int i = 0; i < CHART_TYPE.values().length; i++) {
             HorizontalBarChartFragment fragment = HorizontalBarChartFragment.newInstance(i);
             fragments.add(fragment);
@@ -81,7 +80,7 @@ public class ChartActivity extends BaseDaggerActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem menuItem) {
-        List<BaseDaggerFragment> fragments = new ArrayList<>();
+        List<BaseChartFragment> fragments = new ArrayList<>();
 
         switch (menuItem.getItemId()) {
             case R.id.action_sort_by_amount:
@@ -108,7 +107,7 @@ public class ChartActivity extends BaseDaggerActivity {
 
     private void showAll() {
         spinner.setVisibility(View.GONE);
-        getCurrentFragment().setChartDate(0, 0);
+//        getCurrentFragment().setChartDate(0, 0);
     }
 
     private void showChartByMonth() {
@@ -181,7 +180,7 @@ public class ChartActivity extends BaseDaggerActivity {
         });
     }
 
-    private BaseDaggerFragment getCurrentFragment() {
+    private BaseChartFragment getCurrentFragment() {
         return mChartPagerAdapter.getItem(viewPager.getCurrentItem());
     }
 }

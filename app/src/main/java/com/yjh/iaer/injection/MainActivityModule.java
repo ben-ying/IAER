@@ -1,6 +1,5 @@
 package com.yjh.iaer.injection;
 
-import com.github.mikephil.charting.charts.Chart;
 import com.yjh.iaer.main.MainActivity;
 import com.yjh.iaer.main.chart.ChartActivity;
 

@@ -1,6 +1,5 @@
-package com.yjh.iaer.base;
+package com.yjh.iaer.main.chart;
 
-import android.arch.lifecycle.ViewModelProvider;
 import android.arch.lifecycle.ViewModelProviders;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -8,23 +7,26 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.yjh.iaer.injection.Injectable;
+import com.yjh.iaer.R;
+import com.yjh.iaer.base.BaseFragment;
 import com.yjh.iaer.room.entity.Transaction;
 import com.yjh.iaer.viewmodel.TransactionViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.inject.Inject;
+import butterknife.BindString;
 
-public abstract class BaseDaggerFragment extends BaseFragment
-        implements Injectable {
-
-    @Inject
-    public ViewModelProvider.Factory viewModelFactory;
+public abstract class BaseChartFragment extends BaseFragment {
 
     public List<Transaction> transactions;
-    public List<Transaction> allTransactions;
+
+    @BindString(R.string.no_data)
+    String noDataHint;
+
+    private String mDateString = "";
+
+    private List<Transaction> mAllTransactions;
 
     @Nullable
     @Override
@@ -35,35 +37,47 @@ public abstract class BaseDaggerFragment extends BaseFragment
         TransactionViewModel viewModel = ViewModelProviders.of(
                 this, viewModelFactory).get(TransactionViewModel.class);
         viewModel.getTransactions().observe(this, transactions1 -> {
-            allTransactions = transactions1;
-            setData(allTransactions);
+            mAllTransactions = transactions1;
+            setData(mAllTransactions);
         });
 
         return view;
     }
 
     public void setChartDate(int year, int month) {
-        if (allTransactions != null) {
+        if (mAllTransactions != null) {
             List<Transaction> transactionList = new ArrayList<>();
-
             if (year == 0 && month == 0) {
-                transactionList = allTransactions;
+                transactionList = mAllTransactions;
+                mDateString = "";
             } else if (month == 0) {
-                for (Transaction transaction : allTransactions) {
+                for (Transaction transaction : mAllTransactions) {
                     if (transaction.getYear() == year) {
                         transactionList.add(transaction);
                     }
                 }
+                mDateString = String.format(getString(R.string.chart_year), year);
             } else {
-                for (Transaction transaction : allTransactions) {
+                for (Transaction transaction : mAllTransactions) {
                     if (transaction.getYear() == year && transaction.getMonth() == month) {
                         transactionList.add(transaction);
                     }
                 }
+                mDateString = String.format(getString(R.string.chart_month), year, month);
             }
-
+            if (transactionList.size() == 0) {
+                noDataHint = getString(R.string.no_data);
+            }
             setData(transactionList);
         }
+    }
+
+    public String getDateString() {
+        return mDateString;
+    }
+
+    public String getNoDataHint() {
+        return noDataHint;
     }
 
     public void setData(List<Transaction> transactions) {

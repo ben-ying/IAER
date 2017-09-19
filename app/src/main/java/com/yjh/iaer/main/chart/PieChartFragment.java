@@ -13,7 +13,6 @@ import com.github.mikephil.charting.highlight.Highlight;
 import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
 import com.github.mikephil.charting.utils.Utils;
 import com.yjh.iaer.R;
-import com.yjh.iaer.base.BaseDaggerFragment;
 import com.yjh.iaer.room.entity.Transaction;
 
 import java.util.ArrayList;
@@ -23,7 +22,8 @@ import java.util.Map;
 
 import butterknife.BindView;
 
-public class PieChartFragment extends BaseDaggerFragment implements OnChartValueSelectedListener {
+public class PieChartFragment extends BaseChartFragment implements OnChartValueSelectedListener {
+
     @BindView(R.id.pie_chart)
     PieChart pieChart;
 
