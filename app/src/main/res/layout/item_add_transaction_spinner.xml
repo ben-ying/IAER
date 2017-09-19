@@ -3,6 +3,8 @@
     style="?android:attr/spinnerDropDownItemStyle"
     android:singleLine="true"
     android:textSize="@dimen/label_text_size"
+    android:paddingStart="0dp"
+    android:paddingEnd="0dp"
     android:layout_width="match_parent"
     android:layout_height="?attr/dropdownListPreferredItemHeight"
     android:ellipsize="marquee"/>

@@ -4,8 +4,10 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.widget.ArrayAdapter;
+import android.widget.EditText;
 import android.widget.Spinner;
 
+import com.jakewharton.rxbinding2.widget.RxTextView;
 import com.yjh.iaer.R;
 import com.yjh.iaer.base.BaseActivity;
 
@@ -16,6 +18,12 @@ public class AddTransactionActivity extends BaseActivity {
 
     @BindView(R.id.spinner)
     Spinner spinner;
+    @BindView(R.id.et_money)
+    EditText moneyEditText;
+    @BindView(R.id.et_remark)
+    EditText remarkEditText;
+
+    private boolean mCanSave;
 
     @Override
     public int getLayoutId() {
@@ -31,7 +39,23 @@ public class AddTransactionActivity extends BaseActivity {
                 R.layout.item_add_transaction_spinner,
                 getResources().getStringArray(R.array.category_options));
         spinner.setAdapter(categoryAdapter);
-        spinner.setSelection(categoryAdapter.getCount() - 1);
+        RxTextView
+                .afterTextChangeEvents(moneyEditText)
+                .subscribe(textViewAfterTextChangeEvent -> {
+                    checkCanSave();
+        });
+
+        RxTextView
+                .afterTextChangeEvents(remarkEditText)
+                .subscribe(textViewAfterTextChangeEvent -> {
+                    checkCanSave();
+                });
+    }
+
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        menu.findItem(R.id.action_add).setEnabled(mCanSave);
+        return true;
     }
 
     @Override
@@ -50,8 +74,19 @@ public class AddTransactionActivity extends BaseActivity {
         return super.onOptionsItemSelected(menuItem);
     }
 
-    @OnClick(R.id.tv_category)
-    public void onCategoryTextClick() {
-        spinner.performClick();
+    private void checkCanSave() {
+        if (moneyEditText.getText().toString().trim().isEmpty()
+                || remarkEditText.getText().toString().trim().isEmpty()
+                || spinner.getSelectedItemPosition() == 0) {
+            if (mCanSave) {
+                mCanSave = false;
+                invalidateOptionsMenu();
+            }
+        } else {
+            if (!mCanSave) {
+                mCanSave = true;
+                invalidateOptionsMenu();
+            }
+        }
     }
 }
