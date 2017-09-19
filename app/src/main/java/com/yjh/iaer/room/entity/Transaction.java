@@ -62,6 +62,10 @@ public class Transaction {
     }
 
     public Transaction() {
+        this.money = "0";
+        this.moneyFrom = "";
+        this.remark = "";
+        this.created = "";
     }
 
     @Ignore

@@ -2,6 +2,7 @@
 package com.yjh.iaer.custom;
 
 import android.content.Context;
+import android.graphics.Canvas;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.TextView;
@@ -21,7 +22,7 @@ public class MyMarkerView extends MarkerView {
     @BindView(R.id.tv_content)
     TextView contentTextView;
 
-    private View mLayoutView;
+    private Object mBarData;
 
     public MyMarkerView(Context context){
         super(context, 0);
@@ -30,19 +31,22 @@ public class MyMarkerView extends MarkerView {
     public MyMarkerView(Context context, int layoutResource) {
         super(context, layoutResource);
         ButterKnife.bind(this);
-        mLayoutView = LayoutInflater.from(getContext()).inflate(layoutResource, this);
     }
 
     @Override
     public void refreshContent(Entry e, Highlight highlight) {
+        mBarData = e.getData();
         if (e.getData() != null) {
-            mLayoutView.setVisibility(VISIBLE);
             contentTextView.setText(e.getData().toString());
-        } else {
-            mLayoutView.setVisibility(GONE);
+            super.refreshContent(e, highlight);
         }
+    }
 
-        super.refreshContent(e, highlight);
+    @Override
+    public void draw(Canvas canvas, float posX, float posY) {
+        if (mBarData != null) {
+            super.draw(canvas, posX, posY);
+        }
     }
 
     @Override
