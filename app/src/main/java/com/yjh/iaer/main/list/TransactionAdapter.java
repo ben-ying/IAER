@@ -1,6 +1,7 @@
 package com.yjh.iaer.main.list;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -8,6 +9,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.yjh.iaer.R;
+import com.yjh.iaer.constant.Constant;
 import com.yjh.iaer.room.entity.Transaction;
 import com.yjh.iaer.util.AlertUtils;
 
@@ -69,7 +71,7 @@ public class TransactionAdapter extends RecyclerView.Adapter<
         View rootView;
         @BindView(R.id.tv_from)
         TextView fromTextView;
-        @BindView(R.id.tv_datetime)
+        @BindView(R.id.tv_date)
         TextView dateTextView;
         @BindView(R.id.tv_money)
         TextView moneyTextView;
@@ -81,6 +83,9 @@ public class TransactionAdapter extends RecyclerView.Adapter<
 
         @OnClick(R.id.content_layout)
         void intent2DetailView(View v) {
+            Intent intent = new Intent(mContext, TransactionDetailActivity.class);
+            intent.putExtra(Constant.EXTRA_TRANSACTION, (Transaction) v.getTag());
+            mContext.startActivity(intent);
         }
 
         @OnLongClick(R.id.content_layout)

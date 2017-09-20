@@ -8,10 +8,12 @@ import android.arch.persistence.room.PrimaryKey;
 import com.google.gson.Gson;
 import com.google.gson.annotations.SerializedName;
 
+import java.io.Serializable;
+
 import static com.yjh.iaer.room.entity.Transaction.TABLE_NAME;
 
 @Entity(tableName = TABLE_NAME)
-public class Transaction {
+public class Transaction implements Serializable {
     public static final int INVALID_ID = -1;
     public static final String TABLE_NAME = "transaction_entity";
     public static final String TRANSACTION_ID = "red_envelope_id";

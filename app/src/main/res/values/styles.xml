@@ -36,4 +36,9 @@
         <item name="android:imeOptions">actionNext</item>
         <item name="android:maxLines">1</item>
     </style>
+
+    <style name="default_edit_text.detail">
+        <item name="android:textSize">18sp</item>
+        <item name="android:layout_marginTop">@dimen/small_margin</item>
+    </style>
 </resources>

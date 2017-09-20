@@ -23,9 +23,14 @@ import javax.inject.Singleton;
 
 @Singleton
 public class TransactionRepository {
+    private static final int INVALID_ID = -1;
+
     private final Webservice mWebservice;
     private final TransactionDao mTransactionDao;
-    private final RateLimiter<String> mRepoListRateLimit = new RateLimiter<>(3, TimeUnit.SECONDS);
+    private final RateLimiter<String> mRepoListRateLimit
+            = new RateLimiter<>(2, TimeUnit.SECONDS);
+
+    private int mAddedTransactionId = INVALID_ID;
 
     @Inject
     public TransactionRepository(Webservice webservice, TransactionDao transactionDao) {
@@ -75,26 +80,31 @@ public class TransactionRepository {
         }.getAsLiveData();
     }
 
-    public LiveData<Resource<List<Transaction>>> addTransaction(final String moneyFrom,
+    public LiveData<Resource<Transaction>> addTransaction(final String moneyFrom,
                                                                 final String money,
                                                                 final String remark,
                                                                 final String token) {
-        return new NetworkBoundResource<List<Transaction>, CustomResponse<Transaction>>() {
+        return new NetworkBoundResource<Transaction, CustomResponse<Transaction>>() {
 
             @Override
             protected void saveCallResult(@NonNull CustomResponse<Transaction> item) {
                 mTransactionDao.save(item.getResult());
+                mAddedTransactionId = item.getResult().getTransactionId();
             }
 
             @Override
-            protected boolean shouldFetch(@Nullable List<Transaction> data) {
-                return true;
+            protected boolean shouldFetch(@Nullable Transaction data) {
+                return data == null || mRepoListRateLimit.shouldFetch(token);
             }
 
             @NonNull
             @Override
-            protected LiveData<List<Transaction>> loadFromDb() {
-                return mTransactionDao.loadAll();
+            protected LiveData<Transaction> loadFromDb() {
+                LiveData<Transaction> transactionLiveData
+                        = mTransactionDao.loadById(mAddedTransactionId);
+                mAddedTransactionId = INVALID_ID;
+
+                return transactionLiveData;
             }
 
             @NonNull
@@ -116,7 +126,8 @@ public class TransactionRepository {
         }.getAsLiveData();
     }
 
-    public LiveData<Resource<List<Transaction>>> deleteTransaction(final int reId, final String token) {
+    public LiveData<Resource<List<Transaction>>> deleteTransaction(
+            final int transactionId, final String token) {
         return new NetworkBoundResource<List<Transaction>, CustomResponse<Transaction>>() {
 
             @Override
@@ -138,7 +149,7 @@ public class TransactionRepository {
             @NonNull
             @Override
             protected LiveData<ApiResponse<CustomResponse<Transaction>>> createCall() {
-                return mWebservice.deleteTransaction(reId, token);
+                return mWebservice.deleteTransaction(transactionId, token);
             }
 
             @Override

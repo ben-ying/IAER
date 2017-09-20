@@ -16,10 +16,10 @@ import javax.inject.Inject;
 
 public class TransactionViewModel extends ViewModel {
     private static final int TYPE_LOAD = 0;
-    private static final int TYPE_ADD = 1;
-    private static final int TYPE_DELETE = 2;
+    private static final int TYPE_DELETE = 1;
 
     private final MutableLiveData<ReId> mReIdLiveData = new MutableLiveData<>();
+    private final TransactionRepository mRepository;
     private MutableLiveData<String> mToken = new MutableLiveData<>();
     private LiveData<Resource<List<Transaction>>> mTransactions;
 
@@ -28,21 +28,27 @@ public class TransactionViewModel extends ViewModel {
 
     @Inject
     public TransactionViewModel(final TransactionRepository repository) {
+        this.mRepository = repository;
         if (this.mTransactions != null) {
             return;
         }
         mTransactions = Transformations.switchMap(mReIdLiveData, reId -> {
             switch (reId.type) {
                 case TYPE_LOAD:
-                    return repository.loadTransactions(mToken.getValue(), reId.userId);
-                case TYPE_ADD:
-                    return repository.addTransaction(
-                            reId.moneyFrom, reId.money, reId.remark, mToken.getValue());
+                    return mRepository.loadTransactions(mToken.getValue(), reId.userId);
                 case TYPE_DELETE:
-                    return repository.deleteTransaction(reId.id, mToken.getValue());
+                    return mRepository.deleteTransaction(reId.id, mToken.getValue());
             }
             return null;
         });
+    }
+
+    public LiveData<Resource<Transaction>> addTransactionResource(final String moneyFrom,
+                                                                  final String money,
+                                                                  final String remark,
+                                                                  boolean consumption) {
+        return mRepository.addTransaction(
+                moneyFrom, consumption ? "-" + money : money, remark, mToken.getValue());
     }
 
     public void setToken(String token) {
@@ -64,15 +70,6 @@ public class TransactionViewModel extends ViewModel {
         mReIdLiveData.setValue(reId);
     }
 
-    public void add(String moneyFrom, String money, String remark) {
-        ReId reId = new ReId();
-        reId.type = TYPE_ADD;
-        reId.moneyFrom = moneyFrom;
-        reId.money = money;
-        reId.remark = remark;
-        mReIdLiveData.setValue(reId);
-    }
-
     public void delete(int id) {
         ReId reId = new ReId();
         reId.type = TYPE_DELETE;
@@ -84,8 +81,5 @@ public class TransactionViewModel extends ViewModel {
         int id;
         int type;
         String userId;
-        String moneyFrom;
-        String money;
-        String remark;
     }
 }

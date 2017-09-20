@@ -11,13 +11,19 @@
         <item>按年显示</item>
     </string-array>
 
-    <string-array name="category_options">
+    <string-array name="transaction_category_options">
         <item>请选择类型</item>
-        <item>服装</item>
-        <item>饮食</item>
+        <item>生活用品</item>
+        <item>服饰</item>
+        <item>餐饮</item>
         <item>孩子</item>
-        <item>电子</item>
-        <item>工资</item>
+        <item>收入</item>
+        <item>其它</item>
+    </string-array>
+
+    <string-array name="transaction_type_options">
+        <item>支出</item>
+        <item>收入</item>
         <item>其它</item>
     </string-array>
 </resources>

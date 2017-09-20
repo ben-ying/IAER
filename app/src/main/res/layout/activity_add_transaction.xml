@@ -17,7 +17,12 @@
         android:paddingTop="@dimen/activity_vertical_margin">
 
         <Spinner
-            android:id="@+id/spinner"
+            android:id="@+id/category_spinner"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <Spinner
+            android:id="@+id/type_spinner"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
 
@@ -29,7 +34,7 @@
                 android:id="@+id/et_money"
                 style="@style/default_edit_text"
                 android:hint="@string/hint_money"
-                android:inputType="numberDecimal|numberSigned" />
+                android:inputType="number" />
         </android.support.design.widget.TextInputLayout>
 
         <android.support.design.widget.TextInputLayout

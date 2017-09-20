@@ -2,8 +2,6 @@ package com.yjh.iaer.main.list;
 
 
 import android.arch.lifecycle.ViewModelProviders;
-import android.content.Context;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.widget.NestedScrollView;
@@ -18,6 +16,7 @@ import android.widget.ProgressBar;
 
 import com.yjh.iaer.R;
 import com.yjh.iaer.base.BaseFragment;
+import com.yjh.iaer.constant.Constant;
 import com.yjh.iaer.network.Resource;
 import com.yjh.iaer.room.entity.Transaction;
 import com.yjh.iaer.viewmodel.TransactionViewModel;
@@ -63,9 +62,9 @@ public class TransactionsFragment extends BaseFragment
 
     @Override
     public void initView() {
-        setScrollViewOnChangedListener();
+        initRecyclerView();
 
-        initRecyclerViewData();
+        initViewModel();
     }
 
     @Override
@@ -136,7 +135,7 @@ public class TransactionsFragment extends BaseFragment
         }
     }
 
-    private void setScrollViewOnChangedListener() {
+    private void initRecyclerView() {
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setHasFixedSize(false);
@@ -149,9 +148,10 @@ public class TransactionsFragment extends BaseFragment
         });
     }
 
-    private void initRecyclerViewData() {
-        mViewModel = ViewModelProviders.of(this, viewModelFactory).get(TransactionViewModel.class);
-        mViewModel.setToken("1272dc0fe06c52383c7a9bdfef33255b940c195b");
+    private void initViewModel() {
+        mViewModel = ViewModelProviders.of(
+                this, viewModelFactory).get(TransactionViewModel.class);
+        mViewModel.setToken(Constant.TOKEN);
         mViewModel.getTransactionsResource().observe(this, this::setData);
         progressBar.setVisibility(View.VISIBLE);
         mViewModel.load("1");

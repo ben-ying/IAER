@@ -13,15 +13,20 @@
     <string name="percentage">%.2s%</string>
 
     <string name="add_transaction">添加交易记录</string>
+    <string name="transaction_detail">交易记录</string>
     <string name="transaction_remark">备注</string>
     <string name="transaction_from">交易来自于</string>
     <string name="transaction_money">交易金额(元)</string>
     <string name="transaction_total">%1$,d个交易，总计%2$,d(元)</string>
     <string name="transaction_yuan">%,d, %s</string>
     <string name="delete_transaction_alert">点击确定将永久删除此交易记录，是否确定删除？</string>
-    <string name="hint_money">金额（收入为正，支出为负）</string>
+    <string name="hint_money">金额</string>
     <string name="hint_remark">备注</string>
     <string name="menu_add">添加</string>
+    <string name="money_income">收入：%d</string>
+    <string name="money_consumption">支出：%d</string>
+    <string name="money_from">来自：%s</string>
+    <string name="remark">备注：%s</string>
 
     <string name="list">列表</string>
     <string name="chart">图表</string>
