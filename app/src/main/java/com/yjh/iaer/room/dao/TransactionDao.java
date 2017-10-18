@@ -27,11 +27,11 @@ public interface TransactionDao {
     void deleteAll();
 
     @Query("SELECT * FROM " + Transaction.TABLE_NAME +
-            " ORDER BY -" + Transaction.TRANSACTION_ID)
+            " ORDER BY -" + Transaction.FIELD_IAER_ID)
     LiveData<List<Transaction>> loadAll();
 
     @Query("SELECT * FROM " + Transaction.TABLE_NAME +
-            " WHERE " + Transaction.TRANSACTION_ID + " = :id")
+            " WHERE " + Transaction.FIELD_IAER_ID + " = :id")
     LiveData<Transaction> loadById(int id);
 
     @Query("SELECT Count(*) FROM " + Transaction.TABLE_NAME)

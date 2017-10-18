@@ -124,8 +124,8 @@ public class TransactionsFragment extends BaseFragment
                         e.onComplete();
                     })
                     .toSortedList(reverseSorting ?
-                            Comparator.comparing(Transaction::getTransactionId).reversed() :
-                            Comparator.comparing(Transaction::getTransactionId))
+                            Comparator.comparing(Transaction::getIaerId).reversed() :
+                            Comparator.comparing(Transaction::getIaerId))
                     .subscribe(transactionList -> {
                         reverseSorting = !reverseSorting;
                         getActivity().invalidateOptionsMenu();
@@ -151,7 +151,6 @@ public class TransactionsFragment extends BaseFragment
     private void initViewModel() {
         mViewModel = ViewModelProviders.of(
                 this, viewModelFactory).get(TransactionViewModel.class);
-        mViewModel.setToken(Constant.TOKEN);
         mViewModel.getTransactionsResource().observe(this, this::setData);
         progressBar.setVisibility(View.VISIBLE);
         mViewModel.load("1");

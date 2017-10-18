@@ -21,13 +21,10 @@ import com.yjh.iaer.network.Resource;
 import com.yjh.iaer.room.entity.Transaction;
 import com.yjh.iaer.viewmodel.TransactionViewModel;
 
-import java.util.List;
-
 import javax.inject.Inject;
 
 import butterknife.BindView;
 import io.reactivex.disposables.CompositeDisposable;
-import timber.log.Timber;
 
 public class AddTransactionActivity extends BaseActivity {
 
@@ -75,7 +72,6 @@ public class AddTransactionActivity extends BaseActivity {
 
         mViewModel = ViewModelProviders.of(
                 this, viewModelFactory).get(TransactionViewModel.class);
-        mViewModel.setToken(Constant.TOKEN);
     }
 
     @Override

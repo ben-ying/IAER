@@ -18,9 +18,8 @@ public class TransactionViewModel extends ViewModel {
     private static final int TYPE_LOAD = 0;
     private static final int TYPE_DELETE = 1;
 
-    private final MutableLiveData<ReId> mReIdLiveData = new MutableLiveData<>();
+    private final MutableLiveData<ReId> mIaerIdLiveData = new MutableLiveData<>();
     private final TransactionRepository mRepository;
-    private MutableLiveData<String> mToken = new MutableLiveData<>();
     private LiveData<Resource<List<Transaction>>> mTransactions;
 
     @Inject
@@ -32,27 +31,23 @@ public class TransactionViewModel extends ViewModel {
         if (this.mTransactions != null) {
             return;
         }
-        mTransactions = Transformations.switchMap(mReIdLiveData, reId -> {
+        mTransactions = Transformations.switchMap(mIaerIdLiveData, reId -> {
             switch (reId.type) {
                 case TYPE_LOAD:
-                    return mRepository.loadTransactions(mToken.getValue(), reId.userId);
+                    return mRepository.loadTransactions(reId.userId);
                 case TYPE_DELETE:
-                    return mRepository.deleteTransaction(reId.id, mToken.getValue());
+                    return mRepository.deleteTransaction(reId.id);
             }
             return null;
         });
     }
 
-    public LiveData<Resource<Transaction>> addTransactionResource(final String moneyFrom,
+    public LiveData<Resource<Transaction>> addTransactionResource(final String category,
                                                                   final String money,
                                                                   final String remark,
                                                                   boolean consumption) {
         return mRepository.addTransaction(
-                moneyFrom, consumption ? "-" + money : money, remark, mToken.getValue());
-    }
-
-    public void setToken(String token) {
-        mToken.setValue(token);
+                category, consumption ? "-" + money : money, remark);
     }
 
     public LiveData<Resource<List<Transaction>>> getTransactionsResource() {
@@ -67,14 +62,14 @@ public class TransactionViewModel extends ViewModel {
         ReId reId = new ReId();
         reId.type = TYPE_LOAD;
         reId.userId = userId;
-        mReIdLiveData.setValue(reId);
+        mIaerIdLiveData.setValue(reId);
     }
 
     public void delete(int id) {
         ReId reId = new ReId();
         reId.type = TYPE_DELETE;
         reId.id = id;
-        mReIdLiveData.setValue(reId);
+        mIaerIdLiveData.setValue(reId);
     }
 
     static class ReId {

@@ -53,7 +53,7 @@ public class TransactionAdapter extends RecyclerView.Adapter<
     @Override
     public void onBindViewHolder(TransactionViewHolder holder, int position) {
         final Transaction transaction = mTransactions.get(position);
-        holder.fromTextView.setText(transaction.getMoneyFrom());
+        holder.fromTextView.setText(transaction.getCategory());
         holder.dateTextView.setText(transaction.getCreatedDate());
         holder.moneyTextView.setText(String.format(
                 mContext.getString(R.string.transaction_yuan),
@@ -92,7 +92,7 @@ public class TransactionAdapter extends RecyclerView.Adapter<
         boolean showDeleteDialog(View view) {
             AlertUtils.showConfirmDialog(mContext, R.string.delete_transaction_alert,
                     (dialogInterface, i) -> {
-                        mInterface.delete(((Transaction) view.getTag()).getTransactionId());
+                        mInterface.delete(((Transaction) view.getTag()).getIaerId());
                     });
             return true;
         }

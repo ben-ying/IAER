@@ -16,18 +16,18 @@ import static com.yjh.iaer.room.entity.Transaction.TABLE_NAME;
 public class Transaction implements Serializable {
     public static final int INVALID_ID = -1;
     public static final String TABLE_NAME = "transaction_entity";
-    public static final String TRANSACTION_ID = "red_envelope_id";
+    public static final String FIELD_IAER_ID = "iaer_id";
     public static final String FIELD_USER_ID = "user_id";
     public static final String FIELD_TYPE = "money_type";
     public static final String FIELD_MONEY = "money";
-    public static final String FIELD_MONEY_FROM = "money_from";
+    public static final String FIELD_CATEGORY = "category";
     public static final String FIELD_REMARK = "remark";
     public static final String FIELD_CREATED = "created";
 
     @PrimaryKey
-    @SerializedName(TRANSACTION_ID)
-    @ColumnInfo(name = TRANSACTION_ID)
-    private int transactionId;
+    @SerializedName(FIELD_IAER_ID)
+    @ColumnInfo(name = FIELD_IAER_ID)
+    private int iaerId;
     @SerializedName(FIELD_USER_ID)
     @ColumnInfo(name = FIELD_USER_ID)
     private int userId;
@@ -37,9 +37,9 @@ public class Transaction implements Serializable {
     @SerializedName(FIELD_MONEY)
     @ColumnInfo(name = FIELD_MONEY)
     private String money;
-    @SerializedName(FIELD_MONEY_FROM)
-    @ColumnInfo(name = FIELD_MONEY_FROM)
-    private String moneyFrom;
+    @SerializedName(FIELD_CATEGORY)
+    @ColumnInfo(name = FIELD_CATEGORY)
+    private String category;
     @SerializedName(FIELD_REMARK)
     @ColumnInfo(name = FIELD_REMARK)
     private String remark;
@@ -65,30 +65,30 @@ public class Transaction implements Serializable {
 
     public Transaction() {
         this.money = "0";
-        this.moneyFrom = "";
+        this.category = "";
         this.remark = "";
         this.created = "";
     }
 
     @Ignore
-    public Transaction(int transactionId) {
-        this.transactionId = transactionId;
+    public Transaction(int iaerId) {
+        this.iaerId = iaerId;
     }
 
     @Ignore
-    public Transaction(String money, String moneyFrom, String remark) {
-        this.transactionId = INVALID_ID;
+    public Transaction(String money, String category, String remark) {
+        this.iaerId = INVALID_ID;
         this.money = money;
-        this.moneyFrom = moneyFrom;
+        this.category = category;
         this.remark = remark;
     }
 
-    public int getTransactionId() {
-        return transactionId;
+    public int getIaerId() {
+        return iaerId;
     }
 
-    public void setTransactionId(int transactionId) {
-        this.transactionId = transactionId;
+    public void setIaerId(int iaerId) {
+        this.iaerId = iaerId;
     }
 
     public int getUserId() {
@@ -115,12 +115,12 @@ public class Transaction implements Serializable {
         this.money = money;
     }
 
-    public String getMoneyFrom() {
-        return moneyFrom;
+    public String getCategory() {
+        return category;
     }
 
-    public void setMoneyFrom(String moneyFrom) {
-        this.moneyFrom = moneyFrom;
+    public void setCategory(String category) {
+        this.category = category;
     }
 
     public String getRemark() {

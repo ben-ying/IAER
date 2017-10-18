@@ -5,6 +5,7 @@ import android.arch.persistence.room.Room;
 
 import com.yjh.iaer.network.Webservice;
 import com.yjh.iaer.room.dao.TransactionDao;
+import com.yjh.iaer.room.dao.UserDao;
 import com.yjh.iaer.room.db.MyDatabase;
 import com.yjh.iaer.util.LiveDataCallAdapterFactory;
 
@@ -40,5 +41,11 @@ class AppModule {
     @Provides
     TransactionDao provideTransactionDao(MyDatabase db) {
         return db.transactionDao();
+    }
+
+    @Singleton
+    @Provides
+    UserDao provideUserDao(MyDatabase db) {
+        return db.userDao();
     }
 }

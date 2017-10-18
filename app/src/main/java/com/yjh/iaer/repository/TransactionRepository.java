@@ -12,6 +12,7 @@ import com.yjh.iaer.network.NetworkBoundResource;
 import com.yjh.iaer.network.Resource;
 import com.yjh.iaer.network.Webservice;
 import com.yjh.iaer.room.dao.TransactionDao;
+import com.yjh.iaer.room.dao.UserDao;
 import com.yjh.iaer.room.entity.Transaction;
 import com.yjh.iaer.util.RateLimiter;
 
@@ -30,16 +31,20 @@ public class TransactionRepository {
     private final RateLimiter<String> mRepoListRateLimit
             = new RateLimiter<>(2, TimeUnit.SECONDS);
 
+    private String mToken;
     private int mAddedTransactionId = INVALID_ID;
 
     @Inject
-    public TransactionRepository(Webservice webservice, TransactionDao transactionDao) {
+    public TransactionRepository(Webservice webservice,
+                                 TransactionDao transactionDao, UserDao userDao) {
         this.mWebservice = webservice;
         this.mTransactionDao = transactionDao;
+        if (userDao.getCurrentUser() != null && userDao.getCurrentUser().getValue() != null) {
+            this.mToken = userDao.getCurrentUser().getValue().getToken();
+        }
     }
 
-    public LiveData<Resource<List<Transaction>>> loadTransactions(
-            final String token, final String userId) {
+    public LiveData<Resource<List<Transaction>>> loadTransactions(final String userId) {
         return new NetworkBoundResource<List<Transaction>,
                 CustomResponse<ListResponseResult<List<Transaction>>>>() {
             @Override
@@ -51,7 +56,7 @@ public class TransactionRepository {
 
             @Override
             protected boolean shouldFetch(@Nullable List<Transaction> data) {
-                return data == null || data.isEmpty() || mRepoListRateLimit.shouldFetch(token);
+                return data == null || data.isEmpty() || mRepoListRateLimit.shouldFetch(mToken);
             }
 
             @NonNull
@@ -64,7 +69,7 @@ public class TransactionRepository {
             @Override
             protected LiveData<ApiResponse<
                     CustomResponse<ListResponseResult<List<Transaction>>>>> createCall() {
-                return mWebservice.getTransactions(token, userId);
+                return mWebservice.getTransactions(mToken, userId);
             }
 
             @Override
@@ -80,21 +85,20 @@ public class TransactionRepository {
         }.getAsLiveData();
     }
 
-    public LiveData<Resource<Transaction>> addTransaction(final String moneyFrom,
+    public LiveData<Resource<Transaction>> addTransaction(final String category,
                                                                 final String money,
-                                                                final String remark,
-                                                                final String token) {
+                                                                final String remark) {
         return new NetworkBoundResource<Transaction, CustomResponse<Transaction>>() {
 
             @Override
             protected void saveCallResult(@NonNull CustomResponse<Transaction> item) {
                 mTransactionDao.save(item.getResult());
-                mAddedTransactionId = item.getResult().getTransactionId();
+                mAddedTransactionId = item.getResult().getIaerId();
             }
 
             @Override
             protected boolean shouldFetch(@Nullable Transaction data) {
-                return data == null || mRepoListRateLimit.shouldFetch(token);
+                return data == null || mRepoListRateLimit.shouldFetch(mToken);
             }
 
             @NonNull
@@ -110,7 +114,7 @@ public class TransactionRepository {
             @NonNull
             @Override
             protected LiveData<ApiResponse<CustomResponse<Transaction>>> createCall() {
-                return mWebservice.addTransaction(moneyFrom, money, remark, token);
+                return mWebservice.addTransaction(category, money, remark, mToken);
             }
 
             @Override
@@ -126,8 +130,7 @@ public class TransactionRepository {
         }.getAsLiveData();
     }
 
-    public LiveData<Resource<List<Transaction>>> deleteTransaction(
-            final int transactionId, final String token) {
+    public LiveData<Resource<List<Transaction>>> deleteTransaction(final int iaerId) {
         return new NetworkBoundResource<List<Transaction>, CustomResponse<Transaction>>() {
 
             @Override
@@ -149,7 +152,7 @@ public class TransactionRepository {
             @NonNull
             @Override
             protected LiveData<ApiResponse<CustomResponse<Transaction>>> createCall() {
-                return mWebservice.deleteTransaction(transactionId, token);
+                return mWebservice.deleteTransaction(iaerId, mToken);
             }
 
             @Override

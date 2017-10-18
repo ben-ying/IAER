@@ -14,6 +14,13 @@
     <dimen name="actions_text_size">14sp</dimen>
     <dimen name="label_text_size">18sp</dimen>
 
+    <!--login-->
+    <dimen name="button_margin_vertical">24dp</dimen>
+    <dimen name="profile_large_size">120dp</dimen>
+    <dimen name="text_padding">10dp</dimen>
+    <dimen name="register_small_text">16sp</dimen>
+    <dimen name="bottom_margin_vertical">24dp</dimen>
+
     <!--chart-->
     <dimen name="line_chart_size">300dp</dimen>
     <dimen name="bar_chart_size">300dp</dimen>

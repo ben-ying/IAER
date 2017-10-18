@@ -2,7 +2,6 @@ package com.yjh.iaer.main.chart;
 
 import android.os.Bundle;
 import android.view.View;
-import android.widget.TextView;
 
 import com.github.mikephil.charting.charts.HorizontalBarChart;
 import com.github.mikephil.charting.components.XAxis;
@@ -80,7 +79,7 @@ public class HorizontalBarChartFragment extends BaseChartFragment {
             xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
             xAxis.setValueFormatter((value, axis) -> {
                         if (transactions.size() > value && value == Math.round(value)) {
-                            return transactions.get((int) value).getMoneyFrom();
+                            return transactions.get((int) value).getCategory();
                         }
                         return "";
                     }
@@ -101,7 +100,7 @@ public class HorizontalBarChartFragment extends BaseChartFragment {
             BarEntry barEntry = new BarEntry(i, transaction.getMoneyInt());
             if (transaction.getMoneyInt() != 0) {
                 barEntry.setData(transaction.getCreatedDate() + "\n"
-                        + transaction.getMoneyFrom()
+                        + transaction.getCategory()
                         + ": " + format.format(transaction.getMoneyInt()));
             }
             entries.add(barEntry);
