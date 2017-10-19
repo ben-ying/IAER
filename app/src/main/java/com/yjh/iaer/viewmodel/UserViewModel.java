@@ -7,6 +7,8 @@ import com.yjh.iaer.network.Resource;
 import com.yjh.iaer.repository.UserRepository;
 import com.yjh.iaer.room.entity.User;
 
+import java.util.List;
+
 import javax.inject.Inject;
 
 public class UserViewModel extends ViewModel {
@@ -19,5 +21,13 @@ public class UserViewModel extends ViewModel {
 
     public LiveData<Resource<User>> login(String username, String password) {
         return mRepository.login(username, password);
+    }
+
+    public LiveData<Resource<User>> logout() {
+        return mRepository.logout();
+    }
+
+    public LiveData<Resource<List<User>>> loadAllUsers() {
+        return mRepository.loadAllUsers();
     }
 }

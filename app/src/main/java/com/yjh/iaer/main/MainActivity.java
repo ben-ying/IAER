@@ -1,9 +1,13 @@
 package com.yjh.iaer.main;
 
+import android.arch.lifecycle.Observer;
+import android.arch.lifecycle.ViewModelProvider;
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Handler;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -20,7 +24,12 @@ import com.yjh.iaer.login.LoginActivity;
 import com.yjh.iaer.main.chart.ChartActivity;
 import com.yjh.iaer.main.list.AddTransactionActivity;
 import com.yjh.iaer.main.list.TransactionsFragment;
+import com.yjh.iaer.network.Resource;
+import com.yjh.iaer.room.entity.User;
 import com.yjh.iaer.util.AlertUtils;
+import com.yjh.iaer.viewmodel.UserViewModel;
+
+import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -37,6 +46,10 @@ public class MainActivity extends BaseActivity
 
     private Runnable mPendingRunnable;
     private Handler mHandler = new Handler();
+    private UserViewModel mViewModel;
+
+    @Inject
+    ViewModelProvider.Factory viewModelFactory;
 
     @Override
     public int getLayoutId() {
@@ -61,6 +74,9 @@ public class MainActivity extends BaseActivity
         toggle.syncState();
         navigationView.setNavigationItemSelectedListener(this);
         setFragment(TransactionsFragment.newInstance());
+
+        mViewModel = ViewModelProviders.of(
+                this, viewModelFactory).get(UserViewModel.class);
     }
 
     @Override
@@ -134,8 +150,12 @@ public class MainActivity extends BaseActivity
     }
 
     public void logout() {
-        Intent intent = new Intent(this, LoginActivity.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-        startActivity(intent);
+        mViewModel.logout().observe(this, userResource -> {
+            if (userResource != null && userResource.getData() != null) {
+                Intent intent = new Intent(this, LoginActivity.class);
+                startActivity(intent);
+                finish();
+            }
+        });
     }
 }

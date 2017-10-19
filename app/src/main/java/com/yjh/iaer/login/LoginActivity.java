@@ -7,6 +7,8 @@ import android.content.Intent;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.AppCompatButton;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -19,7 +21,11 @@ import com.yjh.iaer.main.MainActivity;
 import com.yjh.iaer.network.Resource;
 import com.yjh.iaer.room.entity.User;
 import com.yjh.iaer.util.AlertUtils;
+import com.yjh.iaer.util.SystemUtils;
 import com.yjh.iaer.viewmodel.UserViewModel;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -57,6 +63,31 @@ public class LoginActivity extends BaseActivity {
         mPassword = getIntent().getStringExtra(Constant.PASSWORD);
         mViewModel = ViewModelProviders.of(
                 this, viewModelFactory).get(UserViewModel.class);
+        mViewModel.loadAllUsers().observe(this, listResource -> {
+            if (listResource != null && listResource.getData() != null
+                    && listResource.getData().size() > 0) {
+                if (listResource.getData().get(0).isLogin()) {
+                    Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                    startActivity(intent);
+                    finish();
+                } else {
+                    List<String> autoStrings = new ArrayList<>();
+                    for (int i = 0; i < listResource.getData().size() && i < 5; i++) {
+                        autoStrings.add(listResource.getData().get(i).getUsername());
+                    }
+                    ArrayAdapter<String> adapter = new ArrayAdapter<>(
+                            this, R.layout.item_dropdown, autoStrings);
+
+                    usernameEditText.setAdapter(adapter);
+                    usernameEditText.setOnItemClickListener((adapterView, view, i, l) -> {
+                        usernameEditText.clearFocus();
+                        passwordEditText.setText("");
+                        passwordEditText.requestFocus();
+                        SystemUtils.showKeyboard(LoginActivity.this, passwordEditText);
+                    });
+                }
+            }
+        });
     }
 
     private boolean isValid() {
@@ -87,8 +118,8 @@ public class LoginActivity extends BaseActivity {
                 progressBar.setVisibility(View.GONE);
                 if (userResource != null && userResource.getData() != null) {
                     Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
                     startActivity(intent);
+                    finish();
                 }
             });
         }

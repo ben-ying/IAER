@@ -8,6 +8,8 @@ import android.arch.persistence.room.Query;
 
 import com.yjh.iaer.room.entity.User;
 
+import java.util.List;
+
 import static android.arch.persistence.room.OnConflictStrategy.REPLACE;
 
 @Dao
@@ -21,11 +23,23 @@ public interface UserDao {
     @Query("DELETE FROM " + User.TABLE_NAME)
     void deleteAll();
 
-    @Query("SELECT * FROM " + User.TABLE_NAME +
-            " ORDER BY -" + User.FIELD_MODIFIED + " LIMIT 1")
+    @Query("SELECT * FROM " + User.TABLE_NAME + " WHERE "
+            + User.FIELD_IS_LOGIN + " = 1 LIMIT 1")
     LiveData<User> getCurrentUser();
 
     @Query("SELECT * FROM " + User.TABLE_NAME + " WHERE "
-            + User.FIELD_USER_NAME + " = :username LIMIT 1")
-    LiveData<User> getUserByName(String username);
+            + User.FIELD_IS_LOGIN + " = 0")
+    LiveData<List<User>> getOfflineUsers();
+
+    @Query("SELECT * FROM " + User.TABLE_NAME +
+            " ORDER BY -" + User.FIELD_IS_LOGIN)
+    LiveData<List<User>> loadAll();
+
+    @Query("SELECT * FROM " + User.TABLE_NAME +
+            " ORDER BY -" + User.FIELD_IS_LOGIN)
+    List<User> loadAllUsers();
+
+    @Query("SELECT * FROM " + User.TABLE_NAME + " WHERE "
+            + User.FIELD_USER_NAME + " = :username AND " + User.FIELD_IS_LOGIN + " = 1 LIMIT 1")
+    LiveData<User> getCurrentUserByUsername(String username);
 }

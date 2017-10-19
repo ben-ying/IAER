@@ -19,6 +19,8 @@ import timber.log.Timber;
 
 public class MyApplication extends Application implements HasActivityInjector {
 
+    public static String sToken;
+
     private RefWatcher mRefWatcher;
     @Inject
     DispatchingAndroidInjector<Activity> dispatchingAndroidInjector;

@@ -93,7 +93,7 @@ public abstract class NetworkBoundResource<ResultType, RequestType> {
     protected abstract LiveData<ResultType> loadFromDb();
 
     // Called to create the API call.
-    @NonNull
+    @Nullable
     @MainThread
     protected abstract LiveData<ApiResponse<RequestType>> createCall();
 

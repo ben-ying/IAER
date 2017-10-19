@@ -5,6 +5,7 @@ import android.arch.lifecycle.LiveData;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
+import com.yjh.iaer.MyApplication;
 import com.yjh.iaer.model.CustomResponse;
 import com.yjh.iaer.model.ListResponseResult;
 import com.yjh.iaer.network.ApiResponse;
@@ -31,17 +32,12 @@ public class TransactionRepository {
     private final RateLimiter<String> mRepoListRateLimit
             = new RateLimiter<>(2, TimeUnit.SECONDS);
 
-    private String mToken;
     private int mAddedTransactionId = INVALID_ID;
 
     @Inject
-    public TransactionRepository(Webservice webservice,
-                                 TransactionDao transactionDao, UserDao userDao) {
+    public TransactionRepository(Webservice webservice, TransactionDao transactionDao) {
         this.mWebservice = webservice;
         this.mTransactionDao = transactionDao;
-        if (userDao.getCurrentUser() != null && userDao.getCurrentUser().getValue() != null) {
-            this.mToken = userDao.getCurrentUser().getValue().getToken();
-        }
     }
 
     public LiveData<Resource<List<Transaction>>> loadTransactions(final String userId) {
@@ -56,7 +52,8 @@ public class TransactionRepository {
 
             @Override
             protected boolean shouldFetch(@Nullable List<Transaction> data) {
-                return data == null || data.isEmpty() || mRepoListRateLimit.shouldFetch(mToken);
+                return data == null || data.isEmpty()
+                        || mRepoListRateLimit.shouldFetch(MyApplication.sToken);
             }
 
             @NonNull
@@ -65,11 +62,11 @@ public class TransactionRepository {
                 return mTransactionDao.loadAll();
             }
 
-            @NonNull
+            @Nullable
             @Override
             protected LiveData<ApiResponse<
                     CustomResponse<ListResponseResult<List<Transaction>>>>> createCall() {
-                return mWebservice.getTransactions(mToken, userId);
+                return mWebservice.getTransactions(MyApplication.sToken, userId);
             }
 
             @Override
@@ -98,7 +95,7 @@ public class TransactionRepository {
 
             @Override
             protected boolean shouldFetch(@Nullable Transaction data) {
-                return data == null || mRepoListRateLimit.shouldFetch(mToken);
+                return data == null || mRepoListRateLimit.shouldFetch(MyApplication.sToken);
             }
 
             @NonNull
@@ -111,10 +108,10 @@ public class TransactionRepository {
                 return transactionLiveData;
             }
 
-            @NonNull
+            @Nullable
             @Override
             protected LiveData<ApiResponse<CustomResponse<Transaction>>> createCall() {
-                return mWebservice.addTransaction(category, money, remark, mToken);
+                return mWebservice.addTransaction(category, money, remark, MyApplication.sToken);
             }
 
             @Override
@@ -149,10 +146,10 @@ public class TransactionRepository {
                 return mTransactionDao.loadAll();
             }
 
-            @NonNull
+            @Nullable
             @Override
             protected LiveData<ApiResponse<CustomResponse<Transaction>>> createCall() {
-                return mWebservice.deleteTransaction(iaerId, mToken);
+                return mWebservice.deleteTransaction(iaerId, MyApplication.sToken);
             }
 
             @Override

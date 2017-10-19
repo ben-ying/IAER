@@ -31,12 +31,12 @@ public class TransactionViewModel extends ViewModel {
         if (this.mTransactions != null) {
             return;
         }
-        mTransactions = Transformations.switchMap(mIaerIdLiveData, reId -> {
-            switch (reId.type) {
+        mTransactions = Transformations.switchMap(mIaerIdLiveData, iaerId -> {
+            switch (iaerId.type) {
                 case TYPE_LOAD:
-                    return mRepository.loadTransactions(reId.userId);
+                    return mRepository.loadTransactions(iaerId.userId);
                 case TYPE_DELETE:
-                    return mRepository.deleteTransaction(reId.id);
+                    return mRepository.deleteTransaction(iaerId.id);
             }
             return null;
         });
