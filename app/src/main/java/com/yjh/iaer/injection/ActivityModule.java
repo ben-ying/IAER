@@ -5,6 +5,7 @@ import com.yjh.iaer.main.MainActivity;
 import com.yjh.iaer.main.chart.ChartActivity;
 import com.yjh.iaer.main.list.AddTransactionActivity;
 import com.yjh.iaer.main.list.TransactionDetailActivity;
+import com.yjh.iaer.nav.AccountsActivity;
 
 import dagger.Module;
 import dagger.android.ContributesAndroidInjector;
@@ -21,4 +22,6 @@ public abstract class ActivityModule {
     abstract ChartActivity contributeChartActivity();
     @ContributesAndroidInjector(modules = FragmentBuildersModule.class)
     abstract LoginActivity contributeLoginActivity();
+    @ContributesAndroidInjector(modules = FragmentBuildersModule.class)
+    abstract AccountsActivity contributeAccountsActivity();
 }

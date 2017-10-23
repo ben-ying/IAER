@@ -16,7 +16,12 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
+import android.widget.TextView;
 
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.signature.ObjectKey;
+import com.yjh.iaer.GlideApp;
 import com.yjh.iaer.MyApplication;
 import com.yjh.iaer.R;
 import com.yjh.iaer.base.BaseActivity;
@@ -24,6 +29,7 @@ import com.yjh.iaer.login.LoginActivity;
 import com.yjh.iaer.main.chart.ChartActivity;
 import com.yjh.iaer.main.list.AddTransactionActivity;
 import com.yjh.iaer.main.list.TransactionsFragment;
+import com.yjh.iaer.nav.AccountsActivity;
 import com.yjh.iaer.network.Resource;
 import com.yjh.iaer.room.entity.User;
 import com.yjh.iaer.util.AlertUtils;
@@ -58,6 +64,24 @@ public class MainActivity extends BaseActivity
 
     @Override
     public void initView() {
+        TextView nameTextView = navigationView.getHeaderView(0).findViewById(R.id.tv_name);
+        TextView emailTextView = navigationView.getHeaderView(0).findViewById(R.id.tv_email);
+        ImageView profileImageView = navigationView.getHeaderView(0).findViewById(R.id.img_profile);
+        nameTextView.setText(MyApplication.sUser.getUsername());
+        emailTextView.setText(MyApplication.sUser.getEmail());
+        int placeholder = R.mipmap.ic_launcher;
+        GlideApp.with(this)
+                .asBitmap()
+                .load(MyApplication.sUser.getProfile())
+                .placeholder(placeholder)
+                .error(placeholder)
+                .fallback(placeholder)
+                .thumbnail(0.1f)
+                .diskCacheStrategy(DiskCacheStrategy.ALL)
+                .circleCrop()
+                .signature(new ObjectKey(getResources().getInteger(R.integer.glide_version)))
+                .into(profileImageView);
+
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer,
                 toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close) {
             @Override
@@ -114,8 +138,10 @@ public class MainActivity extends BaseActivity
                     intent = new Intent(MainActivity.this, ChartActivity.class);
                     startActivity(intent);
                     break;
-//                case R.id.nav_slideshow:
-//                    break;
+                case R.id.nav_accounts:
+                    intent = new Intent(MainActivity.this, AccountsActivity.class);
+                    startActivity(intent);
+                    break;
 //                case R.id.nav_manage:
 //                    break;
 //                case R.id.nav_share:

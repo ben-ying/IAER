@@ -15,6 +15,7 @@ public class User implements Serializable {
     public static final String TABLE_NAME = "user_entity";
     public static final String FIELD_USER_ID = "user_id";
     public static final String FIELD_USER_NAME = "username";
+    public static final String FIELD_USER_PROFILE = "profile";
     public static final String FIELD_EMAIL = "email";
     public static final String FIELD_PHONE = "phone";
     public static final String FIELD_REGION = "region";
@@ -36,6 +37,9 @@ public class User implements Serializable {
     @SerializedName(FIELD_USER_NAME)
     @ColumnInfo(name = FIELD_USER_NAME)
     String username;
+    @SerializedName(FIELD_USER_PROFILE)
+    @ColumnInfo(name = FIELD_USER_PROFILE)
+    String profile;
     @SerializedName(FIELD_EMAIL)
     @ColumnInfo(name = FIELD_EMAIL)
     String email;
@@ -90,6 +94,14 @@ public class User implements Serializable {
 
     public void setUsername(String username) {
         this.username = username;
+    }
+
+    public String getProfile() {
+        return profile;
+    }
+
+    public void setProfile(String profile) {
+        this.profile = profile;
     }
 
     public String getEmail() {

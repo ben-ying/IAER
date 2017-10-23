@@ -24,6 +24,7 @@
         <activity android:name=".main.list.AddTransactionActivity" />
         <activity android:name=".main.list.TransactionDetailActivity" />
         <activity android:name=".main.chart.ChartActivity" />
+        <activity android:name=".nav.AccountsActivity" />
     </application>
 
 </manifest>

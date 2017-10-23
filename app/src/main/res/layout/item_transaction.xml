@@ -34,7 +34,7 @@
         android:textAppearance="@style/TextAppearance.AppCompat.Body1"
         android:layout_alignParentEnd="true"
         android:layout_centerVertical="true"
-        android:textSize="16sp"
+        android:textSize="@dimen/item_medium_size"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"/>
 
