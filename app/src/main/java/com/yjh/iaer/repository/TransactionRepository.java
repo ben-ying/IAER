@@ -4,6 +4,7 @@ package com.yjh.iaer.repository;
 import android.arch.lifecycle.LiveData;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.util.Log;
 
 import com.yjh.iaer.MyApplication;
 import com.yjh.iaer.model.CustomResponse;
@@ -40,7 +41,7 @@ public class TransactionRepository {
         this.mTransactionDao = transactionDao;
     }
 
-    public LiveData<Resource<List<Transaction>>> loadTransactions(final String userId) {
+    public LiveData<Resource<List<Transaction>>> loadTransactions(final int userId) {
         return new NetworkBoundResource<List<Transaction>,
                 CustomResponse<ListResponseResult<List<Transaction>>>>() {
             @Override
@@ -53,7 +54,7 @@ public class TransactionRepository {
             @Override
             protected boolean shouldFetch(@Nullable List<Transaction> data) {
                 return data == null || data.isEmpty()
-                        || mRepoListRateLimit.shouldFetch(MyApplication.sToken);
+                        || mRepoListRateLimit.shouldFetch(MyApplication.sUser.getToken());
             }
 
             @NonNull
@@ -66,7 +67,7 @@ public class TransactionRepository {
             @Override
             protected LiveData<ApiResponse<
                     CustomResponse<ListResponseResult<List<Transaction>>>>> createCall() {
-                return mWebservice.getTransactions(MyApplication.sToken, userId);
+                return mWebservice.getTransactions(MyApplication.sUser.getToken(), userId);
             }
 
             @Override
@@ -95,7 +96,7 @@ public class TransactionRepository {
 
             @Override
             protected boolean shouldFetch(@Nullable Transaction data) {
-                return data == null || mRepoListRateLimit.shouldFetch(MyApplication.sToken);
+                return data == null || mRepoListRateLimit.shouldFetch(MyApplication.sUser.getToken());
             }
 
             @NonNull
@@ -111,7 +112,7 @@ public class TransactionRepository {
             @Nullable
             @Override
             protected LiveData<ApiResponse<CustomResponse<Transaction>>> createCall() {
-                return mWebservice.addTransaction(category, money, remark, MyApplication.sToken);
+                return mWebservice.addTransaction(category, money, remark, MyApplication.sUser.getToken());
             }
 
             @Override
@@ -149,7 +150,7 @@ public class TransactionRepository {
             @Nullable
             @Override
             protected LiveData<ApiResponse<CustomResponse<Transaction>>> createCall() {
-                return mWebservice.deleteTransaction(iaerId, MyApplication.sToken);
+                return mWebservice.deleteTransaction(iaerId, MyApplication.sUser.getToken());
             }
 
             @Override

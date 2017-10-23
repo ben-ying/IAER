@@ -9,6 +9,7 @@ import android.util.Log;
 import com.squareup.leakcanary.LeakCanary;
 import com.squareup.leakcanary.RefWatcher;
 import com.yjh.iaer.injection.AppInjector;
+import com.yjh.iaer.room.entity.User;
 import com.yjh.iaer.util.CrashLibrary;
 
 import javax.inject.Inject;
@@ -19,7 +20,7 @@ import timber.log.Timber;
 
 public class MyApplication extends Application implements HasActivityInjector {
 
-    public static String sToken;
+    public static User sUser;
 
     private RefWatcher mRefWatcher;
     @Inject

@@ -14,6 +14,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ProgressBar;
 
+import com.yjh.iaer.MyApplication;
 import com.yjh.iaer.R;
 import com.yjh.iaer.base.BaseFragment;
 import com.yjh.iaer.constant.Constant;
@@ -143,7 +144,7 @@ public class TransactionsFragment extends BaseFragment
         swipeRefreshLayout.setColorSchemeResources(R.color.google_blue,
                 R.color.google_green, R.color.google_red, R.color.google_yellow);
         swipeRefreshLayout.setOnRefreshListener(() -> {
-            mViewModel.load("1");
+            mViewModel.load(MyApplication.sUser.getUserId());
             progressBar.setVisibility(View.VISIBLE);
         });
     }
@@ -153,7 +154,7 @@ public class TransactionsFragment extends BaseFragment
                 this, viewModelFactory).get(TransactionViewModel.class);
         mViewModel.getTransactionsResource().observe(this, this::setData);
         progressBar.setVisibility(View.VISIBLE);
-        mViewModel.load("1");
+        mViewModel.load(MyApplication.sUser.getUserId());
     }
 
     private void setData(@Nullable Resource<List<Transaction>> listResource) {

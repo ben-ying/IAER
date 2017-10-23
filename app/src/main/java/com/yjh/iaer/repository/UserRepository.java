@@ -43,7 +43,7 @@ public class UserRepository {
             @Override
             protected void saveCallResult(@NonNull CustomResponse<User> item) {
                 item.getResult().setLogin(true);
-                MyApplication.sToken = item.getResult().getToken();
+                MyApplication.sUser = item.getResult();
                 mUserDao.save(item.getResult());
                 Log.d("", "");
             }
@@ -89,10 +89,10 @@ public class UserRepository {
             @Override
             protected boolean shouldFetch(@Nullable User data) {
                 new Thread(() -> {
-                    if (data != null) {
+                    if (data != null && data.getToken() != null) {
                         data.setLogin(false);
                         mUserDao.save(data);
-                        MyApplication.sToken = null;
+                        MyApplication.sUser = null;
                     }
                 }).start();
 

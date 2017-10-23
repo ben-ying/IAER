@@ -14,6 +14,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 
+import com.yjh.iaer.MyApplication;
 import com.yjh.iaer.R;
 import com.yjh.iaer.base.BaseActivity;
 import com.yjh.iaer.constant.Constant;
@@ -67,6 +68,7 @@ public class LoginActivity extends BaseActivity {
             if (listResource != null && listResource.getData() != null
                     && listResource.getData().size() > 0) {
                 if (listResource.getData().get(0).isLogin()) {
+                    MyApplication.sUser = listResource.getData().get(0);
                     Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                     startActivity(intent);
                     finish();

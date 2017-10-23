@@ -58,7 +58,7 @@ public class TransactionViewModel extends ViewModel {
         return dao.loadAll();
     }
 
-    public void load(String userId) {
+    public void load(int userId) {
         ReId reId = new ReId();
         reId.type = TYPE_LOAD;
         reId.userId = userId;
@@ -75,6 +75,6 @@ public class TransactionViewModel extends ViewModel {
     static class ReId {
         int id;
         int type;
-        String userId;
+        int userId;
     }
 }

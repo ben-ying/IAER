@@ -24,7 +24,7 @@ public interface Webservice {
 
     @GET(URL_TRANSACTIONS)
     LiveData<ApiResponse<CustomResponse<ListResponseResult<List<Transaction>>>>> getTransactions(
-            @Query("token") String token, @Query("user_id") String userId);
+            @Query("token") String token, @Query("user_id") int userId);
 
     @FormUrlEncoded
     @POST(URL_TRANSACTIONS)
