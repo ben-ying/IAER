@@ -64,7 +64,7 @@
     <!--app menu-->
     <string name="others">其它</string>
     <string name="setting">设置</string>
-    <string name="accounts">多账号</string>
+    <string name="switch_account">账号切换</string>
     <string name="delete_user_history_alert">点击确定将永久删除此账号记录，是否确定删除？</string>
 
     <!-- TODO: Remove or change this placeholder text -->

@@ -19,8 +19,8 @@ public class UserViewModel extends ViewModel {
         this.mRepository = repository;
     }
 
-    public LiveData<Resource<User>> login(String username, String password) {
-        return mRepository.login(username, password);
+    public LiveData<Resource<User>> login(String username, String password, String token) {
+        return mRepository.login(username, password, token);
     }
 
     public LiveData<Resource<User>> logout() {

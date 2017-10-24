@@ -1,13 +1,10 @@
 package com.yjh.iaer.main;
 
-import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProvider;
 import android.arch.lifecycle.ViewModelProviders;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Handler;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -29,9 +26,7 @@ import com.yjh.iaer.login.LoginActivity;
 import com.yjh.iaer.main.chart.ChartActivity;
 import com.yjh.iaer.main.list.AddTransactionActivity;
 import com.yjh.iaer.main.list.TransactionsFragment;
-import com.yjh.iaer.nav.AccountsActivity;
-import com.yjh.iaer.network.Resource;
-import com.yjh.iaer.room.entity.User;
+import com.yjh.iaer.nav.SwitchAccountActivity;
 import com.yjh.iaer.util.AlertUtils;
 import com.yjh.iaer.viewmodel.UserViewModel;
 
@@ -139,7 +134,7 @@ public class MainActivity extends BaseActivity
                     startActivity(intent);
                     break;
                 case R.id.nav_accounts:
-                    intent = new Intent(MainActivity.this, AccountsActivity.class);
+                    intent = new Intent(MainActivity.this, SwitchAccountActivity.class);
                     startActivity(intent);
                     break;
 //                case R.id.nav_manage:

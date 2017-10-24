@@ -44,5 +44,6 @@ public interface Webservice {
     @POST(URL_USER_LOGIN)
     LiveData<ApiResponse<CustomResponse<User>>> login(
             @Field("username") String username,
-            @Field("password") String password);
+            @Field("password") String password,
+            @Field("token") String token);
 }

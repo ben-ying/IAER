@@ -37,33 +37,45 @@ public class UserRepository {
         this.mUserDao = userDao;
     }
 
-    public LiveData<Resource<User>> login(final String username, final String password) {
+    public LiveData<Resource<User>> login(
+            final String username, final String password, final String token) {
         return new NetworkBoundResource<User, CustomResponse<User>>() {
 
             @Override
             protected void saveCallResult(@NonNull CustomResponse<User> item) {
                 item.getResult().setLogin(true);
+                if (MyApplication.sUser != null) {
+                    MyApplication.sUser.setLogin(false);
+                    mUserDao.save(MyApplication.sUser);
+                }
                 MyApplication.sUser = item.getResult();
                 mUserDao.save(item.getResult());
-                Log.d("", "");
             }
 
             @Override
             protected boolean shouldFetch(@Nullable User data) {
-                return data == null || mRepoListRateLimit.shouldFetch(username);
+                if (token != null) {
+                    return data == null || mRepoListRateLimit.shouldFetch(token);
+                } else {
+                    return data == null || mRepoListRateLimit.shouldFetch(username);
+                }
             }
 
             @NonNull
             @Override
             protected LiveData<User> loadFromDb() {
-                return mUserDao.getCurrentUserByUsername(username);
+                if (token != null) {
+                    return mUserDao.getCurrentUserByToken(token);
+                } else {
+                    return mUserDao.getCurrentUserByUsername(username);
+                }
             }
 
             @Nullable
             @Override
             protected LiveData<ApiResponse<CustomResponse<User>>> createCall() {
-                return mWebservice.login(username,
-                        MD5Utils.getMD5ofStr(MD5_ENCRYPTION + password).toLowerCase());
+                return mWebservice.login(username, MD5Utils.getMD5ofStr(
+                        MD5_ENCRYPTION + password).toLowerCase(), token);
             }
 
             @Override

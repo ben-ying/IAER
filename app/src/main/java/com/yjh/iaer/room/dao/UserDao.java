@@ -42,4 +42,8 @@ public interface UserDao {
     @Query("SELECT * FROM " + User.TABLE_NAME + " WHERE "
             + User.FIELD_USER_NAME + " = :username AND " + User.FIELD_IS_LOGIN + " = 1 LIMIT 1")
     LiveData<User> getCurrentUserByUsername(String username);
+
+    @Query("SELECT * FROM " + User.TABLE_NAME + " WHERE "
+            + User.FIELD_TOKEN + " = :token AND " + User.FIELD_IS_LOGIN + " = 1 LIMIT 1")
+    LiveData<User> getCurrentUserByToken(String token);
 }

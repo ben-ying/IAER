@@ -15,6 +15,8 @@ import com.yjh.iaer.GlideApp;
 import com.yjh.iaer.MyApplication;
 import com.yjh.iaer.R;
 import com.yjh.iaer.constant.Constant;
+import com.yjh.iaer.login.LoginActivity;
+import com.yjh.iaer.main.MainActivity;
 import com.yjh.iaer.main.list.TransactionDetailActivity;
 import com.yjh.iaer.room.entity.Transaction;
 import com.yjh.iaer.room.entity.User;
@@ -32,10 +34,16 @@ public class AccountAdapter extends RecyclerView.Adapter<
 
     private Context mContext;
     private List<User> mUsers;
+    private AccountInterface mInterface;
 
-    AccountAdapter(Context context, List<User> users) {
+    interface AccountInterface {
+        void login(String token);
+    }
+
+    AccountAdapter(Context context, List<User> users, AccountInterface accountInterface) {
         this.mContext = context;
         this.mUsers = users;
+        this.mInterface = accountInterface;
     }
 
     @Override
@@ -49,6 +57,7 @@ public class AccountAdapter extends RecyclerView.Adapter<
     public void onBindViewHolder(AccountViewHolder holder, int position) {
         final User user = mUsers.get(position);
         holder.nameTextView.setText(user.getUsername());
+        holder.item.setTag(user);
         int placeholder = R.mipmap.ic_launcher;
         GlideApp.with(mContext)
                 .asBitmap()
@@ -83,7 +92,7 @@ public class AccountAdapter extends RecyclerView.Adapter<
 
         @OnClick(R.id.item_account)
         void login(View v) {
-            // TODO: 17-10-23
+            mInterface.login(((User) v.getTag()).getToken());
         }
     }
 }

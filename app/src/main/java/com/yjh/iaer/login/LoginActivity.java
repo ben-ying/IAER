@@ -116,9 +116,9 @@ public class LoginActivity extends BaseActivity {
     void loginTask() {
         if (isValid()) {
             progressBar.setVisibility(View.VISIBLE);
-            mViewModel.login(mUsername, mPassword).observe(this, userResource ->  {
-                progressBar.setVisibility(View.GONE);
+            mViewModel.login(mUsername, mPassword, null).observe(this, userResource ->  {
                 if (userResource != null && userResource.getData() != null) {
+                    progressBar.setVisibility(View.GONE);
                     Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                     startActivity(intent);
                     finish();

@@ -5,32 +5,26 @@ import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.widget.ArrayAdapter;
-import android.widget.TextView;
+import android.view.View;
+import android.widget.ProgressBar;
 
 import com.yjh.iaer.MyApplication;
 import com.yjh.iaer.R;
 import com.yjh.iaer.base.BaseActivity;
-import com.yjh.iaer.constant.Constant;
-import com.yjh.iaer.login.LoginActivity;
 import com.yjh.iaer.main.MainActivity;
-import com.yjh.iaer.main.list.TransactionAdapter;
-import com.yjh.iaer.main.list.TransactionsFragment;
-import com.yjh.iaer.room.entity.Transaction;
-import com.yjh.iaer.util.SystemUtils;
 import com.yjh.iaer.viewmodel.UserViewModel;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import javax.inject.Inject;
 
 import butterknife.BindView;
 
-public class AccountsActivity extends BaseActivity {
+public class SwitchAccountActivity extends BaseActivity
+        implements AccountAdapter.AccountInterface {
 
     @BindView(R.id.recycler_view)
     RecyclerView recyclerView;
+    @BindView(R.id.progress_bar)
+    ProgressBar progressBar;
 
     private UserViewModel mViewModel;
 
@@ -39,13 +33,13 @@ public class AccountsActivity extends BaseActivity {
 
     @Override
     public int getLayoutId() {
-        return R.layout.activity_accounts;
+        return R.layout.activity_switch_account;
     }
 
     @Override
     @SuppressWarnings("ConstantConditions")
     public void initView() {
-        getSupportActionBar().setTitle(R.string.accounts);
+        getSupportActionBar().setTitle(R.string.switch_account);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setHasFixedSize(false);
@@ -57,9 +51,27 @@ public class AccountsActivity extends BaseActivity {
         mViewModel.loadAllUsers().observe(this, listResource -> {
             if (listResource != null && listResource.getData() != null
                     && listResource.getData().size() > 0) {
-                AccountAdapter adapter = new AccountAdapter(this, listResource.getData());
+                AccountAdapter adapter = new AccountAdapter(
+                        this, listResource.getData(), this);
                 recyclerView.setAdapter(adapter);
             }
         });
+    }
+
+    @Override
+    public void login(String token) {
+        if (!token.equals(MyApplication.sUser.getToken())) {
+            progressBar.setVisibility(View.VISIBLE);
+            mViewModel.login(null, null, token)
+                    .observe(this, userResource -> {
+                        if (userResource != null && userResource.getData() != null) {
+                            progressBar.setVisibility(View.GONE);
+                            Intent intent = new Intent(
+                                    SwitchAccountActivity.this, MainActivity.class);
+                            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+                            startActivity(intent);
+                        }
+                    });
+        }
     }
 }
