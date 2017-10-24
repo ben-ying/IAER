@@ -51,16 +51,32 @@ public class Transaction implements Serializable {
         return Integer.valueOf(money);
     }
 
+    public int getMoneyAbsInt() {
+        return Math.abs(getMoneyInt());
+    }
+
     public String getCreatedDate() {
-        return created.split(" ")[0];
+        try {
+            return created.split(" ")[0];
+        } catch (Exception e) {
+            return "";
+        }
     }
 
     public int getYear() {
-        return Integer.valueOf(created.split("-")[0]);
+        try {
+            return Integer.valueOf(created.split("-")[0]);
+        } catch (Exception e) {
+            return 0;
+        }
     }
 
     public int getMonth() {
-        return Integer.valueOf(created.split("-")[1]);
+        try {
+            return Integer.valueOf(created.split("-")[1]);
+        } catch (Exception e) {
+            return 0;
+        }
     }
 
     public Transaction() {
@@ -142,5 +158,9 @@ public class Transaction implements Serializable {
     @Override
     public String toString() {
         return new Gson().toJson(this);
+    }
+
+    public boolean isNegative() {
+        return getMoneyInt() < 0;
     }
 }

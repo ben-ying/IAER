@@ -6,6 +6,10 @@
     <dimen name="nav_header_height">160dp</dimen>
     <dimen name="fab_margin">16dp</dimen>
     <dimen name="small_margin">8dp</dimen>
+    <dimen name="legend_drawable_size">8dp</dimen>
+    <dimen name="legend_text_size">10sp</dimen>
+    <dimen name="legend_padding">5dp</dimen>
+    <dimen name="legend_margin_left">24dp</dimen>
 
     <dimen name="setting_text_size">18sp</dimen>
     <dimen name="recycler_view_padding">16dp</dimen>

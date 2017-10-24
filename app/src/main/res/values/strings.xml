@@ -42,6 +42,9 @@
     <string name="menu_add">添加</string>
     <string name="money_income">收入：%d</string>
     <string name="money_consumption">支出：%d</string>
+    <string name="income">收入%s</string>
+    <string name="consumption">支出%s</string>
+    <string name="surplus">结余%s</string>
     <string name="category">来自：%s</string>
     <string name="remark">备注：%s</string>
 

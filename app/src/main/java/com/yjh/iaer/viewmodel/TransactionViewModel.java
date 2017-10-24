@@ -34,7 +34,7 @@ public class TransactionViewModel extends ViewModel {
         mTransactions = Transformations.switchMap(mIaerIdLiveData, iaerId -> {
             switch (iaerId.type) {
                 case TYPE_LOAD:
-                    return mRepository.loadTransactions(iaerId.userId);
+                    return mRepository.loadTransactions(iaerId.userId, iaerId.fetchNetwork);
                 case TYPE_DELETE:
                     return mRepository.deleteTransaction(iaerId.id);
             }
@@ -54,14 +54,11 @@ public class TransactionViewModel extends ViewModel {
         return mTransactions;
     }
 
-    public LiveData<List<Transaction>> getTransactions() {
-        return dao.loadAll();
-    }
-
-    public void load(int userId) {
+    public void load(int userId, boolean fetchNetwork) {
         ReId reId = new ReId();
         reId.type = TYPE_LOAD;
         reId.userId = userId;
+        reId.fetchNetwork = fetchNetwork;
         mIaerIdLiveData.setValue(reId);
     }
 
@@ -69,6 +66,7 @@ public class TransactionViewModel extends ViewModel {
         ReId reId = new ReId();
         reId.type = TYPE_DELETE;
         reId.id = id;
+        reId.fetchNetwork = true;
         mIaerIdLiveData.setValue(reId);
     }
 
@@ -76,5 +74,6 @@ public class TransactionViewModel extends ViewModel {
         int id;
         int type;
         int userId;
+        boolean fetchNetwork;
     }
 }

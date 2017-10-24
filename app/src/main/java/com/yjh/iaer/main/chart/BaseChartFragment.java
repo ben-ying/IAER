@@ -3,11 +3,13 @@ package com.yjh.iaer.main.chart;
 import android.arch.lifecycle.ViewModelProviders;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.yjh.iaer.MyApplication;
 import com.yjh.iaer.R;
 import com.yjh.iaer.base.BaseFragment;
 import com.yjh.iaer.room.entity.Transaction;
@@ -41,9 +43,13 @@ public abstract class BaseChartFragment extends BaseFragment {
 
         TransactionViewModel viewModel = ViewModelProviders.of(
                 this, viewModelFactory).get(TransactionViewModel.class);
-        viewModel.getTransactions().observe(this, transactions1 -> {
-            mAllTransactions = transactions1;
-            setData(mAllTransactions);
+        viewModel.load(MyApplication.sUser.getUserId(), false);
+        viewModel.getTransactionsResource().observe(this, transactions -> {
+            if (transactions != null && transactions.getData() != null) {
+                mAllTransactions = transactions.getData();
+                Log.d("TRANSACTION", "size: " + mAllTransactions.size());
+                setData(mAllTransactions);
+            }
         });
 
         return view;

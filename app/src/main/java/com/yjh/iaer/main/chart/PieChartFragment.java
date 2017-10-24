@@ -103,9 +103,10 @@ public class PieChartFragment extends BaseChartFragment
         map.entrySet().stream()
                 .sorted(Map.Entry.<String, Integer>comparingByValue().reversed())
                 .forEach(entry -> {
+                    int value = Math.abs(entry.getValue());
                     if (sortedMap.size() <= colors.size() - 1
-                            && (float) entry.getValue() / totalMoney > 0.02) {
-                        entries.add(new PieEntry(entry.getValue(),
+                            && (float) value / totalMoney > 0.02) {
+                        entries.add(new PieEntry(value,
                                 entry.getKey() + "\n: " + format.format(entry.getValue())));
                         sortedMap.put(entry.getKey(), entry.getValue());
                     } else {

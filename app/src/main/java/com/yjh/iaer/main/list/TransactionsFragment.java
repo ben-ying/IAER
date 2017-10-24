@@ -144,7 +144,7 @@ public class TransactionsFragment extends BaseFragment
         swipeRefreshLayout.setColorSchemeResources(R.color.google_blue,
                 R.color.google_green, R.color.google_red, R.color.google_yellow);
         swipeRefreshLayout.setOnRefreshListener(() -> {
-            mViewModel.load(MyApplication.sUser.getUserId());
+            mViewModel.load(MyApplication.sUser.getUserId(), true);
             progressBar.setVisibility(View.VISIBLE);
         });
     }
@@ -154,7 +154,7 @@ public class TransactionsFragment extends BaseFragment
                 this, viewModelFactory).get(TransactionViewModel.class);
         mViewModel.getTransactionsResource().observe(this, this::setData);
         progressBar.setVisibility(View.VISIBLE);
-        mViewModel.load(MyApplication.sUser.getUserId());
+        mViewModel.load(MyApplication.sUser.getUserId(), true);
     }
 
     private void setData(@Nullable Resource<List<Transaction>> listResource) {

@@ -41,7 +41,8 @@ public class TransactionRepository {
         this.mTransactionDao = transactionDao;
     }
 
-    public LiveData<Resource<List<Transaction>>> loadTransactions(final int userId) {
+    public LiveData<Resource<List<Transaction>>> loadTransactions(
+            final int userId, final boolean fetchNetwork) {
         return new NetworkBoundResource<List<Transaction>,
                 CustomResponse<ListResponseResult<List<Transaction>>>>() {
             @Override
@@ -53,8 +54,8 @@ public class TransactionRepository {
 
             @Override
             protected boolean shouldFetch(@Nullable List<Transaction> data) {
-                return data == null || data.isEmpty()
-                        || mRepoListRateLimit.shouldFetch(MyApplication.sUser.getToken());
+                return fetchNetwork && (data == null || data.isEmpty()
+                        || mRepoListRateLimit.shouldFetch(MyApplication.sUser.getToken()));
             }
 
             @NonNull
