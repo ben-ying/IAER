@@ -48,6 +48,7 @@ public class MainActivity extends BaseActivity
     private Runnable mPendingRunnable;
     private Handler mHandler = new Handler();
     private UserViewModel mViewModel;
+    private boolean mIsLogout;
 
     @Inject
     ViewModelProvider.Factory viewModelFactory;
@@ -172,7 +173,8 @@ public class MainActivity extends BaseActivity
 
     public void logout() {
         mViewModel.logout().observe(this, userResource -> {
-            if (userResource != null && userResource.getData() != null) {
+            if (userResource != null && userResource.getData() != null && !mIsLogout) {
+                mIsLogout = true;
                 Intent intent = new Intent(this, LoginActivity.class);
                 startActivity(intent);
                 finish();
