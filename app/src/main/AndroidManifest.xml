@@ -25,6 +25,7 @@
         <activity android:name=".main.list.TransactionDetailActivity" />
         <activity android:name=".main.chart.ChartActivity" />
         <activity android:name=".nav.SwitchAccountActivity" />
+        <activity android:name=".login.RegisterActivity" />
     </application>
 
 </manifest>

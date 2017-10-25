@@ -43,13 +43,7 @@ public class UserRepository {
 
             @Override
             protected void saveCallResult(@NonNull CustomResponse<User> item) {
-                item.getResult().setLogin(true);
-                if (MyApplication.sUser != null) {
-                    MyApplication.sUser.setLogin(false);
-                    mUserDao.save(MyApplication.sUser);
-                }
-                MyApplication.sUser = item.getResult();
-                mUserDao.save(item.getResult());
+                saveUser(item.getResult());
             }
 
             @Override
@@ -76,6 +70,45 @@ public class UserRepository {
             protected LiveData<ApiResponse<CustomResponse<User>>> createCall() {
                 return mWebservice.login(username, MD5Utils.getMD5ofStr(
                         MD5_ENCRYPTION + password).toLowerCase(), token);
+            }
+
+            @Override
+            protected CustomResponse<User> processResponse(
+                    ApiResponse<CustomResponse<User>> response) {
+                return response.getBody();
+            }
+
+            @Override
+            protected void onFetchFailed() {
+                super.onFetchFailed();
+            }
+        }.getAsLiveData();
+    }
+
+    public LiveData<Resource<User>> register(
+            final String username, final String password, final String email) {
+        return new NetworkBoundResource<User, CustomResponse<User>>() {
+            @Override
+            protected void saveCallResult(@NonNull CustomResponse<User> item) {
+                saveUser(item.getResult());
+            }
+
+            @Override
+            protected boolean shouldFetch(@Nullable User data) {
+                return data == null || mRepoListRateLimit.shouldFetch(username);
+            }
+
+            @NonNull
+            @Override
+            protected LiveData<User> loadFromDb() {
+                return mUserDao.getCurrentUserByUsername(username);
+            }
+
+            @Nullable
+            @Override
+            protected LiveData<ApiResponse<CustomResponse<User>>> createCall() {
+                return mWebservice.register(username, username, MD5Utils.getMD5ofStr(
+                        MD5_ENCRYPTION + password).toLowerCase(), email, "", 2);
             }
 
             @Override
@@ -171,5 +204,15 @@ public class UserRepository {
                 super.onFetchFailed();
             }
         }.getAsLiveData();
+    }
+
+    private void saveUser(User user) {
+        user.setLogin(true);
+        if (MyApplication.sUser != null) {
+            MyApplication.sUser.setLogin(false);
+            mUserDao.save(MyApplication.sUser);
+        }
+        MyApplication.sUser = user;
+        mUserDao.save(user);
     }
 }

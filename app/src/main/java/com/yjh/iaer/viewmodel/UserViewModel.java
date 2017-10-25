@@ -30,4 +30,9 @@ public class UserViewModel extends ViewModel {
     public LiveData<Resource<List<User>>> loadAllUsers() {
         return mRepository.loadAllUsers();
     }
+
+    public LiveData<Resource<User>> register(
+            String username, String password, String email) {
+        return mRepository.register(username, password, email);
+    }
 }

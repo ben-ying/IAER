@@ -126,4 +126,10 @@ public class LoginActivity extends BaseActivity {
             });
         }
     }
+
+    @OnClick(R.id.tv_link_signup)
+    void intent2Register() {
+        Intent intent = new Intent(this, RegisterActivity.class);
+        startActivity(intent);
+    }
 }

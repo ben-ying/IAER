@@ -19,6 +19,8 @@ import retrofit2.http.Path;
 import retrofit2.http.Query;
 
 public interface Webservice {
+
+    String URL_USERS = "users/";
     String URL_TRANSACTIONS = "iaers/";
     String URL_USER_LOGIN = "user/login";
 
@@ -46,4 +48,14 @@ public interface Webservice {
             @Field("username") String username,
             @Field("password") String password,
             @Field("token") String token);
+
+    @FormUrlEncoded
+    @POST(URL_USERS)
+    LiveData<ApiResponse<CustomResponse<User>>> register(
+            @Field("username") String username,
+            @Field("baby_name") String babyName,
+            @Field("password") String password,
+            @Field("email") String email,
+            @Field("base64") String base64,
+            @Field("gender") int gender);
 }

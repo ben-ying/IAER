@@ -19,6 +19,17 @@
     <string name="empty_username">用户名不能为空</string>
     <string name="logout">登出账号</string>
     <string name="logout_message">您确定要退出当前账号吗？</string>
+    <string name="reset_password">重设密码</string>
+    <string name="add_photo">添加头像</string>
+    <string name="username">用户名</string>
+    <string name="edit_baby_name">编辑宝宝名</string>
+    <string name="email">电子邮箱</string>
+    <string name="edit_email">编辑电子邮箱</string>
+    <string name="phone">手机号码</string>
+    <string name="edit_phone">编辑手机号码</string>
+    <string name="confirm_password">确认密码</string>
+    <string name="create_account">创建账号</string>
+    <string name="already_a_member_and_login">已经有账号？登入</string>
 
 
     <string name="action_settings">设置</string>

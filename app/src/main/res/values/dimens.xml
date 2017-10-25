@@ -10,6 +10,7 @@
     <dimen name="legend_text_size">10sp</dimen>
     <dimen name="legend_padding">5dp</dimen>
     <dimen name="legend_margin_left">24dp</dimen>
+    <dimen name="stroke_size">1dp</dimen>
 
     <dimen name="setting_text_size">18sp</dimen>
     <dimen name="recycler_view_padding">16dp</dimen>
@@ -22,6 +23,7 @@
     <dimen name="button_margin_vertical">24dp</dimen>
     <dimen name="profile_large_size">120dp</dimen>
     <dimen name="profile_medium_size">56dp</dimen>
+    <dimen name="profile_size">72dp</dimen>
     <dimen name="text_padding">10dp</dimen>
     <dimen name="register_small_text">16sp</dimen>
     <dimen name="item_medium_size">16sp</dimen>

@@ -1,6 +1,7 @@
 package com.yjh.iaer.injection;
 
 import com.yjh.iaer.login.LoginActivity;
+import com.yjh.iaer.login.RegisterActivity;
 import com.yjh.iaer.main.MainActivity;
 import com.yjh.iaer.main.chart.ChartActivity;
 import com.yjh.iaer.main.list.AddTransactionActivity;
@@ -24,4 +25,6 @@ public abstract class ActivityModule {
     abstract LoginActivity contributeLoginActivity();
     @ContributesAndroidInjector(modules = FragmentBuildersModule.class)
     abstract SwitchAccountActivity contributeAccountsActivity();
+    @ContributesAndroidInjector(modules = FragmentBuildersModule.class)
+    abstract RegisterActivity contributeRegisterActivity();
 }
