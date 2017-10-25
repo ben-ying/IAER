@@ -33,6 +33,8 @@ public class HorizontalBarChartFragment extends BaseChartFragment {
     TextView consumptionTextView;
     @BindView(R.id.tv_total)
     TextView totalTextView;
+    @BindView(R.id.description_layout)
+    View descriptionLayout;
 
     public static HorizontalBarChartFragment newInstance(int i) {
 
@@ -67,6 +69,7 @@ public class HorizontalBarChartFragment extends BaseChartFragment {
         super.setData(transactions);
         int size = transactions.size();
         chart.setVisibility(size > 0 ? View.VISIBLE : View.GONE);
+        descriptionLayout.setVisibility(size > 0 ? View.VISIBLE : View.GONE);
 
         if (size > 0) {
             if (size < ChartActivity.CHART_PAGE_SIZE) {
