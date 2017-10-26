@@ -26,6 +26,7 @@
         <activity android:name=".main.chart.ChartActivity" />
         <activity android:name=".nav.SwitchAccountActivity" />
         <activity android:name=".login.RegisterActivity" />
+        <activity android:name=".login.ResetPasswordActivity" />
     </application>
 
 </manifest>

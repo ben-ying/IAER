@@ -1,11 +1,16 @@
 package com.yjh.iaer.login;
 
+import android.app.AlertDialog;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProvider;
 import android.arch.lifecycle.ViewModelProviders;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.AppCompatButton;
+import android.text.InputType;
+import android.util.Patterns;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -116,7 +121,7 @@ public class LoginActivity extends BaseActivity {
     void loginTask() {
         if (isValid()) {
             progressBar.setVisibility(View.VISIBLE);
-            mViewModel.login(mUsername, mPassword, null).observe(this, userResource ->  {
+            mViewModel.login(mUsername, mPassword, null).observe(this, userResource -> {
                 if (userResource != null && userResource.getData() != null) {
                     progressBar.setVisibility(View.GONE);
                     Intent intent = new Intent(LoginActivity.this, MainActivity.class);
@@ -131,5 +136,69 @@ public class LoginActivity extends BaseActivity {
     void intent2Register() {
         Intent intent = new Intent(this, RegisterActivity.class);
         startActivity(intent);
+    }
+
+    @OnClick(R.id.tv_forgot_password)
+    void onForgotPassword() {
+        final View view = LayoutInflater.from(this).inflate(R.layout.dialog_edit_text, null);
+        final EditText emailEditText = (EditText) view.findViewById(R.id.et_value);
+        emailEditText.setHint(R.string.email);
+        emailEditText.setInputType(InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS);
+        final AlertDialog dialog = new AlertDialog.Builder(this, R.style.MyDialogTheme)
+                .setMessage(R.string.dialog_forgot_password)
+                .setView(view)
+                .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                    }
+                })
+                .setNegativeButton(R.string.cancel, null)
+                .create();
+        dialog.setCancelable(true);
+        dialog.show();
+        dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String sentEmail = emailEditText.getText().toString();
+                if (sentEmail.isEmpty()) {
+                    emailEditText.setError(getString(R.string.empty_email));
+                } else if (!Patterns.EMAIL_ADDRESS.matcher(sentEmail).matches()) {
+                    emailEditText.setError(getString(R.string.invalid_email));
+                } else {
+                    sendVerifyCodeTask(sentEmail, dialog);
+                }
+            }
+        });
+    }
+
+    private void sendVerifyCodeTask(final String email, final AlertDialog dialog) {
+        dialog.dismiss();
+        Intent intent = new Intent(LoginActivity.this, ResetPasswordActivity.class);
+        intent.putExtra(Constant.EMAIL, email);
+        startActivityForResult(intent, Constant.RESET_PASSWORD_REQUEST_CODE);
+//        new UserTaskHandler(this).sendVerifyCode(email,
+//                new HttpResponseInterface<HttpBaseResult>() {
+//                    @Override
+//                    public void onStart() {
+//
+//                    }
+//
+//                    @Override
+//                    public void onSuccess(HttpBaseResult classOfT) {
+//                        dialog.dismiss();
+//                        Intent intent = new Intent(LoginActivity.this, ResetPasswordActivity.class);
+//                        intent.putExtra(Constants.EMAIL, email);
+//                        startActivityForResult(intent, Constants.RESET_PASSWORD_REQUEST_CODE);
+//                    }
+//
+//                    @Override
+//                    public void onFailure(HttpBaseResult result) {
+//                    }
+//
+//                    @Override
+//                    public void onHttpError(String error) {
+//                    }
+//                });
     }
 }
