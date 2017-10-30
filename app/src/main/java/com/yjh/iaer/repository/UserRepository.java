@@ -206,6 +206,44 @@ public class UserRepository {
         }.getAsLiveData();
     }
 
+
+    public LiveData<Resource<User>> sendVerifyCode(final String email) {
+        return new NetworkBoundResource<User, CustomResponse<User>>() {
+
+            @Override
+            protected void saveCallResult(@NonNull CustomResponse<User> item) {
+                Log.d("", "");
+            }
+
+            @Override
+            protected boolean shouldFetch(@Nullable User data) {
+                return true;
+            }
+
+            @NonNull
+            @Override
+            protected LiveData<User> loadFromDb() {
+                return mUserDao.getCurrentUserByEmail(email);
+            }
+
+            @Nullable
+            @Override
+            protected LiveData<ApiResponse<CustomResponse<User>>> createCall() {
+                return mWebservice.sendVerifyCode(email);            }
+
+            @Override
+            protected CustomResponse<User> processResponse(
+                    ApiResponse<CustomResponse<User>> response) {
+                return response.getBody();
+            }
+
+            @Override
+            protected void onFetchFailed() {
+                super.onFetchFailed();
+            }
+        }.getAsLiveData();
+    }
+
     public void deleteUserHistory(User user) {
         mUserDao.delete(user);
     }

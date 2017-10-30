@@ -173,32 +173,10 @@ public class LoginActivity extends BaseActivity {
     }
 
     private void sendVerifyCodeTask(final String email, final AlertDialog dialog) {
+        mViewModel.sendVerifyCode(email);
         dialog.dismiss();
         Intent intent = new Intent(LoginActivity.this, ResetPasswordActivity.class);
         intent.putExtra(Constant.EMAIL, email);
         startActivityForResult(intent, Constant.RESET_PASSWORD_REQUEST_CODE);
-//        new UserTaskHandler(this).sendVerifyCode(email,
-//                new HttpResponseInterface<HttpBaseResult>() {
-//                    @Override
-//                    public void onStart() {
-//
-//                    }
-//
-//                    @Override
-//                    public void onSuccess(HttpBaseResult classOfT) {
-//                        dialog.dismiss();
-//                        Intent intent = new Intent(LoginActivity.this, ResetPasswordActivity.class);
-//                        intent.putExtra(Constants.EMAIL, email);
-//                        startActivityForResult(intent, Constants.RESET_PASSWORD_REQUEST_CODE);
-//                    }
-//
-//                    @Override
-//                    public void onFailure(HttpBaseResult result) {
-//                    }
-//
-//                    @Override
-//                    public void onHttpError(String error) {
-//                    }
-//                });
     }
 }

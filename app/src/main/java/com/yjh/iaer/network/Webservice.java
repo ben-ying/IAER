@@ -10,6 +10,7 @@ import com.yjh.iaer.room.entity.User;
 
 import java.util.List;
 
+import io.reactivex.Observable;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
@@ -23,6 +24,7 @@ public interface Webservice {
     String URL_USERS = "users/";
     String URL_TRANSACTIONS = "iaers/";
     String URL_USER_LOGIN = "user/login";
+    String URL_SEND_VERIFY_CODE = "user/send_verify_code";
 
     @GET(URL_TRANSACTIONS)
     LiveData<ApiResponse<CustomResponse<ListResponseResult<List<Transaction>>>>> getTransactions(
@@ -58,4 +60,8 @@ public interface Webservice {
             @Field("email") String email,
             @Field("base64") String base64,
             @Field("gender") int gender);
+
+    @FormUrlEncoded
+    @POST(URL_SEND_VERIFY_CODE)
+    LiveData<ApiResponse<CustomResponse<User>>> sendVerifyCode(@Field("email") String email);
 }

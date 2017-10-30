@@ -36,6 +36,10 @@ public class UserViewModel extends ViewModel {
         return mRepository.register(username, password, email);
     }
 
+    public LiveData<Resource<User>> sendVerifyCode(String email) {
+        return mRepository.sendVerifyCode(email);
+    }
+
     public void deleteUserHistory(User user) {
         mRepository.deleteUserHistory(user);
     }
