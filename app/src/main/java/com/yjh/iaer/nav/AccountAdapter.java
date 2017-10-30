@@ -38,6 +38,7 @@ public class AccountAdapter extends RecyclerView.Adapter<
 
     interface AccountInterface {
         void login(String token);
+        void delete(User user);
     }
 
     AccountAdapter(Context context, List<User> users, AccountInterface accountInterface) {
@@ -93,6 +94,20 @@ public class AccountAdapter extends RecyclerView.Adapter<
         @OnClick(R.id.item_account)
         void login(View v) {
             mInterface.login(((User) v.getTag()).getToken());
+        }
+
+        @OnLongClick(R.id.item_account)
+        boolean showDeleteDialog(View v) {
+            final User user = (User) v.getTag();
+            if (!user.getToken().equals(MyApplication.sUser.getToken())) {
+                AlertUtils.showConfirmDialog(mContext, R.string.delete_user_history_alert,
+                        (dialogInterface, i) -> {
+                            mInterface.delete(user);
+                        });
+                return true;
+            }
+
+            return false;
         }
     }
 }

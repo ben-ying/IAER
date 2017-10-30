@@ -35,4 +35,8 @@ public class UserViewModel extends ViewModel {
             String username, String password, String email) {
         return mRepository.register(username, password, email);
     }
+
+    public void deleteUserHistory(User user) {
+        mRepository.deleteUserHistory(user);
+    }
 }

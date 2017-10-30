@@ -12,6 +12,7 @@ import com.yjh.iaer.MyApplication;
 import com.yjh.iaer.R;
 import com.yjh.iaer.base.BaseActivity;
 import com.yjh.iaer.main.MainActivity;
+import com.yjh.iaer.room.entity.User;
 import com.yjh.iaer.viewmodel.UserViewModel;
 
 import javax.inject.Inject;
@@ -51,6 +52,7 @@ public class SwitchAccountActivity extends BaseActivity
         mViewModel.loadAllUsers().observe(this, listResource -> {
             if (listResource != null && listResource.getData() != null
                     && listResource.getData().size() > 0) {
+                progressBar.setVisibility(View.GONE);
                 AccountAdapter adapter = new AccountAdapter(
                         this, listResource.getData(), this);
                 recyclerView.setAdapter(adapter);
@@ -65,7 +67,6 @@ public class SwitchAccountActivity extends BaseActivity
             mViewModel.login(null, null, token)
                     .observe(this, userResource -> {
                         if (userResource != null && userResource.getData() != null) {
-                            progressBar.setVisibility(View.GONE);
                             Intent intent = new Intent(
                                     SwitchAccountActivity.this, MainActivity.class);
                             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -73,5 +74,25 @@ public class SwitchAccountActivity extends BaseActivity
                         }
                     });
         }
+    }
+
+    @Override
+    public void delete(User user) {
+        progressBar.setVisibility(View.VISIBLE);
+        new Thread(() -> {
+                mViewModel.deleteUserHistory(user);
+                runOnUiThread(() -> {
+                    progressBar.setVisibility(View.GONE);
+                    mViewModel.loadAllUsers().observe(this, listResource -> {
+                        if (listResource != null && listResource.getData() != null
+                                && listResource.getData().size() > 0) {
+                            progressBar.setVisibility(View.GONE);
+                            AccountAdapter adapter = new AccountAdapter(
+                                    this, listResource.getData(), this);
+                            recyclerView.setAdapter(adapter);
+                        }
+                    });
+                });
+        }).start();
     }
 }

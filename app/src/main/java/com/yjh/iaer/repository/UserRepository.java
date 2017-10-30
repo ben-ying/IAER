@@ -206,6 +206,10 @@ public class UserRepository {
         }.getAsLiveData();
     }
 
+    public void deleteUserHistory(User user) {
+        mUserDao.delete(user);
+    }
+
     private void saveUser(User user) {
         user.setLogin(true);
         if (MyApplication.sUser != null) {
