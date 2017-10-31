@@ -32,7 +32,7 @@ public class UserRepository {
             = new RateLimiter<>(2, TimeUnit.SECONDS);
 
     @Inject
-    public UserRepository(Webservice webservice, UserDao userDao) {
+    UserRepository(Webservice webservice, UserDao userDao) {
         this.mWebservice = webservice;
         this.mUserDao = userDao;
     }
@@ -212,7 +212,6 @@ public class UserRepository {
 
             @Override
             protected void saveCallResult(@NonNull CustomResponse<User> item) {
-                Log.d("", "");
             }
 
             @Override
@@ -223,13 +222,14 @@ public class UserRepository {
             @NonNull
             @Override
             protected LiveData<User> loadFromDb() {
-                return mUserDao.getCurrentUserByEmail(email);
+                return mUserDao.getUserByEmail(email);
             }
 
             @Nullable
             @Override
             protected LiveData<ApiResponse<CustomResponse<User>>> createCall() {
-                return mWebservice.sendVerifyCode(email);            }
+                return mWebservice.sendVerifyCode(email);
+            }
 
             @Override
             protected CustomResponse<User> processResponse(

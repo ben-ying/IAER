@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.AppCompatButton;
 import android.text.InputType;
+import android.util.Log;
 import android.util.Patterns;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -173,10 +174,13 @@ public class LoginActivity extends BaseActivity {
     }
 
     private void sendVerifyCodeTask(final String email, final AlertDialog dialog) {
-        mViewModel.sendVerifyCode(email);
-        dialog.dismiss();
-        Intent intent = new Intent(LoginActivity.this, ResetPasswordActivity.class);
-        intent.putExtra(Constant.EMAIL, email);
-        startActivityForResult(intent, Constant.RESET_PASSWORD_REQUEST_CODE);
+        mViewModel.sendVerifyCode(email).observe(this, userResource -> {
+            if (userResource != null && userResource.getData() != null) {
+                dialog.dismiss();
+                Intent intent = new Intent(LoginActivity.this, ResetPasswordActivity.class);
+                intent.putExtra(Constant.EMAIL, email);
+                startActivityForResult(intent, Constant.RESET_PASSWORD_REQUEST_CODE);
+            }
+        });
     }
 }
