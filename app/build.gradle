@@ -2,7 +2,7 @@ apply plugin: 'com.android.application'
 
 android {
     compileSdkVersion 26
-    buildToolsVersion "26.0.1"
+    buildToolsVersion '26.0.2'
     defaultConfig {
         applicationId "com.yjh.iaer"
         minSdkVersion 24
@@ -64,8 +64,8 @@ dependencies {
     // MPAndroidChart
     compile 'com.github.PhilJay:MPAndroidChart:v3.0.2'
     // leakCanary
-    debugCompile 'com.squareup.leakcanary:leakcanary-android:1.5.1'
-    releaseCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.5.1'
+//    debugCompile 'com.squareup.leakcanary:leakcanary-android:1.5.1'
+//    releaseCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.5.1'
     // Timber
     compile 'com.jakewharton.timber:timber:4.5.1'
     // Glide

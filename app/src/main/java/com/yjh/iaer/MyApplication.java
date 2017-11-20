@@ -6,8 +6,8 @@ import android.app.Application;
 import android.content.Context;
 import android.util.Log;
 
-import com.squareup.leakcanary.LeakCanary;
-import com.squareup.leakcanary.RefWatcher;
+//import com.squareup.leakcanary.LeakCanary;
+//import com.squareup.leakcanary.RefWatcher;
 import com.yjh.iaer.injection.AppInjector;
 import com.yjh.iaer.room.entity.User;
 import com.yjh.iaer.util.CrashLibrary;
@@ -22,7 +22,7 @@ public class MyApplication extends Application implements HasActivityInjector {
 
     public static User sUser;
 
-    private RefWatcher mRefWatcher;
+//    private RefWatcher mRefWatcher;
     @Inject
     DispatchingAndroidInjector<Activity> dispatchingAndroidInjector;
 
@@ -30,9 +30,9 @@ public class MyApplication extends Application implements HasActivityInjector {
     public void onCreate() {
         super.onCreate();
 
-        if (LeakCanary.isInAnalyzerProcess(this)) {
-            return;
-        }
+//        if (LeakCanary.isInAnalyzerProcess(this)) {
+//            return;
+//        }
 
         if (BuildConfig.DEBUG) {
             Timber.plant(new Timber.DebugTree());
@@ -43,7 +43,7 @@ public class MyApplication extends Application implements HasActivityInjector {
         // dagger
         AppInjector.init(this);
 
-        mRefWatcher = LeakCanary.install(this);
+//        mRefWatcher = LeakCanary.install(this);
     }
 
     @Override
@@ -69,8 +69,8 @@ public class MyApplication extends Application implements HasActivityInjector {
         }
     }
 
-    public static RefWatcher getRefWatcher(Context context) {
-        MyApplication application = (MyApplication) context.getApplicationContext();
-        return application.mRefWatcher;
-    }
+//    public static RefWatcher getRefWatcher(Context context) {
+//        MyApplication application = (MyApplication) context.getApplicationContext();
+//        return application.mRefWatcher;
+//    }
 }

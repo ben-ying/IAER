@@ -102,7 +102,7 @@ public class MainActivity extends BaseActivity
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        MyApplication.getRefWatcher(this).watch(this);
+//        MyApplication.getRefWatcher(this).watch(this);
     }
 
     @OnClick(R.id.fab)
