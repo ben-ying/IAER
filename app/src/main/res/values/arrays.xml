@@ -6,9 +6,9 @@
     </string-array>
 
     <string-array name="chart_options">
-        <item>全部</item>
         <item>按月显示</item>
         <item>按年显示</item>
+        <item>全部</item>
     </string-array>
 
     <string-array name="transaction_category_options">

@@ -5,12 +5,14 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.github.mikephil.charting.charts.HorizontalBarChart;
+import com.github.mikephil.charting.components.AxisBase;
 import com.github.mikephil.charting.components.Legend;
 import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
+import com.github.mikephil.charting.formatter.IAxisValueFormatter;
 import com.github.mikephil.charting.interfaces.datasets.IBarDataSet;
 import com.yjh.iaer.R;
 import com.yjh.iaer.custom.MyMarkerView;
@@ -18,8 +20,12 @@ import com.yjh.iaer.room.entity.Transaction;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import butterknife.BindView;
 
@@ -67,19 +73,51 @@ public class HorizontalBarChartFragment extends BaseChartFragment {
     @Override
     public void setData(List<Transaction> transactions) {
         super.setData(transactions);
-        int size = transactions.size();
+
+        Map<String, List<Transaction>> transactionMap = new HashMap<>();
+
+        for (Transaction transaction : transactions) {
+            List<Transaction> transactionList = transactionMap.get(transaction.getCategory());
+            if (transactionList == null) {
+                transactionList = new ArrayList<>();
+            }
+            transactionList.add(transaction);
+            transactionMap.put(transaction.getCategory(), transactionList);
+        }
+
+        int mapSize = transactionMap.size();
+        if (mapSize < ChartActivity.CHART_PAGE_SIZE) {
+            for (int i = 0; i < ChartActivity.CHART_PAGE_SIZE - mapSize; i++) {
+                List<Transaction> transactionList = new ArrayList<>();
+                transactionList.add(new Transaction("0", "", ""));
+                transactionMap.put("testMapKey" + i, transactionList);
+            }
+        }
+
+        List<Map.Entry<String, List<Transaction>>> list = new ArrayList<>(transactionMap.entrySet());
+        list.sort((o1, o2) -> {
+            int money1 = 0;
+            int money2 = 0;
+            for (Transaction transaction : o1.getValue()) {
+                money1 += Math.abs(transaction.getMoneyInt());
+            }
+            for (Transaction transaction : o2.getValue()) {
+                money2 += Math.abs(transaction.getMoneyInt());
+            }
+            return money1 > money2 ? 1 : -1;
+        });
+
+        transactions = new ArrayList<>();
+        for (Map.Entry<String, List<Transaction>> entry : list) {
+            transactions.add(entry.getValue().get(0));
+        }
+
+        int size = transactionMap.size();
         chart.setVisibility(size > 0 ? View.VISIBLE : View.GONE);
         descriptionLayout.setVisibility(size > 0 ? View.VISIBLE : View.GONE);
 
         if (size > 0) {
-            if (size < ChartActivity.CHART_PAGE_SIZE) {
-                for (int i = 0; i < ChartActivity.CHART_PAGE_SIZE - size; i++) {
-                    Transaction transaction = new Transaction();
-                    transactions.add(transaction);
-                }
-            }
-            transactions.sort(Comparator.comparing(Transaction::getMoneyAbsInt));
-            chart.setData(generateBarData());
+            chart.setData(generateBarData(list));
             chart.invalidate();
             chart.animateY(ANIMATION_MILLIS);
             // if data is empty set this, when has data chart always not shown
@@ -88,9 +126,16 @@ public class HorizontalBarChartFragment extends BaseChartFragment {
             XAxis xAxis = chart.getXAxis();
             xAxis.setTextSize(7);
             xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
+            List<Transaction> finalTransactions = transactions;
             xAxis.setValueFormatter((value, axis) -> {
-                        if (transactions.size() > value && value == Math.round(value)) {
-                            return transactions.get((int) value).getCategory();
+                        if (size > value && value == Math.round(value)) {
+                            String category = finalTransactions.get((int) value).getCategory();
+                            if (category.length() < 4) {
+                                for (int i = category.length(); i < 4; i++) {
+                                    category += " ";
+                                }
+                            }
+                            return category;
                         }
                         return "";
                     }
@@ -99,7 +144,7 @@ public class HorizontalBarChartFragment extends BaseChartFragment {
         }
     }
 
-    private BarData generateBarData() {
+    private BarData generateBarData(List<Map.Entry<String, List<Transaction>>> list) {
         final DecimalFormat format = new DecimalFormat("###,###,###");
         ArrayList<IBarDataSet> sets = new ArrayList<>();
         ArrayList<BarEntry> entries = new ArrayList<>();
@@ -107,22 +152,29 @@ public class HorizontalBarChartFragment extends BaseChartFragment {
         int income = 0;
         int consumption = 0;
 
-        for (int i = 0; i < transactions.size(); i++) {
-            Transaction transaction = transactions.get(i);
-            BarEntry barEntry = new BarEntry(i, Math.abs(transaction.getMoneyInt()));
-            if (transaction.getMoneyInt() != 0) {
-                barEntry.setData(transaction.getCreatedDate() + "\n"
-                        + transaction.getCategory()
-                        + ": " + format.format(transaction.getMoneyInt()));
+        int i = 0;
+        for (Map.Entry<String, List<Transaction>> entry : list) {
+            String description = "";
+            int money = 0;
+            for (Transaction transaction : entry.getValue()) {
+                money += transaction.getMoneyInt();
+                description += transaction.getCreatedDate() + "\n"
+                        + transaction.getRemark()
+                        + ": " + format.format(transaction.getMoneyInt()) + "\n";
+            }
+            BarEntry barEntry = new BarEntry(i, Math.abs(money));
+            if (money != 0) {
+                barEntry.setData(description.trim());
             }
             entries.add(barEntry);
-            if (transaction.getMoneyInt() > 0) {
+            if (money > 0) {
                 colors.add(getActivity().getColor(R.color.google_red));
-                income += transaction.getMoneyInt();
+                income += money;
             } else {
                 colors.add(getActivity().getColor(R.color.google_green));
-                consumption -= transaction.getMoneyInt();
+                consumption -= money;
             }
+            i++;
         }
 
         BarDataSet ds = new BarDataSet(entries, getDateString() +
