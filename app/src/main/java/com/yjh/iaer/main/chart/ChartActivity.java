@@ -61,13 +61,13 @@ public class ChartActivity extends BaseActivity {
         RxViewPager.pageSelections(viewPager).subscribe(integer -> {
             switch (integer) {
                 case 0:
-                    showAll();
-                    break;
-                case 1:
                     showChartByMonth();
                     break;
-                case 2:
+                case 1:
                     showChartByYear();
+                    break;
+                case 2:                   
+                    showAll();
                     break;
             }
         });
