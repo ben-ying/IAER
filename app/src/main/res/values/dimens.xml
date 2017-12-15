@@ -24,7 +24,7 @@
     <dimen name="profile_large_size">120dp</dimen>
     <dimen name="profile_medium_size">56dp</dimen>
     <dimen name="profile_size">72dp</dimen>
-    <dimen name="text_padding">10dp</dimen>
+    <dimen name="text_padding">8dp</dimen>
     <dimen name="register_small_text">16sp</dimen>
     <dimen name="item_medium_size">16sp</dimen>
     <dimen name="bottom_margin_vertical">24dp</dimen>

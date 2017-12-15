@@ -129,13 +129,7 @@ public class HorizontalBarChartFragment extends BaseChartFragment {
             List<Transaction> finalTransactions = transactions;
             xAxis.setValueFormatter((value, axis) -> {
                         if (size > value && value == Math.round(value)) {
-                            String category = finalTransactions.get((int) value).getCategory();
-                            if (category.length() < 4) {
-                                for (int i = category.length(); i < 4; i++) {
-                                    category += " ";
-                                }
-                            }
-                            return category;
+                            return finalTransactions.get((int) value).getCategory();
                         }
                         return "";
                     }

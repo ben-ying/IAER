@@ -7,6 +7,8 @@
 
     <com.github.mikephil.charting.charts.HorizontalBarChart
         android:id="@+id/horizontal_bar_chart"
+        android:paddingStart="@dimen/text_padding"
+        android:paddingEnd="@dimen/text_padding"
         android:layout_width="match_parent"
         android:layout_height="@dimen/bar_chart_size" />
 
