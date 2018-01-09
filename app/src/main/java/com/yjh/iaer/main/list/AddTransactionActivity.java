@@ -100,7 +100,10 @@ public class AddTransactionActivity extends BaseActivity {
         switch (menuItem.getItemId()) {
             case R.id.action_add:
                 progressBar.setVisibility(View.VISIBLE);
-                mViewModel.addTransactionResource(categorySpinner.getSelectedItem().toString(),
+                String category = typeSpinner.getSelectedItemPosition() == 0 ?
+                        categorySpinner.getSelectedItem().toString() :
+                        typeSpinner.getSelectedItem().toString();
+                mViewModel.addTransactionResource(category,
                         moneyEditText.getText().toString(),
                         remarkEditText.getText().toString(),
                         typeSpinner.getSelectedItemPosition() == 0).observe(
@@ -119,6 +122,13 @@ public class AddTransactionActivity extends BaseActivity {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                 checkCanSave();
+                if (i == categoryAdapter.getCount() - 1
+                        && typeSpinner.getSelectedItemPosition() == 0) {
+                    typeSpinner.setSelection(1);
+                } else if (i != categoryAdapter.getCount() - 1
+                        && typeSpinner.getSelectedItemPosition() == 1) {
+                    typeSpinner.setSelection(0);
+                }
             }
 
             @Override
@@ -130,6 +140,21 @@ public class AddTransactionActivity extends BaseActivity {
                 android.R.layout.simple_spinner_dropdown_item,
                 getResources().getStringArray(R.array.transaction_type_options));
         typeSpinner.setAdapter(typeAdapter);
+        typeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                if (position == 0) {
+                    categorySpinner.setSelection(0);
+                } else {
+                    categorySpinner.setSelection(categorySpinner.getCount() - 1);
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
     }
 
     private void setData(@Nullable Resource<Transaction> listResource) {

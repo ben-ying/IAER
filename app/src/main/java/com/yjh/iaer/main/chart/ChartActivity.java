@@ -135,14 +135,14 @@ public class ChartActivity extends BaseActivity {
         spinner.setSelection(mMonthSelection);
         final int currentYear = Calendar.getInstance().get(Calendar.YEAR);
         final int currentMonth = Calendar.getInstance().get(Calendar.MONTH);
-        boolean thisYear = currentMonth - mMonthSelection > 0;
+        boolean thisYear = currentMonth - mMonthSelection >= 0;
         getCurrentFragment().setChartDate(
                 thisYear ? currentYear : currentYear - 1, mMonthSelection + 1);
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                 mMonthSelection = i;
-                boolean thisYear = currentMonth - mMonthSelection > 0;
+                boolean thisYear = currentMonth - mMonthSelection >= 0;
                 int month = currentMonth - mMonthSelection + 1;
                 getCurrentFragment().setChartDate(
                         thisYear ? currentYear : currentYear - 1, month > 0 ? month : month + 12);
