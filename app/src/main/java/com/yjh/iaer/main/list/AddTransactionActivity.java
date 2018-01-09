@@ -144,7 +144,10 @@ public class AddTransactionActivity extends BaseActivity {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 if (position == 0) {
-                    categorySpinner.setSelection(0);
+                    if (categorySpinner.getSelectedItemPosition()
+                            == categorySpinner.getCount() - 1) {
+                        categorySpinner.setSelection(0);
+                    }
                 } else {
                     categorySpinner.setSelection(categorySpinner.getCount() - 1);
                 }
