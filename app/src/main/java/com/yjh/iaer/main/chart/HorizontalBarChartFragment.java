@@ -197,4 +197,115 @@ public class HorizontalBarChartFragment extends BaseChartFragment {
 
         return barData;
     }
+
+    public void summary(int type) {
+        super.summary(type);
+
+        Map<String, List<Transaction>> transactionMap = new HashMap<>();
+
+        for (Transaction transaction : transactions) {
+            String key;
+            String symbol = transaction.getMoneyInt() > 0 ? "+" : "-";
+            if (type == 0) {
+                key = symbol + transaction.getYearStr() + transaction.getMonthStr();
+            } else {
+                key = symbol + transaction.getYearStr();
+            }
+            List<Transaction> transactionList = transactionMap.get(key);
+            if (transactionList == null) {
+                transactionList = new ArrayList<>();
+            }
+            transactionList.add(transaction);
+            transactionMap.put(key, transactionList);
+        }
+
+        int mapSize = transactionMap.size();
+        if (mapSize < ChartActivity.CHART_PAGE_SIZE) {
+            for (int i = 0; i < ChartActivity.CHART_PAGE_SIZE - mapSize; i++) {
+                List<Transaction> transactionList = new ArrayList<>();
+                transactionList.add(new Transaction("0", "", ""));
+                transactionMap.put("testMapKey" + i, transactionList);
+            }
+        }
+
+        List<Map.Entry<String, List<Transaction>>> list = new ArrayList<>(transactionMap.entrySet());
+        list.sort((o1, o2) -> {
+            int money1 = 0;
+            int money2 = 0;
+            boolean positiveValue1 = true;
+            boolean positiveValue2 = true;
+            int year1 = 0;
+            int year2 = 0;
+            int month1 = 0;
+            int month2 = 0;
+            for (Transaction transaction : o1.getValue()) {
+                money1 += Math.abs(transaction.getMoneyInt());
+                positiveValue1 = transaction.getMoneyInt() > 0;
+                year1 = transaction.getYear();
+                month1 = transaction.getMonth();
+            }
+            for (Transaction transaction : o2.getValue()) {
+                money2 += Math.abs(transaction.getMoneyInt());
+                positiveValue2 = transaction.getMoneyInt() > 0;
+                year2 = transaction.getYear();
+                month2 = transaction.getMonth();
+            }
+
+            if (money1 == 0) {
+                return -1;
+            } else if (money2 == 0) {
+                return 1;
+            } else {
+                if (year1 > year2) {
+                    return 1;
+                } else if (year1 < year2) {
+                    return -1;
+                } else if (month1 > month2) {
+                    return 1;
+                } else if (month1 < month2) {
+                    return -1;
+                }
+                return positiveValue1 ? 1 : -1;
+            }
+        });
+
+        transactions = new ArrayList<>();
+        for (Map.Entry<String, List<Transaction>> entry : list) {
+            transactions.add(entry.getValue().get(0));
+        }
+
+        int size = transactionMap.size();
+        chart.setVisibility(size > 0 ? View.VISIBLE : View.GONE);
+        descriptionLayout.setVisibility(size > 0 ? View.VISIBLE : View.GONE);
+
+        if (size > 0) {
+            chart.setData(generateBarData(list));
+            chart.invalidate();
+            chart.animateY(ANIMATION_MILLIS);
+            // if data is empty set this, when has data chart always not shown
+            chart.setVisibleXRange(ChartActivity.CHART_PAGE_SIZE, ChartActivity.CHART_PAGE_SIZE);
+            chart.moveViewTo(0, 0, YAxis.AxisDependency.LEFT);
+            XAxis xAxis = chart.getXAxis();
+            xAxis.setTextSize(7);
+            xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
+            xAxis.setValueFormatter((value, axis) -> {
+                        if (size > value && value == Math.round(value)) {
+                            String year = transactions.get((int) value).getYearStr();
+                            String month = transactions.get((int) value).getMonthStr();
+                            if (year.isEmpty() || month.isEmpty()) {
+                                return "";
+                            } else {
+                                if (type == 0) {
+                                    return year + "/" + month;
+                                } else {
+                                    return year;
+                                }
+                            }
+                        }
+                        return "";
+                    }
+            );
+            chart.setDoubleTapToZoomEnabled(false);
+        }
+    }
 }

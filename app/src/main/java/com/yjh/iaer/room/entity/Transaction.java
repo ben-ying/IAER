@@ -63,6 +63,22 @@ public class Transaction implements Serializable {
         }
     }
 
+    public String getYearStr() {
+        try {
+            return created.split("-")[0];
+        } catch (Exception e) {
+            return "";
+        }
+    }
+
+    public String getMonthStr() {
+        try {
+            return created.split("-")[1];
+        } catch (Exception e) {
+            return "";
+        }
+    }
+
     public int getYear() {
         try {
             return Integer.valueOf(created.split("-")[0]);

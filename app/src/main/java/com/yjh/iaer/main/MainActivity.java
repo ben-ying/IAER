@@ -28,6 +28,7 @@ import com.yjh.iaer.main.list.AddTransactionActivity;
 import com.yjh.iaer.main.list.TransactionsFragment;
 import com.yjh.iaer.nav.SwitchAccountActivity;
 import com.yjh.iaer.util.AlertUtils;
+import com.yjh.iaer.util.Utils;
 import com.yjh.iaer.viewmodel.UserViewModel;
 
 import javax.inject.Inject;
@@ -78,6 +79,7 @@ public class MainActivity extends BaseActivity
                 .signature(new ObjectKey(getResources().getInteger(R.integer.glide_version)))
                 .into(profileImageView);
 
+        MainActivity.this.setTitle(Utils.capWords(MyApplication.sUser.getUsername()));
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer,
                 toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close) {
             @Override

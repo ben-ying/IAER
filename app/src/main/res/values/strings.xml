@@ -70,7 +70,7 @@
     <string name="remark">备注：%s</string>
 
     <string name="list">列表</string>
-    <string name="chart">图表</string>
+    <string name="chart">统计</string>
     <string name="chart_month">%1$d年%2$d月</string>
     <string name="chart_year">%d年</string>
     <string name="no_data">没有收支记录</string>

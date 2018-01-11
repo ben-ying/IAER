@@ -2,13 +2,19 @@
 <resources>
     <string-array name="fragment_options">
         <item>列表</item>
-        <item>图表</item>
+        <item>统计</item>
     </string-array>
 
     <string-array name="chart_options">
+        <item>按月</item>
+        <item>按年</item>
+        <item>全部</item>
+        <item>总结</item>
+    </string-array>
+
+    <string-array name="chart_summary_type_options">
         <item>按月显示</item>
         <item>按年显示</item>
-        <item>全部</item>
     </string-array>
 
     <string-array name="transaction_category_options">

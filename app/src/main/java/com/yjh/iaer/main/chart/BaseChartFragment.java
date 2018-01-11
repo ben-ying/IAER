@@ -92,4 +92,10 @@ public abstract class BaseChartFragment extends BaseFragment {
         noDataTextView.setVisibility(transactions.size() > 0 ? View.GONE : View.VISIBLE);
         noDataTextView.setText(noDataHint);
     }
+
+    public void summary(int type) {
+        transactions = mAllTransactions;
+        noDataTextView.setVisibility(transactions.size() > 0 ? View.GONE : View.VISIBLE);
+        noDataTextView.setText(noDataHint);
+    }
 }

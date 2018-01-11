@@ -2,8 +2,6 @@ package com.yjh.iaer.main.chart;
 
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
-import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
@@ -33,8 +31,10 @@ public class ChartActivity extends BaseActivity {
     @BindView(R.id.spinner)
     Spinner spinner;
 
+    private int mPageSize;
     private int mMonthSelection;
     private int mYearSelection;
+    private int mTypeSelection;
     private ChartPagerAdapter mChartPagerAdapter;
 
     @Override
@@ -47,7 +47,8 @@ public class ChartActivity extends BaseActivity {
     public void initView() {
         getSupportActionBar().setTitle(R.string.chart);
         List<BaseChartFragment> fragments = new ArrayList<>();
-        for (int i = 0; i < CHART_TYPE.values().length; i++) {
+        mPageSize = getResources().getStringArray(R.array.chart_options).length;
+        for (int i = 0; i < mPageSize; i++) {
             HorizontalBarChartFragment fragment = HorizontalBarChartFragment.newInstance(i);
             fragments.add(fragment);
         }
@@ -67,18 +68,14 @@ public class ChartActivity extends BaseActivity {
                     showChartByYear();
                     break;
                 case 2:                   
-                    showAll();
+                    showChartByAll();
+                    break;
+                case 3:
+                    summary();
                     break;
             }
         });
     }
-
-//    @Override
-//    public boolean onCreateOptionsMenu(Menu menu) {
-//        MenuInflater inflater = getMenuInflater();
-//        inflater.inflate(R.menu.chart, menu);
-//        return true;
-//    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem menuItem) {
@@ -86,13 +83,13 @@ public class ChartActivity extends BaseActivity {
 
         switch (menuItem.getItemId()) {
             case R.id.action_sort_by_amount:
-                for (int i = 0; i < CHART_TYPE.values().length; i++) {
+                for (int i = 0; i < mPageSize; i++) {
                     HorizontalBarChartFragment fragment = HorizontalBarChartFragment.newInstance(i);
                     fragments.add(fragment);
                 }
                 break;
             case R.id.action_sort_by_category:
-                for (int i = 0; i < CHART_TYPE.values().length; i++) {
+                for (int i = 0; i < mPageSize; i++) {
                     PieChartFragment fragment = PieChartFragment.newInstance(i);
                     fragments.add(fragment);
                 }
@@ -109,9 +106,30 @@ public class ChartActivity extends BaseActivity {
         return super.onOptionsItemSelected(menuItem);
     }
 
-    private void showAll() {
+    private void showChartByAll() {
         spinner.setVisibility(View.GONE);
         getCurrentFragment().setChartDate(0, 0);
+    }
+
+    private void summary() {
+        spinner.setVisibility(View.VISIBLE);
+        String[] typeArray = getResources().getStringArray(R.array.chart_summary_type_options);
+        ArrayAdapter<String> typeAdapter = new ArrayAdapter<>(this,
+                android.R.layout.simple_spinner_dropdown_item, typeArray);
+        spinner.setAdapter(typeAdapter);
+        spinner.setSelection(mTypeSelection);
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                mTypeSelection = i;
+                getCurrentFragment().summary(mTypeSelection);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
     }
 
     private void showChartByMonth() {
@@ -133,19 +151,17 @@ public class ChartActivity extends BaseActivity {
                 android.R.layout.simple_spinner_dropdown_item, monthArray);
         spinner.setAdapter(monthAdapter);
         spinner.setSelection(mMonthSelection);
-        final int currentYear = Calendar.getInstance().get(Calendar.YEAR);
-        final int currentMonth = Calendar.getInstance().get(Calendar.MONTH);
-        boolean thisYear = currentMonth - mMonthSelection >= 0;
-        getCurrentFragment().setChartDate(
-                thisYear ? currentYear : currentYear - 1, mMonthSelection + 1);
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                int currentYear = Calendar.getInstance().get(Calendar.YEAR);
+                int currentMonth = Calendar.getInstance().get(Calendar.MONTH);
                 mMonthSelection = i;
                 boolean thisYear = currentMonth - mMonthSelection >= 0;
                 int month = currentMonth - mMonthSelection + 1;
                 getCurrentFragment().setChartDate(
-                        thisYear ? currentYear : currentYear - 1, month > 0 ? month : month + 12);
+                        thisYear ? currentYear : currentYear - 1,
+                        month > 0 ? month : month + 12);
             }
 
             @Override
@@ -167,14 +183,13 @@ public class ChartActivity extends BaseActivity {
                 android.R.layout.simple_spinner_dropdown_item, yearArray);
         spinner.setAdapter(yearAdapter);
         spinner.setSelection(mYearSelection);
-        getCurrentFragment().setChartDate(
-                Calendar.getInstance().get(Calendar.YEAR) - mYearSelection, 0);
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                 mYearSelection = i;
                 getCurrentFragment().setChartDate(
-                        Calendar.getInstance().get(Calendar.YEAR) - mYearSelection, 0);
+                        Calendar.getInstance().get(Calendar.YEAR) - mYearSelection,
+                        0);
             }
 
             @Override
