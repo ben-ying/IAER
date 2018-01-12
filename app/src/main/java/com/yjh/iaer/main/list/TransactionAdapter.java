@@ -28,7 +28,7 @@ public class TransactionAdapter extends RecyclerView.Adapter<
     private TransactionInterface mInterface;
 
     interface TransactionInterface {
-        void delete(int reId);
+        void delete(int id);
     }
 
     TransactionAdapter(Context context, List<Transaction> transactions,

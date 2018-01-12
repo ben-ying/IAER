@@ -79,6 +79,9 @@
 
     <string name="ok">确定</string>
     <string name="cancel">取消</string>
+    <string name="edit">编辑</string>
+    <string name="save">保存</string>
+    <string name="delete">删除</string>
     <string name="confirm">确定</string>
     <string name="non_empty_field">输入框不能为空</string>
 

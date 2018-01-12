@@ -82,9 +82,9 @@ public class TransactionsFragment extends BaseFragment
     }
 
     @Override
-    public void delete(int reId) {
+    public void delete(int id) {
         progressBar.setVisibility(View.VISIBLE);
-        mViewModel.delete(reId);
+        mViewModel.delete(id);
     }
 
     @Override

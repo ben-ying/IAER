@@ -21,6 +21,7 @@ public class TransactionViewModel extends ViewModel {
     private final MutableLiveData<ReId> mIaerIdLiveData = new MutableLiveData<>();
     private final TransactionRepository mRepository;
     private LiveData<Resource<List<Transaction>>> mTransactions;
+    private LiveData<Resource<Transaction>> mTransaction;
 
     @Inject
     TransactionDao dao;
@@ -40,6 +41,16 @@ public class TransactionViewModel extends ViewModel {
             }
             return null;
         });
+
+        mTransaction = Transformations.switchMap(mIaerIdLiveData, iaerId -> {
+            switch (iaerId.type) {
+//                case TYPE_LOAD:
+//                    return mRepository.loadTransactions(iaerId.userId, iaerId.fetchNetwork);
+                case TYPE_DELETE:
+                    return mRepository.delete(iaerId.id);
+            }
+            return null;
+        });
     }
 
     public LiveData<Resource<Transaction>> addTransactionResource(final String category,
@@ -52,6 +63,10 @@ public class TransactionViewModel extends ViewModel {
 
     public LiveData<Resource<List<Transaction>>> getTransactionsResource() {
         return mTransactions;
+    }
+
+    public LiveData<Resource<Transaction>> getTransactionResource() {
+        return mTransaction;
     }
 
     public void load(int userId, boolean fetchNetwork) {
