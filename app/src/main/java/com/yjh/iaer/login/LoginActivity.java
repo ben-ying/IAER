@@ -142,7 +142,7 @@ public class LoginActivity extends BaseActivity {
     @OnClick(R.id.tv_forgot_password)
     void onForgotPassword() {
         final View view = LayoutInflater.from(this).inflate(R.layout.dialog_edit_text, null);
-        final EditText emailEditText = (EditText) view.findViewById(R.id.et_value);
+        final EditText emailEditText = view.findViewById(R.id.et_value);
         emailEditText.setHint(R.string.email);
         emailEditText.setInputType(InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS);
         final AlertDialog dialog = new AlertDialog.Builder(this, R.style.MyDialogTheme)

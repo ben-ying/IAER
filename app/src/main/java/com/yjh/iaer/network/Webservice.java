@@ -45,6 +45,15 @@ public interface Webservice {
             @Field("token") String token);
 
     @FormUrlEncoded
+    @HTTP(method = "POST", path = URL_TRANSACTIONS + "{iaerId}", hasBody = true)
+    LiveData<ApiResponse<CustomResponse<Transaction>>> edit(
+            @Path("iaerId") int iaerId,
+            @Field("category") String category,
+            @Field("money") String money,
+            @Field("remark") String remark,
+            @Field("token") String token);
+
+    @FormUrlEncoded
     @POST(URL_USER_LOGIN)
     LiveData<ApiResponse<CustomResponse<User>>> login(
             @Field("username") String username,

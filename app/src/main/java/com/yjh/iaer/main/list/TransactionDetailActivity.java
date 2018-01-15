@@ -1,27 +1,25 @@
 package com.yjh.iaer.main.list;
 
-import android.arch.lifecycle.Observer;
+import android.app.AlertDialog;
 import android.arch.lifecycle.ViewModelProvider;
 import android.arch.lifecycle.ViewModelProviders;
-import android.support.annotation.Nullable;
+import android.content.DialogInterface;
 import android.support.v7.widget.AppCompatButton;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.ProgressBar;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 
-import com.yjh.iaer.MyApplication;
 import com.yjh.iaer.R;
 import com.yjh.iaer.base.BaseActivity;
 import com.yjh.iaer.constant.Constant;
-import com.yjh.iaer.network.Resource;
 import com.yjh.iaer.room.entity.Transaction;
 import com.yjh.iaer.util.AlertUtils;
 import com.yjh.iaer.viewmodel.TransactionViewModel;
-
-import java.util.Collections;
-import java.util.List;
 
 import javax.inject.Inject;
 
@@ -61,7 +59,7 @@ public class TransactionDetailActivity extends BaseActivity {
         getSupportActionBar().setTitle(R.string.transaction_detail);
         mTransaction = (Transaction) getIntent()
                 .getSerializableExtra(Constant.EXTRA_TRANSACTION);
-        setData(mTransaction);
+        refreshData();
 
         mViewModel = ViewModelProviders.of(
                 this, viewModelFactory).get(TransactionViewModel.class);
@@ -69,7 +67,8 @@ public class TransactionDetailActivity extends BaseActivity {
             if (transactionResource == null || transactionResource.getData() == null) {
                 finish();
             } else {
-                setData(transactionResource.getData());
+                mTransaction = transactionResource.getData();
+                refreshData();
                 finish();
             }
         });
@@ -104,7 +103,7 @@ public class TransactionDetailActivity extends BaseActivity {
         if (id == R.id.action_edit) {
             mEditable = !mEditable;
             if (mEditable) {
-                invalidateOptionsMenu();
+                onEditClick();
             } else {
                 mViewModel.load(mTransaction.getIaerId(), true);
             }
@@ -114,14 +113,41 @@ public class TransactionDetailActivity extends BaseActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    private void setData(Transaction transaction) {
+    private void refreshData() {
         categoryTextView.setText(String.format(
-                getString(R.string.category), transaction.getCategory()));
-        moneyTextView.setText(transaction.getMoneyInt() > 0 ?
-                String.format(getString(R.string.money_income), transaction.getMoneyInt()) :
-                String.format(getString(R.string.money_consumption), -transaction.getMoneyInt()));
+                getString(R.string.category), mTransaction.getCategory()));
+        moneyTextView.setText(mTransaction.getMoneyInt() > 0 ?
+                String.format(getString(R.string.money_income), mTransaction.getMoneyInt()) :
+                String.format(getString(R.string.money_consumption), -mTransaction.getMoneyInt()));
         remarkTextView.setText(String.format(
-                getString(R.string.category), transaction.getRemark()));
-        dateTextView.setText(transaction.getCreatedDate());
+                getString(R.string.remark), mTransaction.getRemark()));
+        dateTextView.setText(mTransaction.getCreatedDate());
+    }
+
+    private void onEditClick() {
+        final View view = LayoutInflater.from(this).inflate(R.layout.dialog_edit_transaction, null);
+        final EditText fromEditText = view.findViewById(R.id.et_from);
+        final EditText moneyEditText = view.findViewById(R.id.et_money);
+        final EditText remarkEditText = view.findViewById(R.id.et_remark);
+        final RadioGroup radioGroup = view.findViewById(R.id.rg_type);
+        fromEditText.setText(mTransaction.getCategory());
+        moneyEditText.setText(mTransaction.getMoneyAbsInt());
+        remarkEditText.setText(mTransaction.getRemark());
+        final AlertDialog dialog = new AlertDialog.Builder(this, R.style.MyDialogTheme)
+                .setMessage(R.string.dialog_forgot_password)
+                .setView(view)
+                .setPositiveButton(R.string.ok, (dialog1, which) -> {
+                    boolean positive = radioGroup.getCheckedRadioButtonId() == R.id.rb_input;
+                    String money = moneyEditText.getText().toString();
+                    mTransaction.setCategory(fromEditText.getText().toString());
+                    mTransaction.setMoney(positive ? money : "-" + money);
+                    mTransaction.setRemark(remarkEditText.getText().toString());
+                    refreshData();
+                    invalidateOptionsMenu();
+                })
+                .setNegativeButton(R.string.cancel, null)
+                .create();
+        dialog.setCancelable(true);
+        dialog.show();
     }
 }

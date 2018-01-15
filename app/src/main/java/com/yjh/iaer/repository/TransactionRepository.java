@@ -204,4 +204,46 @@ public class TransactionRepository {
             }
         }.getAsLiveData();
     }
+
+    public LiveData<Resource<Transaction>> edit(Transaction transaction) {
+        return new NetworkBoundResource<Transaction, CustomResponse<Transaction>>() {
+
+            @Override
+            protected void saveCallResult(@NonNull CustomResponse<Transaction> item) {
+                mTransactionDao.save(item.getResult());
+            }
+
+            @Override
+            protected boolean shouldFetch(@Nullable Transaction data) {
+                return true;
+            }
+
+            @NonNull
+            @Override
+            protected LiveData<Transaction> loadFromDb() {
+                return mTransactionDao.loadById(transaction.getIaerId());
+            }
+
+            @Nullable
+            @Override
+            protected LiveData<ApiResponse<CustomResponse<Transaction>>> createCall() {
+                return mWebservice.edit(transaction.getIaerId(),
+                        transaction.getCategory(),
+                        transaction.getMoney(),
+                        transaction.getRemark(),
+                        MyApplication.sUser.getToken());
+            }
+
+            @Override
+            protected CustomResponse<Transaction> processResponse(
+                    ApiResponse<CustomResponse<Transaction>> response) {
+                return response.getBody();
+            }
+
+            @Override
+            protected void onFetchFailed() {
+                super.onFetchFailed();
+            }
+        }.getAsLiveData();
+    }
 }

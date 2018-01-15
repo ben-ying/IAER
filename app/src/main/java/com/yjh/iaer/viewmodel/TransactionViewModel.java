@@ -17,9 +17,11 @@ import javax.inject.Inject;
 public class TransactionViewModel extends ViewModel {
     private static final int TYPE_LOAD = 0;
     private static final int TYPE_DELETE = 1;
+    private static final int TYPE_EDIT = 2;
 
-    private final MutableLiveData<ReId> mIaerIdLiveData = new MutableLiveData<>();
-    private final TransactionRepository mRepository;
+    private MutableLiveData<ReId> mIaerIdLiveData = new MutableLiveData<>();
+    private MutableLiveData<Transaction> mTransactionMutableLiveData = new MutableLiveData<>();
+    private TransactionRepository mRepository;
     private LiveData<Resource<List<Transaction>>> mTransactions;
     private LiveData<Resource<Transaction>> mTransaction;
 
@@ -42,12 +44,12 @@ public class TransactionViewModel extends ViewModel {
             return null;
         });
 
-        mTransaction = Transformations.switchMap(mIaerIdLiveData, iaerId -> {
-            switch (iaerId.type) {
-//                case TYPE_LOAD:
-//                    return mRepository.loadTransactions(iaerId.userId, iaerId.fetchNetwork);
+        mTransaction = Transformations.switchMap(mTransactionMutableLiveData, transaction -> {
+            switch (transaction.getType()) {
+                case TYPE_EDIT:
+                    return mRepository.edit(transaction);
                 case TYPE_DELETE:
-                    return mRepository.delete(iaerId.id);
+                    return mRepository.delete(transaction.getIaerId());
             }
             return null;
         });
@@ -67,6 +69,17 @@ public class TransactionViewModel extends ViewModel {
 
     public LiveData<Resource<Transaction>> getTransactionResource() {
         return mTransaction;
+    }
+
+    public void deleteById(int id) {
+        Transaction transaction = new Transaction();
+        transaction.setType(TYPE_DELETE);
+        transaction.setIaerId(id);
+        mTransactionMutableLiveData.setValue(transaction);
+    }
+
+    public void edit(Transaction transaction) {
+        mTransactionMutableLiveData.setValue(transaction);
     }
 
     public void load(int userId, boolean fetchNetwork) {
