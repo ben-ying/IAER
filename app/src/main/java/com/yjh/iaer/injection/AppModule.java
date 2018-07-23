@@ -18,11 +18,15 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 @Module(includes = ViewModelModule.class)
 class AppModule {
-    private static final String BASE_URL = "http://bensbabycare.com/webservice/";
+//    private static final String BASE_URL = "http://bensbabycare.com/webservice/";
+    private static final String BASE_URL = "http://192.168.1.201:8000/webservice/";
+//    private static final String BASE_URL = "http://raspbian-backend.ddns.net:8000/webservice/";
 
     @Singleton
     @Provides
     Webservice provideWebservice() {
+//        WifiManager wm = (WifiManager) getSystemService(WIFI_SERVICE);
+//        String ip = Formatter.formatIpAddress(wm.getConnectionInfo().getIpAddress());
         return new Retrofit.Builder()
                 .baseUrl(BASE_URL)
                 .addConverterFactory(GsonConverterFactory.create())
