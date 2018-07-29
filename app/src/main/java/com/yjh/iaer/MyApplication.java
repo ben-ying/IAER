@@ -21,6 +21,7 @@ import timber.log.Timber;
 public class MyApplication extends Application implements HasActivityInjector {
 
     public static User sUser;
+    public static MyApplication sInstance;
 
 //    private RefWatcher mRefWatcher;
     @Inject
@@ -29,7 +30,7 @@ public class MyApplication extends Application implements HasActivityInjector {
     @Override
     public void onCreate() {
         super.onCreate();
-
+        sInstance = this;
 //        if (LeakCanary.isInAnalyzerProcess(this)) {
 //            return;
 //        }

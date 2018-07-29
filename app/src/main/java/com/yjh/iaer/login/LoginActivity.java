@@ -26,6 +26,7 @@ import com.yjh.iaer.base.BaseActivity;
 import com.yjh.iaer.constant.Constant;
 import com.yjh.iaer.main.MainActivity;
 import com.yjh.iaer.network.Resource;
+import com.yjh.iaer.network.Status;
 import com.yjh.iaer.room.entity.User;
 import com.yjh.iaer.util.AlertUtils;
 import com.yjh.iaer.util.SystemUtils;
@@ -73,7 +74,8 @@ public class LoginActivity extends BaseActivity {
         mViewModel.loadAllUsers().observe(this, listResource -> {
             if (listResource != null && listResource.getData() != null
                     && listResource.getData().size() > 0) {
-                if (listResource.getData().get(0).isLogin()) {
+                if (listResource.getData().get(0).isLogin() &&
+                        !getIntent().getBooleanExtra(Constant.MULTI_USER, false)) {
                     MyApplication.sUser = listResource.getData().get(0);
                     Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                     startActivity(intent);
@@ -99,8 +101,8 @@ public class LoginActivity extends BaseActivity {
     }
 
     private boolean isValid() {
-        mUsername = usernameEditText.getText().toString().trim();
-        mPassword = passwordEditText.getText().toString().trim();
+        mUsername = usernameEditText.getText().toString().toLowerCase().trim();
+        mPassword = passwordEditText.getText().toString().toLowerCase().trim();
 
         if (mUsername.isEmpty()) {
             AlertUtils.showAlertDialog(this, R.string.empty_username);
@@ -121,13 +123,16 @@ public class LoginActivity extends BaseActivity {
     @OnClick(R.id.btn_login)
     void loginTask() {
         if (isValid()) {
-            progressBar.setVisibility(View.VISIBLE);
             mViewModel.login(mUsername, mPassword, null).observe(this, userResource -> {
-                if (userResource != null && userResource.getData() != null) {
+                if (userResource.getStatus() == Status.LOADING) {
+                    progressBar.setVisibility(View.VISIBLE);
+                } else {
                     progressBar.setVisibility(View.GONE);
-                    Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-                    startActivity(intent);
-                    finish();
+                    if (userResource.getStatus() == Status.SUCCESS && userResource.getData() != null) {
+                        Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                        startActivity(intent);
+                        finish();
+                    }
                 }
             });
         }
@@ -175,11 +180,17 @@ public class LoginActivity extends BaseActivity {
 
     private void sendVerifyCodeTask(final String email, final AlertDialog dialog) {
         mViewModel.sendVerifyCode(email).observe(this, userResource -> {
-            if (userResource != null && userResource.getData() != null) {
-                dialog.dismiss();
-                Intent intent = new Intent(LoginActivity.this, ResetPasswordActivity.class);
-                intent.putExtra(Constant.EMAIL, email);
-                startActivityForResult(intent, Constant.RESET_PASSWORD_REQUEST_CODE);
+            if (userResource.getStatus() == Status.LOADING) {
+                progressBar.setVisibility(View.VISIBLE);
+            } else{
+                progressBar.setVisibility(View.GONE);
+                if (userResource.getStatus() == Status.SUCCESS) {
+                    progressBar.setVisibility(View.GONE);
+                    dialog.dismiss();
+                    Intent intent = new Intent(LoginActivity.this, ResetPasswordActivity.class);
+                    intent.putExtra(Constant.EMAIL, email);
+                    startActivityForResult(intent, Constant.RESET_PASSWORD_REQUEST_CODE);
+                }
             }
         });
     }

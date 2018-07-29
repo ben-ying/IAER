@@ -4,7 +4,6 @@ package com.yjh.iaer.repository;
 import android.arch.lifecycle.LiveData;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.util.Log;
 
 import com.yjh.iaer.MyApplication;
 import com.yjh.iaer.model.CustomResponse;
@@ -133,21 +132,16 @@ public class UserRepository {
 
             @Override
             protected boolean shouldFetch(@Nullable User data) {
-                new Thread(() -> {
-                    if (data != null && data.getToken() != null) {
-                        data.setLogin(false);
-                        mUserDao.save(data);
-                        MyApplication.sUser = null;
-                    }
-                }).start();
-
                 return false;
             }
 
             @NonNull
             @Override
             protected LiveData<User> loadFromDb() {
-                return mUserDao.getCurrentUser();
+                LiveData<User> userLiveData = mUserDao.getCurrentUser();
+                deleteUserHistory(MyApplication.sUser);
+                MyApplication.sUser = null;
+                return userLiveData;
             }
 
             @Nullable
@@ -206,6 +200,11 @@ public class UserRepository {
         }.getAsLiveData();
     }
 
+    public void deleteUserHistory(User user) {
+        new Thread(() -> {
+            mUserDao.delete(user);
+        }).start();
+    }
 
     public LiveData<Resource<User>> sendVerifyCode(final String email) {
         return new NetworkBoundResource<User, CustomResponse<User>>() {
@@ -242,10 +241,6 @@ public class UserRepository {
                 super.onFetchFailed();
             }
         }.getAsLiveData();
-    }
-
-    public void deleteUserHistory(User user) {
-        mUserDao.delete(user);
     }
 
     private void saveUser(User user) {

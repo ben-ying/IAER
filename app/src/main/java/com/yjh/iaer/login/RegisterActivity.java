@@ -4,12 +4,15 @@ import android.arch.lifecycle.ViewModelProvider;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
 import android.util.Patterns;
+import android.view.View;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 
 import com.yjh.iaer.R;
 import com.yjh.iaer.base.BaseActivity;
 import com.yjh.iaer.constant.Constant;
 import com.yjh.iaer.main.MainActivity;
+import com.yjh.iaer.network.Status;
 import com.yjh.iaer.util.AlertUtils;
 import com.yjh.iaer.viewmodel.UserViewModel;
 
@@ -30,6 +33,8 @@ public class RegisterActivity extends BaseActivity {
     EditText passwordEditText;
     @BindView(R.id.et_confirm_password)
     EditText confirmPasswordEditText;
+    @BindView(R.id.progress_bar)
+    ProgressBar progressBar;
 
     private String mUsername;
     private String mEmail;
@@ -56,13 +61,20 @@ public class RegisterActivity extends BaseActivity {
         if (isValid()) {
             mViewModel.register(mUsername, mPassword, mEmail)
                     .observe(this, userResource -> {
-                    if (userResource != null && userResource.getData() != null) {
-                        Intent intent = new Intent(
-                                RegisterActivity.this, MainActivity.class);
-                        intent.setFlags(
-                                Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_NEW_TASK);
-                        startActivity(intent);
-                    }
+                        if (userResource.getStatus() == Status.LOADING) {
+                            progressBar.setVisibility(View.VISIBLE);
+                        } else{
+                            progressBar.setVisibility(View.GONE);
+                            if (userResource.getStatus() == Status.SUCCESS) {
+                                progressBar.setVisibility(View.GONE);
+
+                                Intent intent = new Intent(
+                                        RegisterActivity.this, MainActivity.class);
+                                intent.setFlags(
+                                        Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_NEW_TASK);
+                                startActivity(intent);
+                            }
+                        }
             });
         }
     }

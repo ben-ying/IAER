@@ -6,6 +6,7 @@ public class Constant {
 
     public static final String USERNAME = "username";
     public static final String PASSWORD = "password";
+    public static final String MULTI_USER = "multi_user";
     public static final String EMAIL = "email";
     public static final int MIN_PASSWORD_LENGTH = 6;
 

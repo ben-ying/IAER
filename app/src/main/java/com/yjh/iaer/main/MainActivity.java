@@ -27,6 +27,7 @@ import com.yjh.iaer.main.chart.ChartActivity;
 import com.yjh.iaer.main.list.AddTransactionActivity;
 import com.yjh.iaer.main.list.TransactionsFragment;
 import com.yjh.iaer.nav.SwitchAccountActivity;
+import com.yjh.iaer.network.Status;
 import com.yjh.iaer.util.AlertUtils;
 import com.yjh.iaer.util.Utils;
 import com.yjh.iaer.viewmodel.UserViewModel;
@@ -175,7 +176,7 @@ public class MainActivity extends BaseActivity
 
     public void logout() {
         mViewModel.logout().observe(this, userResource -> {
-            if (userResource != null && userResource.getData() != null && !mIsLogout) {
+            if (userResource.getStatus() == Status.SUCCESS && !mIsLogout) {
                 mIsLogout = true;
                 Intent intent = new Intent(this, LoginActivity.class);
                 startActivity(intent);

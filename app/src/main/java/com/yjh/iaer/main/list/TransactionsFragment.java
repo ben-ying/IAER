@@ -20,6 +20,7 @@ import com.yjh.iaer.R;
 import com.yjh.iaer.base.BaseFragment;
 import com.yjh.iaer.constant.Constant;
 import com.yjh.iaer.network.Resource;
+import com.yjh.iaer.network.Status;
 import com.yjh.iaer.room.entity.Transaction;
 import com.yjh.iaer.viewmodel.TransactionViewModel;
 
@@ -154,19 +155,23 @@ public class TransactionsFragment extends BaseFragment
         mViewModel = ViewModelProviders.of(
                 this, viewModelFactory).get(TransactionViewModel.class);
         mViewModel.getTransactionsResource().observe(this, this::setData);
-        progressBar.setVisibility(View.VISIBLE);
         mViewModel.load(MyApplication.sUser.getUserId(), true);
     }
 
     private void setData(@Nullable Resource<List<Transaction>> listResource) {
-        if (listResource != null && listResource.getData() != null) {
+        if (listResource.getStatus() == Status.LOADING) {
+            progressBar.setVisibility(View.VISIBLE);
+        } else{
             progressBar.setVisibility(View.GONE);
-            swipeRefreshLayout.setRefreshing(false);
-            mTransactions = listResource.getData();
-            if (reverseSorting) {
-                Collections.reverse(mTransactions);
+            if (listResource.getStatus() == Status.SUCCESS) {
+                progressBar.setVisibility(View.GONE);
+                swipeRefreshLayout.setRefreshing(false);
+                mTransactions = listResource.getData();
+                if (reverseSorting) {
+                    Collections.reverse(mTransactions);
+                }
+                setAdapter();
             }
-            setAdapter();
         }
     }
 

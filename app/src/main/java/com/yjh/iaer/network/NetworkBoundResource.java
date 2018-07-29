@@ -8,6 +8,10 @@ import android.support.annotation.MainThread;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.WorkerThread;
+import android.widget.Toast;
+
+import com.yjh.iaer.MyApplication;
+import com.yjh.iaer.R;
 
 public abstract class NetworkBoundResource<ResultType, RequestType> {
     private final MediatorLiveData<Resource<ResultType>> mResult = new MediatorLiveData<>();
@@ -34,11 +38,8 @@ public abstract class NetworkBoundResource<ResultType, RequestType> {
         final LiveData<ApiResponse<RequestType>> apiResponse = createCall();
         // we re-attach dbSource as a new source,
         // it will dispatch its latest value quickly
-        mResult.addSource(dbSource, new Observer<ResultType>() {
-            @Override
-            public void onChanged(@Nullable ResultType resultType) {
+        mResult.addSource(dbSource, resultType -> {
                 mResult.setValue(Resource.loading(resultType));
-            }
         });
         mResult.addSource(apiResponse, requestTypeApiResponse -> {
             mResult.removeSource(apiResponse);
@@ -48,7 +49,7 @@ public abstract class NetworkBoundResource<ResultType, RequestType> {
             } else {
                 onFetchFailed();
                 mResult.addSource(dbSource, resultType -> {
-                    Resource.error(requestTypeApiResponse.getErrorMessage(), resultType);
+                    mResult.setValue(Resource.error(requestTypeApiResponse.getErrorMessage(), resultType));
                 });
             }
         });
@@ -101,6 +102,8 @@ public abstract class NetworkBoundResource<ResultType, RequestType> {
     // like rate limiter.
     @MainThread
     protected void onFetchFailed() {
+        Toast.makeText(MyApplication.sInstance.getApplicationContext(),
+                R.string.network_error, Toast.LENGTH_SHORT).show();
     }
 
     // returns a LiveData that represents the resource

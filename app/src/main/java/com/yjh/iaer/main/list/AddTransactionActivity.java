@@ -18,6 +18,7 @@ import com.yjh.iaer.R;
 import com.yjh.iaer.base.BaseActivity;
 import com.yjh.iaer.constant.Constant;
 import com.yjh.iaer.network.Resource;
+import com.yjh.iaer.network.Status;
 import com.yjh.iaer.room.entity.Transaction;
 import com.yjh.iaer.viewmodel.TransactionViewModel;
 
@@ -99,7 +100,6 @@ public class AddTransactionActivity extends BaseActivity {
     public boolean onOptionsItemSelected(MenuItem menuItem) {
         switch (menuItem.getItemId()) {
             case R.id.action_add:
-                progressBar.setVisibility(View.VISIBLE);
                 String category = typeSpinner.getSelectedItemPosition() == 0 ?
                         categorySpinner.getSelectedItem().toString() :
                         typeSpinner.getSelectedItem().toString();
@@ -161,9 +161,14 @@ public class AddTransactionActivity extends BaseActivity {
     }
 
     private void setData(@Nullable Resource<Transaction> listResource) {
-        if (listResource != null && listResource.getData() != null) {
+        if (listResource.getStatus() == Status.LOADING) {
+            progressBar.setVisibility(View.VISIBLE);
+        } else{
             progressBar.setVisibility(View.GONE);
-            finish();
+            if (listResource.getStatus() == Status.SUCCESS) {
+                progressBar.setVisibility(View.GONE);
+                finish();
+            }
         }
     }
 

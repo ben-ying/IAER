@@ -38,13 +38,18 @@ public class AccountAdapter extends RecyclerView.Adapter<
 
     interface AccountInterface {
         void login(String token);
-        void delete(User user);
+        void deleteUser(User user);
     }
 
     AccountAdapter(Context context, List<User> users, AccountInterface accountInterface) {
         this.mContext = context;
         this.mUsers = users;
         this.mInterface = accountInterface;
+    }
+
+    public void setUsers(List<User> users) {
+        this.mUsers = users;
+        notifyDataSetChanged();
     }
 
     @Override
@@ -102,7 +107,7 @@ public class AccountAdapter extends RecyclerView.Adapter<
             if (!user.getToken().equals(MyApplication.sUser.getToken())) {
                 AlertUtils.showConfirmDialog(mContext, R.string.delete_user_history_alert,
                         (dialogInterface, i) -> {
-                            mInterface.delete(user);
+                            mInterface.deleteUser(user);
                         });
                 return true;
             }

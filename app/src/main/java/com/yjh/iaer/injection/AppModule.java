@@ -25,8 +25,6 @@ class AppModule {
     @Singleton
     @Provides
     Webservice provideWebservice() {
-//        WifiManager wm = (WifiManager) getSystemService(WIFI_SERVICE);
-//        String ip = Formatter.formatIpAddress(wm.getConnectionInfo().getIpAddress());
         return new Retrofit.Builder()
                 .baseUrl(BASE_URL)
                 .addConverterFactory(GsonConverterFactory.create())
