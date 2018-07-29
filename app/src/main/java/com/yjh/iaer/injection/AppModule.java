@@ -31,6 +31,20 @@ class AppModule {
                 .addCallAdapterFactory(new LiveDataCallAdapterFactory())
                 .build()
                 .create(Webservice.class);
+
+//        final OkHttpClient client = new OkHttpClient.Builder()
+//                .connectTimeout(20, TimeUnit.SECONDS)
+//                .readTimeout(20, TimeUnit.SECONDS)
+//                .writeTimeout(20, TimeUnit.SECONDS)
+//                .build();
+//
+//        return new Retrofit.Builder()
+//                .client(client)
+//                .baseUrl(BASE_URL)
+//                .addConverterFactory(GsonConverterFactory.create())
+//                .addCallAdapterFactory(new LiveDataCallAdapterFactory())
+//                .build()
+//                .create(Webservice.class);
     }
 
     @Singleton
