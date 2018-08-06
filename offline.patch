@@ -1,0 +1,143 @@
+diff --git a/app/src/main/AndroidManifest.xml b/app/src/main/AndroidManifest.xml
+index 76f4c68..b2fb042 100644
+--- a/app/src/main/AndroidManifest.xml
++++ b/app/src/main/AndroidManifest.xml
+@@ -37,6 +37,7 @@
+                 <action android:name="android.net.wifi.STATE_CHANGE" />
+             </intent-filter>
+         </receiver>
++
+     </application>
+ 
+-</manifest>
+\ No newline at end of file
++</manifest>
+diff --git a/app/src/main/java/com/yjh/iaer/MyApplication.java b/app/src/main/java/com/yjh/iaer/MyApplication.java
+index 8a02add..fa370c1 100644
+--- a/app/src/main/java/com/yjh/iaer/MyApplication.java
++++ b/app/src/main/java/com/yjh/iaer/MyApplication.java
+@@ -22,6 +22,7 @@ public class MyApplication extends Application implements HasActivityInjector {
+ 
+     public static User sUser;
+     public static MyApplication sInstance;
++    public static boolean sIsConnectedServer;
+ 
+ //    private RefWatcher mRefWatcher;
+     @Inject
+@@ -31,6 +32,7 @@ public class MyApplication extends Application implements HasActivityInjector {
+     public void onCreate() {
+         super.onCreate();
+         sInstance = this;
++        sIsConnectedServer = SystemUtils.isConnectedServer(this);
+ //        if (LeakCanary.isInAnalyzerProcess(this)) {
+ //            return;
+ //        }
+diff --git a/app/src/main/java/com/yjh/iaer/repository/TransactionRepository.java b/app/src/main/java/com/yjh/iaer/repository/TransactionRepository.java
+index 6b3d0ba..f83d7dd 100644
+--- a/app/src/main/java/com/yjh/iaer/repository/TransactionRepository.java
++++ b/app/src/main/java/com/yjh/iaer/repository/TransactionRepository.java
+@@ -97,7 +97,7 @@ public class TransactionRepository {
+ 
+             @Override
+             protected boolean shouldFetch(@Nullable Transaction data) {
+-                return data == null || mRepoListRateLimit.shouldFetch(MyApplication.sUser.getToken());
++                return MyApplication.sIsConnectedServer && (data == null || mRepoListRateLimit.shouldFetch(MyApplication.sUser.getToken()));
+             }
+ 
+             @NonNull
+diff --git a/app/src/main/java/com/yjh/iaer/room/entity/Transaction.java b/app/src/main/java/com/yjh/iaer/room/entity/Transaction.java
+index 8abcc55..dc63a31 100644
+--- a/app/src/main/java/com/yjh/iaer/room/entity/Transaction.java
++++ b/app/src/main/java/com/yjh/iaer/room/entity/Transaction.java
+@@ -23,6 +23,7 @@ public class Transaction implements Serializable {
+     public static final String FIELD_CATEGORY = "category";
+     public static final String FIELD_REMARK = "remark";
+     public static final String FIELD_CREATED = "created";
++    public static final String FIELD_STATUS = "status"; 
+ 
+     @PrimaryKey
+     @SerializedName(FIELD_IAER_ID)
+@@ -46,6 +47,12 @@ public class Transaction implements Serializable {
+     @SerializedName(FIELD_CREATED)
+     @ColumnInfo(name = FIELD_CREATED)
+     private String created;
++    // 0 for latest, 
++    // 1 for added but not uploaded, 
++    // -1 for deleted but not uploaded
++    @SerializedName(FIELD_STATUS)
++    @ColumnInfo(name = FIELD_STATUS)
++    private int status;
+ 
+     public int getMoneyInt() {
+         return Integer.valueOf(money);
+@@ -171,6 +178,14 @@ public class Transaction implements Serializable {
+         this.created = created;
+     }
+ 
++    public int getStatus() {
++        return status;
++    }
++
++    public void setStatus(int status) {
++        this.status = status;
++    }
++
+     @Override
+     public String toString() {
+         return new Gson().toJson(this);
+diff --git a/app/src/main/java/com/yjh/iaer/util/SystemUtils.java b/app/src/main/java/com/yjh/iaer/util/SystemUtils.java
+index bad8ebc..9ebe762 100755
+--- a/app/src/main/java/com/yjh/iaer/util/SystemUtils.java
++++ b/app/src/main/java/com/yjh/iaer/util/SystemUtils.java
+@@ -15,4 +15,51 @@ public class SystemUtils {
+             }
+         }
+     }
++
++    public static boolean isConnectedServer(Context contest) {
++        return getCurrentSsid(contest).equals("ben");
++    }
++
++    public String getCurrentSsid(Context context) {
++
++  String ssid = null;
++  ConnectivityManager connManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
++  NetworkInfo networkInfo = connManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
++  if (networkInfo.isConnected()) {
++    final WifiManager wifiManager = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
++    final WifiInfo connectionInfo = wifiManager.getConnectionInfo();
++    if (connectionInfo != null && !(connectionInfo.getSSID().equals(""))) {
++        //if (connectionInfo != null && !StringUtil.isBlank(connectionInfo.getSSID())) {
++      ssid = connectionInfo.getSSID();
++    }
++ // Get WiFi status MARAKANA
++    WifiInfo info = wifiManager.getConnectionInfo();
++    String textStatus = "";
++    textStatus += "\n\nWiFi Status: " + info.toString();
++    String BSSID = info.getBSSID();
++    String MAC = info.getMacAddress();
++
++    List<ScanResult> results = wifiManager.getScanResults();
++    ScanResult bestSignal = null;
++    int count = 1;
++    String etWifiList = "";
++    for (ScanResult result : results) {
++        etWifiList += count++ + ". " + result.SSID + " : " + result.level + "\n" +
++                result.BSSID + "\n" + result.capabilities +"\n" +
++                "\n=======================\n";
++    }
++    Log.v(TAG, "from SO: \n"+etWifiList);
++
++    // List stored networks
++    List<WifiConfiguration> configs = wifiManager.getConfiguredNetworks();
++    for (WifiConfiguration config : configs) {
++        textStatus+= "\n\n" + config.toString();
++    }
++    Log.v(TAG,"from marakana: \n"+textStatus);
++  }
++  return ssid;
++}
+ }
++
++
++
