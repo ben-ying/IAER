@@ -17,6 +17,7 @@ import com.yjh.iaer.login.LoginActivity;
 import com.yjh.iaer.main.MainActivity;
 import com.yjh.iaer.network.Status;
 import com.yjh.iaer.room.entity.User;
+import com.yjh.iaer.util.MD5Utils;
 import com.yjh.iaer.viewmodel.UserViewModel;
 
 import java.util.List;
@@ -72,23 +73,35 @@ public class SwitchAccountActivity extends BaseActivity
     }
 
     @Override
-    public void login(String token) {
-        if (!token.equals(MyApplication.sUser.getToken())) {
-            mViewModel.login(null, null, token)
-                    .observe(this, userResource -> {
-                        if (userResource.getStatus() == Status.LOADING) {
-                            progressBar.setVisibility(View.VISIBLE);
-                        } else {
-                            progressBar.setVisibility(View.GONE);
-                            if (userResource.getStatus() == Status.SUCCESS) {
-                                Intent intent = new Intent(
-                                        SwitchAccountActivity.this, MainActivity.class);
-                                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK
-                                        | Intent.FLAG_ACTIVITY_NEW_TASK);
-                                startActivity(intent);
+    public void login(User user) {
+        if (MyApplication.sIsConnectedServer) {
+            if (!user.getToken().equals(MyApplication.sUser.getToken())) {
+                mViewModel.login(null, null, user.getToken())
+                        .observe(this, userResource -> {
+                            if (userResource.getStatus() == Status.LOADING) {
+                                progressBar.setVisibility(View.VISIBLE);
+                            } else {
+                                progressBar.setVisibility(View.GONE);
+                                if (userResource.getStatus() == Status.SUCCESS) {
+                                    Intent intent = new Intent(
+                                            SwitchAccountActivity.this, MainActivity.class);
+                                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK
+                                            | Intent.FLAG_ACTIVITY_NEW_TASK);
+                                    startActivity(intent);
+                                }
                             }
-                        }
-                    });
+                        });
+            }
+        } else {
+            for (User u : mUsers) {
+                if (u.getUsername().toLowerCase().equals(user.getUsername().toLowerCase())
+                        && user.getMd5Password().toLowerCase().equals(
+                        MD5Utils.getMD5ofStr(user.getMd5Password()).toLowerCase())) {
+                    Intent intent = new Intent(SwitchAccountActivity.this, MainActivity.class);
+                    startActivity(intent);
+                    finish();
+                }
+            }
         }
     }
 

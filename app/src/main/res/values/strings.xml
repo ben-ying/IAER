@@ -87,6 +87,7 @@
     <string name="confirm">确定</string>
     <string name="non_empty_field">输入框不能为空</string>
     <string name="network_error">网络错误！</string>
+    <string name="permission_not_granted">必须同意相关权限才能使用！</string>
 
     <!--app menu-->
     <string name="others">其它</string>

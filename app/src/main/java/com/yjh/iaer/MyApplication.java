@@ -11,6 +11,7 @@ import android.util.Log;
 import com.yjh.iaer.injection.AppInjector;
 import com.yjh.iaer.room.entity.User;
 import com.yjh.iaer.util.CrashLibrary;
+import com.yjh.iaer.util.SystemUtils;
 
 import javax.inject.Inject;
 
@@ -22,6 +23,7 @@ public class MyApplication extends Application implements HasActivityInjector {
 
     public static User sUser;
     public static MyApplication sInstance;
+    public static boolean sIsConnectedServer;
 
 //    private RefWatcher mRefWatcher;
     @Inject
@@ -31,6 +33,7 @@ public class MyApplication extends Application implements HasActivityInjector {
     public void onCreate() {
         super.onCreate();
         sInstance = this;
+        sIsConnectedServer = SystemUtils.isConnectedServer(this);
 //        if (LeakCanary.isInAnalyzerProcess(this)) {
 //            return;
 //        }

@@ -37,7 +37,7 @@ public class AccountAdapter extends RecyclerView.Adapter<
     private AccountInterface mInterface;
 
     interface AccountInterface {
-        void login(String token);
+        void login(User user);
         void deleteUser(User user);
     }
 
@@ -98,7 +98,7 @@ public class AccountAdapter extends RecyclerView.Adapter<
 
         @OnClick(R.id.item_account)
         void login(View v) {
-            mInterface.login(((User) v.getTag()).getToken());
+            mInterface.login((User) v.getTag());
         }
 
         @OnLongClick(R.id.item_account)

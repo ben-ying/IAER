@@ -23,6 +23,7 @@ public class Transaction implements Serializable {
     public static final String FIELD_CATEGORY = "category";
     public static final String FIELD_REMARK = "remark";
     public static final String FIELD_CREATED = "created";
+    public static final String FIELD_STATUS = "status"; 
 
     @PrimaryKey
     @SerializedName(FIELD_IAER_ID)
@@ -46,6 +47,12 @@ public class Transaction implements Serializable {
     @SerializedName(FIELD_CREATED)
     @ColumnInfo(name = FIELD_CREATED)
     private String created;
+    // 0 for latest, 
+    // 1 for added but not uploaded, 
+    // -1 for deleted but not uploaded
+    @SerializedName(FIELD_STATUS)
+    @ColumnInfo(name = FIELD_STATUS)
+    private int status;
 
     public int getMoneyInt() {
         return Integer.valueOf(money);
@@ -169,6 +176,14 @@ public class Transaction implements Serializable {
 
     public void setCreated(String created) {
         this.created = created;
+    }
+
+    public int getStatus() {
+        return status;
+    }
+
+    public void setStatus(int status) {
+        this.status = status;
     }
 
     @Override

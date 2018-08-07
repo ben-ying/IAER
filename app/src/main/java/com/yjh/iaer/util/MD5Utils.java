@@ -5,9 +5,10 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
 public class MD5Utils {
+    private static final String MD5_ENCRYPTION = "md51988";
 
     public static String getMD5ofStr(String plainText) {
-        return getMD5ofStr(string2Bytes(plainText));
+        return getMD5ofStr(string2Bytes(MD5_ENCRYPTION + plainText));
     }
 
     private static String getMD5ofStr(byte str[]) {

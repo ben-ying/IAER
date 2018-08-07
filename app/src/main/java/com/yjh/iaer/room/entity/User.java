@@ -15,6 +15,7 @@ public class User implements Serializable {
     public static final String TABLE_NAME = "user_entity";
     public static final String FIELD_USER_ID = "user_id";
     public static final String FIELD_USER_NAME = "username";
+    public static final String FIELD_MD5_PASSWORD = "md5_password";
     public static final String FIELD_USER_PROFILE = "profile";
     public static final String FIELD_EMAIL = "email";
     public static final String FIELD_PHONE = "phone";
@@ -37,6 +38,9 @@ public class User implements Serializable {
     @SerializedName(FIELD_USER_NAME)
     @ColumnInfo(name = FIELD_USER_NAME)
     String username;
+    @SerializedName(FIELD_MD5_PASSWORD)
+    @ColumnInfo(name = FIELD_MD5_PASSWORD)
+    String md5Password;
     @SerializedName(FIELD_USER_PROFILE)
     @ColumnInfo(name = FIELD_USER_PROFILE)
     String profile;
@@ -94,6 +98,14 @@ public class User implements Serializable {
 
     public void setUsername(String username) {
         this.username = username;
+    }
+
+    public String getMd5Password() {
+        return md5Password;
+    }
+
+    public void setMd5Password(String md5Password) {
+        this.md5Password = md5Password;
     }
 
     public String getProfile() {

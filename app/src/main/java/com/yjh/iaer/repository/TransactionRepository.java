@@ -97,7 +97,7 @@ public class TransactionRepository {
 
             @Override
             protected boolean shouldFetch(@Nullable Transaction data) {
-                return data == null || mRepoListRateLimit.shouldFetch(MyApplication.sUser.getToken());
+                return MyApplication.sIsConnectedServer && (data == null || mRepoListRateLimit.shouldFetch(MyApplication.sUser.getToken()));
             }
 
             @NonNull

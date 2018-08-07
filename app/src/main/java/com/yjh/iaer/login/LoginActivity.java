@@ -1,34 +1,34 @@
 package com.yjh.iaer.login;
 
+import android.Manifest;
 import android.app.AlertDialog;
-import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProvider;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.support.annotation.Nullable;
 import android.support.v7.widget.AppCompatButton;
 import android.text.InputType;
 import android.util.Log;
 import android.util.Patterns;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.Toast;
 
+import com.tbruyelle.rxpermissions2.RxPermissions;
 import com.yjh.iaer.MyApplication;
 import com.yjh.iaer.R;
 import com.yjh.iaer.base.BaseActivity;
 import com.yjh.iaer.constant.Constant;
 import com.yjh.iaer.main.MainActivity;
-import com.yjh.iaer.network.Resource;
 import com.yjh.iaer.network.Status;
 import com.yjh.iaer.room.entity.User;
 import com.yjh.iaer.util.AlertUtils;
+import com.yjh.iaer.util.MD5Utils;
 import com.yjh.iaer.util.SystemUtils;
 import com.yjh.iaer.viewmodel.UserViewModel;
 
@@ -39,6 +39,7 @@ import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.OnClick;
+import io.reactivex.disposables.Disposable;
 
 public class LoginActivity extends BaseActivity {
 
@@ -56,6 +57,7 @@ public class LoginActivity extends BaseActivity {
     private String mUsername;
     private String mPassword;
     private UserViewModel mViewModel;
+    private List<User> mUsers;
 
     @Inject
     ViewModelProvider.Factory viewModelFactory;
@@ -67,35 +69,53 @@ public class LoginActivity extends BaseActivity {
 
     @Override
     public void initView() {
+        final RxPermissions rxPermissions = new RxPermissions(this);
+        Disposable disposable = rxPermissions
+                .request(Manifest.permission.ACCESS_COARSE_LOCATION,
+                        Manifest.permission.ACCESS_FINE_LOCATION)
+                .subscribe(granted -> {
+                    if (!granted) {
+                        // At least one permission is denied
+                        Toast.makeText(LoginActivity.this,
+                                R.string.permission_not_granted,
+                                Toast.LENGTH_LONG).show();
+                        finish();
+                    }
+                });
+        Log.d("RxPermissions", String.valueOf(disposable.isDisposed()));
+
         mUsername = getIntent().getStringExtra(Constant.USERNAME);
         mPassword = getIntent().getStringExtra(Constant.PASSWORD);
         mViewModel = ViewModelProviders.of(
                 this, viewModelFactory).get(UserViewModel.class);
         mViewModel.loadAllUsers().observe(this, listResource -> {
-            if (listResource != null && listResource.getData() != null
-                    && listResource.getData().size() > 0) {
-                if (listResource.getData().get(0).isLogin() &&
-                        !getIntent().getBooleanExtra(Constant.MULTI_USER, false)) {
-                    MyApplication.sUser = listResource.getData().get(0);
-                    Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-                    startActivity(intent);
-                    finish();
-                } else {
-                    List<String> autoStrings = new ArrayList<>();
-                    for (int i = 0; i < listResource.getData().size() && i < 5; i++) {
-                        autoStrings.add(listResource.getData().get(i).getUsername());
+            if (listResource != null && listResource.getData() != null) {
+                mUsers = listResource.getData();
+                for (User user : mUsers) {
+                    if (user.isLogin() &&
+                            !getIntent().getBooleanExtra(Constant.MULTI_USER, false)) {
+                        MyApplication.sUser = user;
+                        Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                        startActivity(intent);
+                        finish();
+                        break;
                     }
-                    ArrayAdapter<String> adapter = new ArrayAdapter<>(
-                            this, R.layout.item_dropdown, autoStrings);
-
-                    usernameEditText.setAdapter(adapter);
-                    usernameEditText.setOnItemClickListener((adapterView, view, i, l) -> {
-                        usernameEditText.clearFocus();
-                        passwordEditText.setText("");
-                        passwordEditText.requestFocus();
-                        SystemUtils.showKeyboard(LoginActivity.this, passwordEditText);
-                    });
                 }
+
+                List<String> autoStrings = new ArrayList<>();
+                for (int i = 0; i < mUsers.size() && i < 5; i++) {
+                    autoStrings.add(mUsers.get(i).getUsername());
+                }
+                ArrayAdapter<String> adapter = new ArrayAdapter<>(
+                        this, R.layout.item_dropdown, autoStrings);
+
+                usernameEditText.setAdapter(adapter);
+                usernameEditText.setOnItemClickListener((adapterView, view, i, l) -> {
+                    usernameEditText.clearFocus();
+                    passwordEditText.setText("");
+                    passwordEditText.requestFocus();
+                    SystemUtils.showKeyboard(LoginActivity.this, passwordEditText);
+                });
             }
         });
     }
@@ -123,18 +143,30 @@ public class LoginActivity extends BaseActivity {
     @OnClick(R.id.btn_login)
     void loginTask() {
         if (isValid()) {
-            mViewModel.login(mUsername, mPassword, null).observe(this, userResource -> {
-                if (userResource.getStatus() == Status.LOADING) {
-                    progressBar.setVisibility(View.VISIBLE);
-                } else {
-                    progressBar.setVisibility(View.GONE);
-                    if (userResource.getStatus() == Status.SUCCESS && userResource.getData() != null) {
+            if (MyApplication.sIsConnectedServer) {
+                mViewModel.login(mUsername, mPassword, null).observe(this, userResource -> {
+                    if (userResource.getStatus() == Status.LOADING) {
+                        progressBar.setVisibility(View.VISIBLE);
+                    } else {
+                        progressBar.setVisibility(View.GONE);
+                        if (userResource.getStatus() == Status.SUCCESS && userResource.getData() != null) {
+                            Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                            startActivity(intent);
+                            finish();
+                        }
+                    }
+                });
+            } else {
+                for (User user : mUsers) {
+                    if (user.getUsername().toLowerCase().equals(mUsername)
+                            && user.getMd5Password().toLowerCase().equals(
+                            MD5Utils.getMD5ofStr(mPassword).toLowerCase())) {
                         Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                         startActivity(intent);
                         finish();
                     }
                 }
-            });
+            }
         }
     }
 
@@ -182,7 +214,7 @@ public class LoginActivity extends BaseActivity {
         mViewModel.sendVerifyCode(email).observe(this, userResource -> {
             if (userResource.getStatus() == Status.LOADING) {
                 progressBar.setVisibility(View.VISIBLE);
-            } else{
+            } else {
                 progressBar.setVisibility(View.GONE);
                 if (userResource.getStatus() == Status.SUCCESS) {
                     progressBar.setVisibility(View.GONE);

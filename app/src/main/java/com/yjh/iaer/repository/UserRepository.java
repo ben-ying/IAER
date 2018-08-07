@@ -24,7 +24,6 @@ import javax.inject.Singleton;
 
 @Singleton
 public class UserRepository {
-    private static final String MD5_ENCRYPTION = "md51988";
     private final Webservice mWebservice;
     private final UserDao mUserDao;
     private final RateLimiter<String> mRepoListRateLimit
@@ -67,8 +66,8 @@ public class UserRepository {
             @Nullable
             @Override
             protected LiveData<ApiResponse<CustomResponse<User>>> createCall() {
-                return mWebservice.login(username, MD5Utils.getMD5ofStr(
-                        MD5_ENCRYPTION + password).toLowerCase(), token);
+                return mWebservice.login(username,
+                        MD5Utils.getMD5ofStr(password).toLowerCase(), token);
             }
 
             @Override
@@ -106,8 +105,8 @@ public class UserRepository {
             @Nullable
             @Override
             protected LiveData<ApiResponse<CustomResponse<User>>> createCall() {
-                return mWebservice.register(username, username, MD5Utils.getMD5ofStr(
-                        MD5_ENCRYPTION + password).toLowerCase(), email, "", 2);
+                return mWebservice.register(username, username,
+                        MD5Utils.getMD5ofStr(password).toLowerCase(), email, "", 2);
             }
 
             @Override

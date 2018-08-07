@@ -1,12 +1,12 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 26
-    buildToolsVersion '26.0.2'
+    compileSdkVersion 27
+    buildToolsVersion '27.0.3'
     defaultConfig {
         applicationId "com.yjh.iaer"
         minSdkVersion 24
-        targetSdkVersion 26
+        targetSdkVersion 27
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
@@ -29,7 +29,7 @@ dependencies {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
 
-    def support_version = "26.1.0"
+    def support_version = "27.1.1"
     compile "com.android.support:appcompat-v7:$support_version"
     compile "com.android.support:support-v4:$support_version"
     compile "com.android.support:design:$support_version"
@@ -70,11 +70,13 @@ dependencies {
     // MPAndroidChart
     compile "com.github.PhilJay:MPAndroidChart:v3.0.2"
     // leakCanary
-//    debugCompile 'com.squareup.leakcanary:leakcanary-android:1.5.1'
-//    releaseCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.5.1'
+    // debugCompile 'com.squareup.leakcanary:leakcanary-android:1.5.1'
+    // releaseCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.5.1'
     // Timber
     compile "com.jakewharton.timber:timber:4.5.1"
     // Glide
     compile "com.github.bumptech.glide:glide:4.1.1"
     annotationProcessor "com.github.bumptech.glide:compiler:4.1.1"
+    // RxPermission
+    implementation 'com.github.tbruyelle:rxpermissions:0.10.2'
 }
