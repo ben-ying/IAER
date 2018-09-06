@@ -5,6 +5,7 @@ import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.wifi.ScanResult;
+import android.net.wifi.SupplicantState;
 import android.net.wifi.WifiConfiguration;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
@@ -27,9 +28,9 @@ public class SystemUtils {
         }
     }
 
-    public static boolean isConnectedServer(Context context) {
-        return getCurrentSsid(context).equals("ben")
-                || getCurrentSsid(context).equals("\"ben\"");
+    public static boolean isLocalServer(Context context) {
+        String ssid = getCurrentSsid(context);
+        return ssid.equals("\"ben\"") || ssid.equals("ben");
     }
 
     private static String getCurrentSsid(Context context) {
@@ -40,15 +41,20 @@ public class SystemUtils {
             NetworkInfo networkInfo = connManager.getActiveNetworkInfo();
             switch (networkInfo.getType()) {
                 case ConnectivityManager.TYPE_WIFI:
-                    // connected to wifi
                     final WifiManager wifiManager = (WifiManager)
                             context.getSystemService(Context.WIFI_SERVICE);
                     if (wifiManager != null) {
                         final WifiInfo connectionInfo = wifiManager.getConnectionInfo();
-                        if (connectionInfo != null && !(connectionInfo.getSSID().equals(""))) {
-                            // need permission ACCESS_COARSE_LOCATION and ACCESS_FINE_LOCATION
-                            // else ssid = unknown ssid
-                            ssid = connectionInfo.getSSID();
+                        if (connectionInfo != null &&
+                                connectionInfo.getSupplicantState() == SupplicantState.COMPLETED) {
+                            int networkId = connectionInfo.getNetworkId();
+                            List<WifiConfiguration> wifiConfigurations = wifiManager.getConfiguredNetworks();
+                            for (WifiConfiguration wifiConfiguration : wifiConfigurations) {
+                                if (wifiConfiguration.networkId == networkId) {
+                                    ssid = wifiConfiguration.SSID;
+                                    break;
+                                }
+                            }
                         }
                     }
                     break;
