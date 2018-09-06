@@ -89,7 +89,8 @@ public class LoginActivity extends BaseActivity {
         mViewModel = ViewModelProviders.of(
                 this, viewModelFactory).get(UserViewModel.class);
         mViewModel.loadAllUsers().observe(this, listResource -> {
-            if (listResource != null && listResource.getData() != null) {
+            if (listResource != null && listResource.getData() != null
+                    && listResource.getData().size() > 0) {
                 mUsers = listResource.getData();
                 for (User user : mUsers) {
                     if (user.isLogin() &&
@@ -143,30 +144,18 @@ public class LoginActivity extends BaseActivity {
     @OnClick(R.id.btn_login)
     void loginTask() {
         if (isValid()) {
-            if (MyApplication.sIsConnectedServer) {
-                mViewModel.login(mUsername, mPassword, null).observe(this, userResource -> {
-                    if (userResource.getStatus() == Status.LOADING) {
-                        progressBar.setVisibility(View.VISIBLE);
-                    } else {
-                        progressBar.setVisibility(View.GONE);
-                        if (userResource.getStatus() == Status.SUCCESS && userResource.getData() != null) {
-                            Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-                            startActivity(intent);
-                            finish();
-                        }
-                    }
-                });
-            } else {
-                for (User user : mUsers) {
-                    if (user.getUsername().toLowerCase().equals(mUsername)
-                            && user.getMd5Password().toLowerCase().equals(
-                            MD5Utils.getMD5ofStr(mPassword).toLowerCase())) {
+            mViewModel.login(mUsername, mPassword, null).observe(this, userResource -> {
+                if (userResource.getStatus() == Status.LOADING) {
+                    progressBar.setVisibility(View.VISIBLE);
+                } else {
+                    progressBar.setVisibility(View.GONE);
+                    if (userResource.getStatus() == Status.SUCCESS && userResource.getData() != null) {
                         Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                         startActivity(intent);
                         finish();
                     }
                 }
-            }
+            });
         }
     }
 

@@ -3,7 +3,6 @@ package com.yjh.iaer;
 
 import android.app.Activity;
 import android.app.Application;
-import android.content.Context;
 import android.util.Log;
 
 //import com.squareup.leakcanary.LeakCanary;
@@ -23,7 +22,7 @@ public class MyApplication extends Application implements HasActivityInjector {
 
     public static User sUser;
     public static MyApplication sInstance;
-    public static boolean sIsConnectedServer;
+    public static boolean sLocalServer;
 
 //    private RefWatcher mRefWatcher;
     @Inject
@@ -33,7 +32,7 @@ public class MyApplication extends Application implements HasActivityInjector {
     public void onCreate() {
         super.onCreate();
         sInstance = this;
-        sIsConnectedServer = SystemUtils.isConnectedServer(this);
+        sLocalServer = SystemUtils.isConnectedServer(this);
 //        if (LeakCanary.isInAnalyzerProcess(this)) {
 //            return;
 //        }

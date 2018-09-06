@@ -4,7 +4,6 @@ package com.yjh.iaer.repository;
 import android.arch.lifecycle.LiveData;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.util.Log;
 
 import com.yjh.iaer.MyApplication;
 import com.yjh.iaer.model.CustomResponse;
@@ -14,7 +13,6 @@ import com.yjh.iaer.network.NetworkBoundResource;
 import com.yjh.iaer.network.Resource;
 import com.yjh.iaer.network.Webservice;
 import com.yjh.iaer.room.dao.TransactionDao;
-import com.yjh.iaer.room.dao.UserDao;
 import com.yjh.iaer.room.entity.Transaction;
 import com.yjh.iaer.util.RateLimiter;
 
@@ -97,7 +95,7 @@ public class TransactionRepository {
 
             @Override
             protected boolean shouldFetch(@Nullable Transaction data) {
-                return MyApplication.sIsConnectedServer && (data == null || mRepoListRateLimit.shouldFetch(MyApplication.sUser.getToken()));
+                return data == null || mRepoListRateLimit.shouldFetch(MyApplication.sUser.getToken());
             }
 
             @NonNull
