@@ -23,8 +23,8 @@ public interface Webservice {
 
     String URL_USERS = "users/";
     String URL_TRANSACTIONS = "iaers/";
-    String URL_USER_LOGIN = "user/login";
-    String URL_SEND_VERIFY_CODE = "user/send_verify_code";
+    String URL_USER_LOGIN = "user/login/";
+    String URL_SEND_VERIFY_CODE = "user/send_verify_code/";
 
     @GET(URL_TRANSACTIONS)
     LiveData<ApiResponse<CustomResponse<ListResponseResult<List<Transaction>>>>> getTransactions(

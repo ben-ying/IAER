@@ -30,6 +30,7 @@ public class SystemUtils {
 
     public static boolean isLocalServer(Context context) {
         String ssid = getCurrentSsid(context);
+        Log.d(TAG, "ssid: " + ssid);
         return ssid.equals("\"ben\"") || ssid.equals("ben");
     }
 
