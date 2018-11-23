@@ -12,6 +12,8 @@ import com.yjh.iaer.network.NetworkBoundResource;
 import com.yjh.iaer.network.Resource;
 import com.yjh.iaer.network.Webservice;
 import com.yjh.iaer.room.dao.UserDao;
+import com.yjh.iaer.room.entity.Category;
+import com.yjh.iaer.room.entity.Fund;
 import com.yjh.iaer.room.entity.User;
 import com.yjh.iaer.util.MD5Utils;
 import com.yjh.iaer.util.RateLimiter;
@@ -177,7 +179,7 @@ public class UserRepository {
             @NonNull
             @Override
             protected LiveData<List<User>> loadFromDb() {
-                return mUserDao.loadAll();
+                return mUserDao.loadUserList();
             }
 
             @Nullable
@@ -189,6 +191,80 @@ public class UserRepository {
             @Override
             protected CustomResponse<List<User>> processResponse(
                     ApiResponse<CustomResponse<List<User>>> response) {
+                return null;
+            }
+
+            @Override
+            protected void onFetchFailed(String errorMessage) {
+                super.onFetchFailed(errorMessage);
+            }
+        }.getAsLiveData();
+    }
+
+    public LiveData<Resource<List<Category>>> loadAllCategories() {
+        return new NetworkBoundResource<List<Category>, CustomResponse<List<Category>>>() {
+
+            @Override
+            protected void saveCallResult(@NonNull CustomResponse<List<Category>> item) {
+            }
+
+            @Override
+            protected boolean shouldFetch(@Nullable List<Category> data) {
+                return false;
+            }
+
+            @NonNull
+            @Override
+            protected LiveData<List<Category>> loadFromDb() {
+                return mUserDao.loadCategories();
+            }
+
+            @Nullable
+            @Override
+            protected LiveData<ApiResponse<CustomResponse<List<Category>>>> createCall() {
+                return null;
+            }
+
+            @Override
+            protected CustomResponse<List<Category>> processResponse(
+                    ApiResponse<CustomResponse<List<Category>>> response) {
+                return null;
+            }
+
+            @Override
+            protected void onFetchFailed(String errorMessage) {
+                super.onFetchFailed(errorMessage);
+            }
+        }.getAsLiveData();
+    }
+
+    public LiveData<Resource<List<Fund>>> loadAllFunds() {
+        return new NetworkBoundResource<List<Fund>, CustomResponse<List<Fund>>>() {
+
+            @Override
+            protected void saveCallResult(@NonNull CustomResponse<List<Fund>> item) {
+            }
+
+            @Override
+            protected boolean shouldFetch(@Nullable List<Fund> data) {
+                return false;
+            }
+
+            @NonNull
+            @Override
+            protected LiveData<List<Fund>> loadFromDb() {
+                return mUserDao.loadFunds();
+            }
+
+            @Nullable
+            @Override
+            protected LiveData<ApiResponse<CustomResponse<List<Fund>>>> createCall() {
+                return null;
+            }
+
+            @Override
+            protected CustomResponse<List<Fund>> processResponse(
+                    ApiResponse<CustomResponse<List<Fund>>> response) {
                 return null;
             }
 

@@ -19,8 +19,13 @@ import com.yjh.iaer.base.BaseActivity;
 import com.yjh.iaer.constant.Constant;
 import com.yjh.iaer.network.Resource;
 import com.yjh.iaer.network.Status;
+import com.yjh.iaer.room.entity.Category;
 import com.yjh.iaer.room.entity.Transaction;
+import com.yjh.iaer.viewmodel.CategoryViewModel;
 import com.yjh.iaer.viewmodel.TransactionViewModel;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -41,7 +46,8 @@ public class AddTransactionActivity extends BaseActivity {
     ProgressBar progressBar;
 
     private boolean mCanSave;
-    private TransactionViewModel mViewModel;
+    private TransactionViewModel mTransactionViewModel;
+    private CategoryViewModel mCategoryViewModel;
     private CompositeDisposable mCompositeDisposable;
 
     @Inject
@@ -57,7 +63,8 @@ public class AddTransactionActivity extends BaseActivity {
     public void initView() {
         getSupportActionBar().setTitle(R.string.add_transaction);
 
-        initSpinners();
+        categorySpinner.setEnabled(false);
+        typeSpinner.setEnabled(false);
 
         mCompositeDisposable = new CompositeDisposable();
         mCompositeDisposable.add(RxTextView
@@ -71,8 +78,11 @@ public class AddTransactionActivity extends BaseActivity {
                     checkCanSave();
                 }));
 
-        mViewModel = ViewModelProviders.of(
+        mTransactionViewModel = ViewModelProviders.of(
                 this, viewModelFactory).get(TransactionViewModel.class);
+        mCategoryViewModel = ViewModelProviders.of(
+                this, viewModelFactory).get(CategoryViewModel.class);
+        mCategoryViewModel.loadAllCategories().observe(this, this::setCategoryList);
     }
 
     @Override
@@ -103,17 +113,20 @@ public class AddTransactionActivity extends BaseActivity {
                 String category = typeSpinner.getSelectedItemPosition() == 0 ?
                         categorySpinner.getSelectedItem().toString() :
                         typeSpinner.getSelectedItem().toString();
-                mViewModel.addTransactionResource(category,
+                mTransactionViewModel.addTransactionResource(category,
                         moneyEditText.getText().toString(),
                         remarkEditText.getText().toString(),
                         typeSpinner.getSelectedItemPosition() == 0).observe(
-                                AddTransactionActivity.this, this::setData);
+                                AddTransactionActivity.this, this::setTransactionList);
                 break;
         }
         return super.onOptionsItemSelected(menuItem);
     }
 
-    private void initSpinners() {
+    private void initSpinners(@Nullable Resource<List<Category>> listResource) {
+        categorySpinner.setEnabled(true);
+        typeSpinner.setEnabled(true);
+
         ArrayAdapter<String> categoryAdapter = new ArrayAdapter<>(this,
                 android.R.layout.simple_spinner_dropdown_item,
                 getResources().getStringArray(R.array.transaction_category_options));
@@ -136,9 +149,12 @@ public class AddTransactionActivity extends BaseActivity {
             }
         });
 
+        ArrayList<String> list = new ArrayList<>();
+        for (Category category :listResource.getData()) {
+            list.add(category.getName());
+        }
         ArrayAdapter<String> typeAdapter = new ArrayAdapter<>(this,
-                android.R.layout.simple_spinner_dropdown_item,
-                getResources().getStringArray(R.array.transaction_type_options));
+                android.R.layout.simple_spinner_dropdown_item, list);
         typeSpinner.setAdapter(typeAdapter);
         typeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -160,7 +176,7 @@ public class AddTransactionActivity extends BaseActivity {
         });
     }
 
-    private void setData(@Nullable Resource<Transaction> listResource) {
+    private void setTransactionList(@Nullable Resource<Transaction> listResource) {
         if (listResource.getStatus() == Status.LOADING) {
             progressBar.setVisibility(View.VISIBLE);
         } else{
@@ -169,6 +185,12 @@ public class AddTransactionActivity extends BaseActivity {
                 progressBar.setVisibility(View.GONE);
                 finish();
             }
+        }
+    }
+
+    private void setCategoryList(@Nullable Resource<List<Category>> listResource) {
+        if (listResource.getStatus() == Status.SUCCESS) {
+            initSpinners(listResource);
         }
     }
 
