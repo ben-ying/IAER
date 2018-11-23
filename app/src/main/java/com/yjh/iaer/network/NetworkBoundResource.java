@@ -47,7 +47,7 @@ public abstract class NetworkBoundResource<ResultType, RequestType> {
             if (requestTypeApiResponse.isSuccessful()) {
                 saveResultAndReInit(requestTypeApiResponse);
             } else {
-                onFetchFailed();
+                onFetchFailed(apiResponse.getValue().getErrorMessage());
                 mResult.addSource(dbSource, resultType -> {
                     mResult.setValue(Resource.error(requestTypeApiResponse.getErrorMessage(), resultType));
                 });
@@ -101,9 +101,9 @@ public abstract class NetworkBoundResource<ResultType, RequestType> {
     // Called when the fetch fails. The child class may want to reset components
     // like rate limiter.
     @MainThread
-    protected void onFetchFailed() {
+    protected void onFetchFailed(String errorMessage) {
         Toast.makeText(MyApplication.sInstance.getApplicationContext(),
-                R.string.network_error, Toast.LENGTH_SHORT).show();
+                errorMessage, Toast.LENGTH_SHORT).show();
     }
 
     // returns a LiveData that represents the resource

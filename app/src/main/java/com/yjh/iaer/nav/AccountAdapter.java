@@ -22,6 +22,8 @@ import com.yjh.iaer.room.entity.Transaction;
 import com.yjh.iaer.room.entity.User;
 import com.yjh.iaer.util.AlertUtils;
 
+import org.apache.commons.lang3.text.WordUtils;
+
 import java.util.List;
 
 import butterknife.BindView;
@@ -62,7 +64,7 @@ public class AccountAdapter extends RecyclerView.Adapter<
     @Override
     public void onBindViewHolder(AccountViewHolder holder, int position) {
         final User user = mUsers.get(position);
-        holder.nameTextView.setText(user.getUsername());
+        holder.nameTextView.setText(WordUtils.capitalizeFully(user.getUsername()));
         holder.item.setTag(user);
         int placeholder = R.mipmap.ic_launcher;
         GlideApp.with(mContext)

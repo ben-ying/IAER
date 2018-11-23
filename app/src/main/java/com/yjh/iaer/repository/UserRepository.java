@@ -77,8 +77,8 @@ public class UserRepository {
             }
 
             @Override
-            protected void onFetchFailed() {
-                super.onFetchFailed();
+            protected void onFetchFailed(String errorMessage) {
+                super.onFetchFailed(errorMessage);
             }
         }.getAsLiveData();
     }
@@ -116,8 +116,8 @@ public class UserRepository {
             }
 
             @Override
-            protected void onFetchFailed() {
-                super.onFetchFailed();
+            protected void onFetchFailed(String errorMessage) {
+                super.onFetchFailed(errorMessage);
             }
         }.getAsLiveData();
     }
@@ -156,8 +156,8 @@ public class UserRepository {
             }
 
             @Override
-            protected void onFetchFailed() {
-                super.onFetchFailed();
+            protected void onFetchFailed(String errorMessage) {
+                super.onFetchFailed(errorMessage);
             }
         }.getAsLiveData();
     }
@@ -193,8 +193,8 @@ public class UserRepository {
             }
 
             @Override
-            protected void onFetchFailed() {
-                super.onFetchFailed();
+            protected void onFetchFailed(String errorMessage) {
+                super.onFetchFailed(errorMessage);
             }
         }.getAsLiveData();
     }
@@ -236,8 +236,8 @@ public class UserRepository {
             }
 
             @Override
-            protected void onFetchFailed() {
-                super.onFetchFailed();
+            protected void onFetchFailed(String errorMessage) {
+                super.onFetchFailed(errorMessage);
             }
         }.getAsLiveData();
     }

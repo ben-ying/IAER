@@ -25,6 +25,11 @@ import javax.inject.Singleton;
 @Singleton
 public class TransactionRepository {
     private static final int INVALID_ID = -1;
+    private static final int TRANSACTIONS_REQUEST = 1;
+    private static final int ADD_TRANSACTION_REQUEST = 2;
+    private static final int DELETE_TRANSACTION_REQUEST = 3;
+    private static final int DELETE_REQUEST = 4;
+    private static final int EDIT_REQUEST = 5;
 
     private final Webservice mWebservice;
     private final TransactionDao mTransactionDao;
@@ -32,6 +37,9 @@ public class TransactionRepository {
             = new RateLimiter<>(2, TimeUnit.SECONDS);
 
     private int mAddedTransactionId = INVALID_ID;
+    // fix request result sequence bug.
+    // if previous request but later result we ignore the later result (transaction list).
+    private int mRequestCode;
 
     @Inject
     public TransactionRepository(Webservice webservice, TransactionDao transactionDao) {
@@ -46,8 +54,10 @@ public class TransactionRepository {
             @Override
             protected void saveCallResult(
                     @NonNull CustomResponse<ListResponseResult<List<Transaction>>> item) {
-                mTransactionDao.deleteAll();
-                mTransactionDao.saveAll(item.getResult().getResults());
+                if (mRequestCode == TRANSACTIONS_REQUEST) {
+                    mTransactionDao.deleteAll();
+                    mTransactionDao.saveAll(item.getResult().getResults());
+                }
             }
 
             @Override
@@ -59,6 +69,7 @@ public class TransactionRepository {
             @NonNull
             @Override
             protected LiveData<List<Transaction>> loadFromDb() {
+                mRequestCode = TRANSACTIONS_REQUEST;
                 return mTransactionDao.loadAll();
             }
 
@@ -76,8 +87,8 @@ public class TransactionRepository {
             }
 
             @Override
-            protected void onFetchFailed() {
-                super.onFetchFailed();
+            protected void onFetchFailed(String errorMessage) {
+                super.onFetchFailed(errorMessage);
             }
         }.getAsLiveData();
     }
@@ -101,6 +112,7 @@ public class TransactionRepository {
             @NonNull
             @Override
             protected LiveData<Transaction> loadFromDb() {
+                mRequestCode = ADD_TRANSACTION_REQUEST;
                 LiveData<Transaction> transactionLiveData
                         = mTransactionDao.loadById(mAddedTransactionId);
                 mAddedTransactionId = INVALID_ID;
@@ -121,8 +133,8 @@ public class TransactionRepository {
             }
 
             @Override
-            protected void onFetchFailed() {
-                super.onFetchFailed();
+            protected void onFetchFailed(String errorMessage) {
+                super.onFetchFailed(errorMessage);
             }
         }.getAsLiveData();
     }
@@ -143,6 +155,7 @@ public class TransactionRepository {
             @NonNull
             @Override
             protected LiveData<List<Transaction>> loadFromDb() {
+                mAddedTransactionId = DELETE_TRANSACTION_REQUEST;
                 return mTransactionDao.loadAll();
             }
 
@@ -159,8 +172,8 @@ public class TransactionRepository {
             }
 
             @Override
-            protected void onFetchFailed() {
-                super.onFetchFailed();
+            protected void onFetchFailed(String errorMessage) {
+                super.onFetchFailed(errorMessage);
             }
         }.getAsLiveData();
     }
@@ -181,6 +194,7 @@ public class TransactionRepository {
             @NonNull
             @Override
             protected LiveData<Transaction> loadFromDb() {
+                mRequestCode = DELETE_REQUEST;
                 return mTransactionDao.loadById(id);
             }
 
@@ -197,8 +211,8 @@ public class TransactionRepository {
             }
 
             @Override
-            protected void onFetchFailed() {
-                super.onFetchFailed();
+            protected void onFetchFailed(String errorMessage) {
+                super.onFetchFailed(errorMessage);
             }
         }.getAsLiveData();
     }
@@ -219,6 +233,7 @@ public class TransactionRepository {
             @NonNull
             @Override
             protected LiveData<Transaction> loadFromDb() {
+                mAddedTransactionId = EDIT_REQUEST;
                 return mTransactionDao.loadById(transaction.getIaerId());
             }
 
@@ -239,8 +254,8 @@ public class TransactionRepository {
             }
 
             @Override
-            protected void onFetchFailed() {
-                super.onFetchFailed();
+            protected void onFetchFailed(String errorMessage) {
+                super.onFetchFailed(errorMessage);
             }
         }.getAsLiveData();
     }

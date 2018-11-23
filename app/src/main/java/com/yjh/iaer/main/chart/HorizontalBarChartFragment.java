@@ -289,7 +289,7 @@ public class HorizontalBarChartFragment extends BaseChartFragment {
             xAxis.setTextSize(7);
             xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
             xAxis.setValueFormatter((value, axis) -> {
-                        if (size > value && value == Math.round(value)) {
+                        if (size > value && value == Math.round(value) && value < transactions.size()) {
                             String year = transactions.get((int) value).getYearStr();
                             String month = transactions.get((int) value).getMonthStr();
                             if (year.isEmpty() || month.isEmpty()) {

@@ -77,6 +77,13 @@ public class TransactionsFragment extends BaseFragment
     }
 
     @Override
+    public void onStop() {
+        super.onStop();
+        progressBar.setVisibility(View.GONE);
+        swipeRefreshLayout.setRefreshing(false);
+    }
+
+    @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
         inflater.inflate(R.menu.transaction_list, menu);
@@ -147,7 +154,7 @@ public class TransactionsFragment extends BaseFragment
                 R.color.google_green, R.color.google_red, R.color.google_yellow);
         swipeRefreshLayout.setOnRefreshListener(() -> {
             mViewModel.load(MyApplication.sUser.getUserId(), true);
-            progressBar.setVisibility(View.VISIBLE);
+//            progressBar.setVisibility(View.VISIBLE);
         });
     }
 
@@ -156,21 +163,19 @@ public class TransactionsFragment extends BaseFragment
                 this, viewModelFactory).get(TransactionViewModel.class);
         mViewModel.getTransactionsResource().observe(this, this::setData);
         mViewModel.load(MyApplication.sUser.getUserId(), true);
+        progressBar.setVisibility(View.VISIBLE);
     }
 
     private void setData(@Nullable Resource<List<Transaction>> listResource) {
-        if (listResource.getStatus() == Status.LOADING) {
-            progressBar.setVisibility(View.VISIBLE);
-        } else{
-            progressBar.setVisibility(View.GONE);
+        if (listResource.getData() != null ) {
+            mTransactions = listResource.getData();
+            if (reverseSorting) {
+                Collections.reverse(mTransactions);
+            }
+            setAdapter();
             if (listResource.getStatus() == Status.SUCCESS) {
                 progressBar.setVisibility(View.GONE);
                 swipeRefreshLayout.setRefreshing(false);
-                mTransactions = listResource.getData();
-                if (reverseSorting) {
-                    Collections.reverse(mTransactions);
-                }
-                setAdapter();
             }
         }
     }

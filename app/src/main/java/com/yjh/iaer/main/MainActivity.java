@@ -32,6 +32,8 @@ import com.yjh.iaer.util.AlertUtils;
 import com.yjh.iaer.util.Utils;
 import com.yjh.iaer.viewmodel.UserViewModel;
 
+import org.apache.commons.lang3.text.WordUtils;
+
 import javax.inject.Inject;
 
 import butterknife.BindView;
@@ -65,7 +67,7 @@ public class MainActivity extends BaseActivity
         TextView nameTextView = navigationView.getHeaderView(0).findViewById(R.id.tv_name);
         TextView emailTextView = navigationView.getHeaderView(0).findViewById(R.id.tv_email);
         ImageView profileImageView = navigationView.getHeaderView(0).findViewById(R.id.img_profile);
-        nameTextView.setText(MyApplication.sUser.getUsername());
+        nameTextView.setText(WordUtils.capitalizeFully(MyApplication.sUser.getUsername()));
         emailTextView.setText(MyApplication.sUser.getEmail());
         int placeholder = R.mipmap.ic_launcher;
         GlideApp.with(this)

@@ -122,7 +122,9 @@ public class ChartActivity extends BaseActivity {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                 mTypeSelection = i;
-                getCurrentFragment().summary(mTypeSelection);
+                if (getCurrentFragment().transactions != null) {
+                    getCurrentFragment().summary(mTypeSelection);
+                }
             }
 
             @Override
