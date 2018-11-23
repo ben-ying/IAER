@@ -5,13 +5,16 @@ import android.arch.lifecycle.LiveData;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
+import com.yjh.iaer.MyApplication;
 import com.yjh.iaer.model.CustomResponse;
+import com.yjh.iaer.model.ListResponseResult;
 import com.yjh.iaer.network.ApiResponse;
 import com.yjh.iaer.network.NetworkBoundResource;
 import com.yjh.iaer.network.Resource;
 import com.yjh.iaer.network.Webservice;
 import com.yjh.iaer.room.dao.CategoryDao;
 import com.yjh.iaer.room.entity.Category;
+
 import com.yjh.iaer.util.RateLimiter;
 
 import java.util.List;
@@ -28,21 +31,24 @@ public class CategoryRepository {
             = new RateLimiter<>(2, TimeUnit.SECONDS);
 
     @Inject
-    CategoryRepository(Webservice webservice, CategoryDao userDao) {
+    CategoryRepository(Webservice webservice, CategoryDao categoryDao) {
         this.mWebservice = webservice;
-        this.mDao = userDao;
+        this.mDao = categoryDao;
     }
 
     public LiveData<Resource<List<Category>>> loadAllCategories() {
-        return new NetworkBoundResource<List<Category>, CustomResponse<List<Category>>>() {
-
+        return new NetworkBoundResource<List<Category>,
+                CustomResponse<ListResponseResult<List<Category>>>>() {
             @Override
-            protected void saveCallResult(@NonNull CustomResponse<List<Category>> item) {
+            protected void saveCallResult(
+                    @NonNull CustomResponse<ListResponseResult<List<Category>>> item) {
+                mDao.deleteAll();
+                mDao.saveAll(item.getResult().getResults());
             }
 
             @Override
             protected boolean shouldFetch(@Nullable List<Category> data) {
-                return false;
+                return data == null || data.isEmpty();
             }
 
             @NonNull
@@ -53,14 +59,15 @@ public class CategoryRepository {
 
             @Nullable
             @Override
-            protected LiveData<ApiResponse<CustomResponse<List<Category>>>> createCall() {
-                return null;
+            protected LiveData<ApiResponse<
+                    CustomResponse<ListResponseResult<List<Category>>>>> createCall() {
+                return mWebservice.getCategories();
             }
 
             @Override
-            protected CustomResponse<List<Category>> processResponse(
-                    ApiResponse<CustomResponse<List<Category>>> response) {
-                return null;
+            protected CustomResponse<ListResponseResult<List<Category>>> processResponse(
+                    ApiResponse<CustomResponse<ListResponseResult<List<Category>>>> response) {
+                return response.getBody();
             }
 
             @Override

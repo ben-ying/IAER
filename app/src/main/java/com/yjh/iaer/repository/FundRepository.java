@@ -29,9 +29,9 @@ public class FundRepository {
             = new RateLimiter<>(2, TimeUnit.SECONDS);
 
     @Inject
-    FundRepository(Webservice webservice, FundDao userDao) {
+    FundRepository(Webservice webservice, FundDao fundDao) {
         this.mWebservice = webservice;
-        this.mDao = userDao;
+        this.mDao = fundDao;
     }
 
     public LiveData<Resource<List<Fund>>> loadAllFunds() {

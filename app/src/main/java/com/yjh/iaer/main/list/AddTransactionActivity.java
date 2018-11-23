@@ -127,9 +127,12 @@ public class AddTransactionActivity extends BaseActivity {
         categorySpinner.setEnabled(true);
         typeSpinner.setEnabled(true);
 
+        ArrayList<String> list = new ArrayList<>();
+        for (Category category :listResource.getData()) {
+            list.add(category.getName());
+        }
         ArrayAdapter<String> categoryAdapter = new ArrayAdapter<>(this,
-                android.R.layout.simple_spinner_dropdown_item,
-                getResources().getStringArray(R.array.transaction_category_options));
+                android.R.layout.simple_spinner_dropdown_item, list);
         categorySpinner.setAdapter(categoryAdapter);
         categorySpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -149,12 +152,9 @@ public class AddTransactionActivity extends BaseActivity {
             }
         });
 
-        ArrayList<String> list = new ArrayList<>();
-        for (Category category :listResource.getData()) {
-            list.add(category.getName());
-        }
         ArrayAdapter<String> typeAdapter = new ArrayAdapter<>(this,
-                android.R.layout.simple_spinner_dropdown_item, list);
+                android.R.layout.simple_spinner_dropdown_item,
+                getResources().getStringArray(R.array.transaction_type_options));
         typeSpinner.setAdapter(typeAdapter);
         typeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override

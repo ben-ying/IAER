@@ -5,6 +5,8 @@ import android.arch.lifecycle.LiveData;
 
 import com.yjh.iaer.model.CustomResponse;
 import com.yjh.iaer.model.ListResponseResult;
+import com.yjh.iaer.room.entity.Category;
+import com.yjh.iaer.room.entity.Fund;
 import com.yjh.iaer.room.entity.Transaction;
 import com.yjh.iaer.room.entity.User;
 
@@ -25,6 +27,8 @@ public interface Webservice {
     String URL_TRANSACTIONS = "iaers/";
     String URL_USER_LOGIN = "user/login/";
     String URL_SEND_VERIFY_CODE = "user/send_verify_code/";
+    String URL_CATEGORIES = "categories/";
+    String URL_FUNDS = "funds/";
 
     @GET(URL_TRANSACTIONS)
     LiveData<ApiResponse<CustomResponse<ListResponseResult<List<Transaction>>>>> getTransactions(
@@ -73,4 +77,10 @@ public interface Webservice {
     @FormUrlEncoded
     @POST(URL_SEND_VERIFY_CODE)
     LiveData<ApiResponse<CustomResponse<User>>> sendVerifyCode(@Field("email") String email);
+
+    @GET(URL_CATEGORIES)
+    LiveData<ApiResponse<CustomResponse<ListResponseResult<List<Category>>>>> getCategories();
+
+    @GET(URL_FUNDS)
+    LiveData<ApiResponse<CustomResponse<ListResponseResult<List<Fund>>>>> getFunds();
 }

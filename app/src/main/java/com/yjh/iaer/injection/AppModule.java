@@ -4,6 +4,8 @@ import android.app.Application;
 import android.arch.persistence.room.Room;
 
 import com.yjh.iaer.network.Webservice;
+import com.yjh.iaer.room.dao.CategoryDao;
+import com.yjh.iaer.room.dao.FundDao;
 import com.yjh.iaer.room.dao.TransactionDao;
 import com.yjh.iaer.room.dao.UserDao;
 import com.yjh.iaer.room.db.MyDatabase;
@@ -63,5 +65,17 @@ class AppModule {
     @Provides
     UserDao provideUserDao(MyDatabase db) {
         return db.userDao();
+    }
+
+    @Singleton
+    @Provides
+    CategoryDao provideCategoryDao(MyDatabase db) {
+        return db.categoryDao();
+    }
+
+    @Singleton
+    @Provides
+    FundDao provideFundDao(MyDatabase db) {
+        return db.fundDao();
     }
 }

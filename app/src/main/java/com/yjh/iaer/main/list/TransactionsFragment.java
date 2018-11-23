@@ -168,13 +168,15 @@ public class TransactionsFragment extends BaseFragment
 
     private void setData(@Nullable Resource<List<Transaction>> listResource) {
         if (listResource.getData() != null ) {
+            if (listResource.getData().size() > 0) {
+                progressBar.setVisibility(View.GONE);
+            }
             mTransactions = listResource.getData();
             if (reverseSorting) {
                 Collections.reverse(mTransactions);
             }
             setAdapter();
             if (listResource.getStatus() == Status.SUCCESS) {
-                progressBar.setVisibility(View.GONE);
                 swipeRefreshLayout.setRefreshing(false);
             }
         }
