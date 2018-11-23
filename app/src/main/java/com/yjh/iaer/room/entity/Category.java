@@ -8,7 +8,7 @@ import com.google.gson.annotations.SerializedName;
 
 import java.io.Serializable;
 
-import static com.yjh.iaer.room.entity.Transaction.TABLE_NAME;
+import static com.yjh.iaer.room.entity.Category.TABLE_NAME;
 
 
 @Entity(tableName = TABLE_NAME)

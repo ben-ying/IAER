@@ -6,8 +6,6 @@ import android.arch.persistence.room.Delete;
 import android.arch.persistence.room.Insert;
 import android.arch.persistence.room.Query;
 
-import com.yjh.iaer.room.entity.Category;
-import com.yjh.iaer.room.entity.Fund;
 import com.yjh.iaer.room.entity.User;
 
 import java.util.List;
@@ -36,14 +34,6 @@ public interface UserDao {
     @Query("SELECT * FROM " + User.TABLE_NAME +
             " ORDER BY -" + User.FIELD_IS_LOGIN)
     LiveData<List<User>> loadUserList();
-
-    @Query("SELECT * FROM " + Category.TABLE_NAME +
-            " ORDER BY -" + Category.FIELD_SEQUENCE)
-    LiveData<List<Category>> loadCategories();
-
-    @Query("SELECT * FROM " + Fund.TABLE_NAME +
-            " ORDER BY -" + Fund.FIELD_CREATED)
-    LiveData<List<Fund>> loadFunds();
 
     @Query("SELECT * FROM " + User.TABLE_NAME +
             " ORDER BY -" + User.FIELD_IS_LOGIN)
