@@ -29,7 +29,7 @@ public class Category implements Serializable {
     private String name;
     @SerializedName(FIELD_SEQUENCE)
     @ColumnInfo(name = FIELD_SEQUENCE)
-    private String sequence;
+    private int sequence;
     @SerializedName(FIELD_CREATED)
     @ColumnInfo(name = FIELD_CREATED)
     private String created;
@@ -53,11 +53,11 @@ public class Category implements Serializable {
         this.name = name;
     }
 
-    public String getSequence() {
+    public int getSequence() {
         return sequence;
     }
 
-    public void setSequence(String sequence) {
+    public void setSequence(int sequence) {
         this.sequence = sequence;
     }
 
