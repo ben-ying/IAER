@@ -5,7 +5,6 @@ import android.arch.lifecycle.LiveData;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import com.yjh.iaer.MyApplication;
 import com.yjh.iaer.model.CustomResponse;
 import com.yjh.iaer.model.ListResponseResult;
 import com.yjh.iaer.network.ApiResponse;
@@ -15,10 +14,7 @@ import com.yjh.iaer.network.Webservice;
 import com.yjh.iaer.room.dao.CategoryDao;
 import com.yjh.iaer.room.entity.Category;
 
-import com.yjh.iaer.util.RateLimiter;
-
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -27,8 +23,6 @@ import javax.inject.Singleton;
 public class CategoryRepository {
     private final Webservice mWebservice;
     private final CategoryDao mDao;
-    private final RateLimiter<String> mRepoListRateLimit
-            = new RateLimiter<>(2, TimeUnit.SECONDS);
 
     @Inject
     CategoryRepository(Webservice webservice, CategoryDao categoryDao) {

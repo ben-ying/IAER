@@ -1,7 +1,11 @@
 package com.yjh.iaer.main.chart;
 
+import android.arch.lifecycle.ViewModelProvider;
+import android.arch.lifecycle.ViewModelProviders;
+import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
@@ -12,10 +16,16 @@ import com.jakewharton.rxbinding2.support.v4.view.RxViewPager;
 import com.yjh.iaer.R;
 import com.yjh.iaer.base.BaseActivity;
 import com.yjh.iaer.main.list.ChartPagerAdapter;
+import com.yjh.iaer.network.Resource;
+import com.yjh.iaer.network.Status;
+import com.yjh.iaer.room.entity.Fund;
+import com.yjh.iaer.viewmodel.FundViewModel;
 
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+
+import javax.inject.Inject;
 
 import butterknife.BindView;
 
@@ -36,6 +46,10 @@ public class ChartActivity extends BaseActivity {
     private int mYearSelection;
     private int mTypeSelection;
     private ChartPagerAdapter mChartPagerAdapter;
+    private FundViewModel mFundViewModel;
+
+    @Inject
+    ViewModelProvider.Factory viewModelFactory;
 
     @Override
     public int getLayoutId() {
@@ -59,6 +73,10 @@ public class ChartActivity extends BaseActivity {
         tabLayout.setupWithViewPager(viewPager);
         tabLayout.setVisibility(View.VISIBLE);
 
+        mFundViewModel = ViewModelProviders.of(
+                this, viewModelFactory).get(FundViewModel.class);
+        mFundViewModel.loadAllFunds().observe(this, this::setFundList);
+
         RxViewPager.pageSelections(viewPager).subscribe(integer -> {
             switch (integer) {
                 case 0:
@@ -67,7 +85,7 @@ public class ChartActivity extends BaseActivity {
                 case 1:
                     showChartByYear();
                     break;
-                case 2:                   
+                case 2:
                     showChartByAll();
                     break;
                 case 3:
@@ -104,6 +122,12 @@ public class ChartActivity extends BaseActivity {
         tabLayout.setupWithViewPager(viewPager);
 
         return super.onOptionsItemSelected(menuItem);
+    }
+
+    private void setFundList(@Nullable Resource<List<Fund>> listResource) {
+        if (listResource.getStatus() == Status.SUCCESS) {
+            Log.d("Test", "test");
+        }
     }
 
     private void showChartByAll() {

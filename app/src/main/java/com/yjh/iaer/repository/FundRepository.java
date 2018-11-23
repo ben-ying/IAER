@@ -6,17 +6,15 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.yjh.iaer.model.CustomResponse;
+import com.yjh.iaer.model.ListResponseResult;
 import com.yjh.iaer.network.ApiResponse;
 import com.yjh.iaer.network.NetworkBoundResource;
 import com.yjh.iaer.network.Resource;
 import com.yjh.iaer.network.Webservice;
 import com.yjh.iaer.room.dao.FundDao;
-import com.yjh.iaer.room.entity.Category;
 import com.yjh.iaer.room.entity.Fund;
-import com.yjh.iaer.util.RateLimiter;
 
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -25,8 +23,6 @@ import javax.inject.Singleton;
 public class FundRepository {
     private final Webservice mWebservice;
     private final FundDao mDao;
-    private final RateLimiter<String> mRepoListRateLimit
-            = new RateLimiter<>(2, TimeUnit.SECONDS);
 
     @Inject
     FundRepository(Webservice webservice, FundDao fundDao) {
@@ -35,15 +31,18 @@ public class FundRepository {
     }
 
     public LiveData<Resource<List<Fund>>> loadAllFunds() {
-        return new NetworkBoundResource<List<Fund>, CustomResponse<List<Fund>>>() {
-
+        return new NetworkBoundResource<List<Fund>,
+                        CustomResponse<ListResponseResult<List<Fund>>>>() {
             @Override
-            protected void saveCallResult(@NonNull CustomResponse<List<Fund>> item) {
+            protected void saveCallResult(
+                    @NonNull CustomResponse<ListResponseResult<List<Fund>>> item) {
+                mDao.deleteAll();
+                mDao.saveAll(item.getResult().getResults());
             }
 
             @Override
             protected boolean shouldFetch(@Nullable List<Fund> data) {
-                return false;
+                return data == null || data.isEmpty();
             }
 
             @NonNull
@@ -54,14 +53,15 @@ public class FundRepository {
 
             @Nullable
             @Override
-            protected LiveData<ApiResponse<CustomResponse<List<Fund>>>> createCall() {
-                return null;
+            protected LiveData<ApiResponse<
+                    CustomResponse<ListResponseResult<List<Fund>>>>> createCall() {
+                return mWebservice.getFunds();
             }
 
             @Override
-            protected CustomResponse<List<Fund>> processResponse(
-                    ApiResponse<CustomResponse<List<Fund>>> response) {
-                return null;
+            protected CustomResponse<ListResponseResult<List<Fund>>> processResponse(
+                    ApiResponse<CustomResponse<ListResponseResult<List<Fund>>>> response) {
+                return response.getBody();
             }
 
             @Override
@@ -70,5 +70,4 @@ public class FundRepository {
             }
         }.getAsLiveData();
     }
-
 }
