@@ -31,6 +31,15 @@ public interface TransactionDao {
     LiveData<List<Transaction>> loadAll();
 
     @Query("SELECT * FROM " + Transaction.TABLE_NAME +
+            " WHERE " + Transaction.FIELD_USER_ID + " = :userId" +
+            " ORDER BY -" + Transaction.FIELD_IAER_ID)
+    LiveData<List<Transaction>> loadAllByUser(int userId);
+
+    @Query("DELETE FROM " + Transaction.TABLE_NAME +
+            " WHERE " + Transaction.FIELD_USER_ID + " = :userId")
+    void deleteAllByUser(int userId);
+
+    @Query("SELECT * FROM " + Transaction.TABLE_NAME +
             " WHERE " + Transaction.FIELD_IAER_ID + " = :id")
     LiveData<Transaction> loadById(int id);
 

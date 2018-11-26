@@ -55,7 +55,7 @@ public class TransactionRepository {
             protected void saveCallResult(
                     @NonNull CustomResponse<ListResponseResult<List<Transaction>>> item) {
                 if (mRequestCode == TRANSACTIONS_REQUEST) {
-                    mTransactionDao.deleteAll();
+                    mTransactionDao.deleteAllByUser(userId);
                     mTransactionDao.saveAll(item.getResult().getResults());
                 }
             }
@@ -70,7 +70,7 @@ public class TransactionRepository {
             @Override
             protected LiveData<List<Transaction>> loadFromDb() {
                 mRequestCode = TRANSACTIONS_REQUEST;
-                return mTransactionDao.loadAll();
+                return mTransactionDao.loadAllByUser(userId);
             }
 
             @Nullable
