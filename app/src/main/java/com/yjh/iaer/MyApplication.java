@@ -28,7 +28,7 @@ public class MyApplication extends Application implements HasActivityInjector {
 
     public static User sUser;
     public static MyApplication sInstance;
-    public static boolean sLocalServer;
+//    public static boolean sLocalServer;
 
 //    private RefWatcher mRefWatcher;
     @Inject
@@ -38,17 +38,17 @@ public class MyApplication extends Application implements HasActivityInjector {
     public void onCreate() {
         super.onCreate();
         sInstance = this;
-        ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-
-        if (connectivityManager != null) {
-            connectivityManager.requestNetwork(new NetworkRequest.Builder().build(),
-                    new ConnectivityManager.NetworkCallback() {
-                        @Override
-                        public void onAvailable(Network network) {
-                            sLocalServer = SystemUtils.isLocalServer(sInstance);
-                        }
-                    });
-        }
+//        ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+//
+//        if (connectivityManager != null) {
+//            connectivityManager.requestNetwork(new NetworkRequest.Builder().build(),
+//                    new ConnectivityManager.NetworkCallback() {
+//                        @Override
+//                        public void onAvailable(Network network) {
+//                            sLocalServer = SystemUtils.isLocalServer(sInstance);
+//                        }
+//                    });
+//        }
 //        if (LeakCanary.isInAnalyzerProcess(this)) {
 //            return;
 //        }

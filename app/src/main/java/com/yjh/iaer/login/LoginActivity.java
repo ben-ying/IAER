@@ -73,10 +73,10 @@ public class LoginActivity extends BaseActivity {
     public void initView() {
         final RxPermissions rxPermissions = new RxPermissions(this);
 
-        ActivityCompat.requestPermissions(this,
-                new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION},
-                1);
-        MyApplication.sLocalServer = SystemUtils.isLocalServer(this);
+//        ActivityCompat.requestPermissions(this,
+//                new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION},
+//                1);
+//        MyApplication.sLocalServer = SystemUtils.isLocalServer(this);
         // in order to get wifi ssid
 //        Disposable disposable = rxPermissions
 //                .request(Manifest.permission.ACCESS_COARSE_LOCATION,
