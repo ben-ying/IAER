@@ -43,13 +43,13 @@ public interface Webservice {
             @Field("token") String token);
 
     @FormUrlEncoded
-    @HTTP(method = "DELETE", path = URL_TRANSACTIONS + "{iaerId}", hasBody = true)
+    @HTTP(method = "DELETE", path = URL_TRANSACTIONS + "{iaerId}/", hasBody = true)
     LiveData<ApiResponse<CustomResponse<Transaction>>> deleteTransaction(
             @Path("iaerId") int iaerId,
             @Field("token") String token);
 
     @FormUrlEncoded
-    @HTTP(method = "POST", path = URL_TRANSACTIONS + "{iaerId}", hasBody = true)
+    @HTTP(method = "POST", path = URL_TRANSACTIONS + "{iaerId}/", hasBody = true)
     LiveData<ApiResponse<CustomResponse<Transaction>>> edit(
             @Path("iaerId") int iaerId,
             @Field("category") String category,
