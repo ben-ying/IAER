@@ -16,11 +16,13 @@ import javax.inject.Inject;
 
 public class TransactionViewModel extends ViewModel {
     private static final int TYPE_LOAD = 0;
-    private static final int TYPE_DELETE = 1;
-    private static final int TYPE_EDIT = 2;
+    private static final int TYPE_LOAD_MORE = 1;
+    private static final int TYPE_DELETE = 2;
+    private static final int TYPE_EDIT = 3;
 
     private MutableLiveData<ReId> mIaerIdLiveData = new MutableLiveData<>();
     private MutableLiveData<Transaction> mTransactionMutableLiveData = new MutableLiveData<>();
+    private ReId mReId = new ReId();
     private TransactionRepository mRepository;
     private LiveData<Resource<List<Transaction>>> mTransactions;
     private LiveData<Resource<Transaction>> mTransaction;
@@ -38,6 +40,8 @@ public class TransactionViewModel extends ViewModel {
             switch (iaerId.type) {
                 case TYPE_LOAD:
                     return mRepository.loadTransactions(iaerId.userId, iaerId.fetchNetwork);
+                case TYPE_LOAD_MORE:
+                    return mRepository.loadMoreTransactions(iaerId.userId, iaerId.fetchNetwork);
                 case TYPE_DELETE:
                     return mRepository.deleteTransaction(iaerId.id);
             }
@@ -83,19 +87,24 @@ public class TransactionViewModel extends ViewModel {
     }
 
     public void load(int userId, boolean fetchNetwork) {
-        ReId reId = new ReId();
-        reId.type = TYPE_LOAD;
-        reId.userId = userId;
-        reId.fetchNetwork = fetchNetwork;
-        mIaerIdLiveData.setValue(reId);
+        mReId.type = TYPE_LOAD;
+        mReId.userId = userId;
+        mReId.fetchNetwork = fetchNetwork;
+        mIaerIdLiveData.setValue(mReId);
+    }
+
+    public void loadMore(int userId, boolean fetchNetwork) {
+        mReId.type = TYPE_LOAD_MORE;
+        mReId.userId = userId;
+        mReId.fetchNetwork = fetchNetwork;
+        mIaerIdLiveData.setValue(mReId);
     }
 
     public void delete(int id) {
-        ReId reId = new ReId();
-        reId.type = TYPE_DELETE;
-        reId.id = id;
-        reId.fetchNetwork = true;
-        mIaerIdLiveData.setValue(reId);
+        mReId.type = TYPE_DELETE;
+        mReId.id = id;
+        mReId.fetchNetwork = true;
+        mIaerIdLiveData.setValue(mReId);
     }
 
     static class ReId {

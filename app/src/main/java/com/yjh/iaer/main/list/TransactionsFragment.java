@@ -48,7 +48,9 @@ public class TransactionsFragment extends BaseFragment
     private TransactionViewModel mViewModel;
     private TransactionAdapter mAdapter;
     private Disposable mDisposable;
-    private boolean reverseSorting;
+    private boolean mReverseSorting;
+    private boolean mIsLoadMore;
+    private boolean mIsLoading;;
     public List<Transaction> mTransactions;
 
     public static TransactionsFragment newInstance() {
@@ -116,7 +118,7 @@ public class TransactionsFragment extends BaseFragment
     @Override
     public void onPrepareOptionsMenu(Menu menu) {
         menu.findItem(R.id.action_sort).setIcon(
-                reverseSorting ? R.mipmap.ic_resort_white_24dp : R.mipmap.ic_sort_white_24dp);
+                mReverseSorting ? R.mipmap.ic_resort_white_24dp : R.mipmap.ic_sort_white_24dp);
         super.onPrepareOptionsMenu(menu);
     }
 
@@ -133,11 +135,11 @@ public class TransactionsFragment extends BaseFragment
                         }
                         e.onComplete();
                     })
-                    .toSortedList(reverseSorting ?
+                    .toSortedList(mReverseSorting ?
                             Comparator.comparing(Transaction::getIaerId).reversed() :
                             Comparator.comparing(Transaction::getIaerId))
                     .subscribe(transactionList -> {
-                        reverseSorting = !reverseSorting;
+                        mReverseSorting = !mReverseSorting;
                         getActivity().invalidateOptionsMenu();
                         mTransactions = transactionList;
                         setAdapter();
@@ -150,11 +152,36 @@ public class TransactionsFragment extends BaseFragment
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setHasFixedSize(false);
         recyclerView.setNestedScrollingEnabled(false);
+        recyclerView.setOnScrollChangeListener(new View.OnScrollChangeListener() {
+            @Override
+            public void onScrollChange(View v, int scrollX, int scrollY, int oldScrollX, int oldScrollY) {
+                Log.d("", "");
+            }
+        });
+        scrollView.setOnScrollChangeListener(new NestedScrollView.OnScrollChangeListener() {
+            @Override
+            public void onScrollChange(NestedScrollView v, int scrollX, int scrollY, int oldScrollX, int oldScrollY) {
+                if (scrollY >= (v.getChildAt(0).getMeasuredHeight() - v.getMeasuredHeight())) {
+                    boolean isRefreshing = swipeRefreshLayout.isRefreshing();
+                    if (isRefreshing) {
+                        mAdapter.notifyItemRemoved(mAdapter.getItemCount());
+                        return;
+                    }
+                    if (!mIsLoading) {
+                        mViewModel.loadMore(MyApplication.sUser.getUserId(), true);
+                        mIsLoading = true;
+                        mIsLoadMore = true;
+                    }
+                }
+            }
+        });
+
         swipeRefreshLayout.setColorSchemeResources(R.color.google_blue,
                 R.color.google_green, R.color.google_red, R.color.google_yellow);
         swipeRefreshLayout.setOnRefreshListener(() -> {
             mViewModel.load(MyApplication.sUser.getUserId(), true);
-//            progressBar.setVisibility(View.VISIBLE);
+            mIsLoading = true;
+            mIsLoadMore = false;
         });
     }
 
@@ -163,20 +190,22 @@ public class TransactionsFragment extends BaseFragment
                 this, viewModelFactory).get(TransactionViewModel.class);
         mViewModel.getTransactionsResource().observe(this, this::setData);
         mViewModel.load(MyApplication.sUser.getUserId(), true);
-        progressBar.setVisibility(View.VISIBLE);
+        swipeRefreshLayout.setRefreshing(true);
     }
 
     private void setData(@Nullable Resource<List<Transaction>> listResource) {
-        if (listResource.getData() != null ) {
-            if (listResource.getData().size() > 0) {
-                progressBar.setVisibility(View.GONE);
-            }
+        if (listResource == null) {
+            // no data to load
+            mIsLoading = false;
+            mIsLoadMore = false;
+        } else if (listResource.getData() != null ) {
             mTransactions = listResource.getData();
-            if (reverseSorting) {
-                Collections.reverse(mTransactions);
-            }
             setAdapter();
+
             if (listResource.getStatus() == Status.SUCCESS) {
+                mIsLoading = false;
+                mIsLoadMore = false;
+                progressBar.setVisibility(View.GONE);
                 swipeRefreshLayout.setRefreshing(false);
             }
         }

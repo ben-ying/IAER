@@ -2,6 +2,8 @@ package com.yjh.iaer.main.list;
 
 import android.content.Context;
 import android.content.Intent;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,8 +22,10 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.OnLongClick;
 
-public class TransactionAdapter extends RecyclerView.Adapter<
-        TransactionAdapter.TransactionViewHolder> {
+public class TransactionAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+
+    private static final int TYPE_ITEM = 0;
+    private static final int TYPE_FOOTER = 1;
 
     private Context mContext;
     private List<Transaction> mTransactions;
@@ -44,26 +48,52 @@ public class TransactionAdapter extends RecyclerView.Adapter<
     }
 
     @Override
-    public TransactionViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        return new TransactionViewHolder(LayoutInflater.from(mContext)
-                .inflate(R.layout.item_transaction, parent, false));
+    public int getItemViewType(int position) {
+        if (position + 1 == getItemCount()) {
+            return TYPE_FOOTER;
+        } else {
+            return TYPE_ITEM;
+        }
+    }
+
+    @NonNull
+    @Override
+    public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        if (viewType == TYPE_ITEM) {
+            return new TransactionViewHolder(LayoutInflater.from(mContext)
+                    .inflate(R.layout.item_transaction, parent, false));
+        } else {
+            return new LoadMoreViewHolder(LayoutInflater.from(mContext)
+                    .inflate(R.layout.item_footer, parent,false));
+        }
     }
 
 
     @Override
-    public void onBindViewHolder(TransactionViewHolder holder, int position) {
-        final Transaction transaction = mTransactions.get(position);
-        holder.fromTextView.setText(transaction.getCategory());
-        holder.dateTextView.setText(transaction.getCreatedDate());
-        holder.moneyTextView.setText(String.format(
-                mContext.getString(R.string.transaction_yuan),
-                transaction.getMoneyInt(), transaction.getRemark()));
-        holder.rootView.setTag(transaction);
+    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
+        if (holder instanceof TransactionViewHolder) {
+            TransactionViewHolder viewHolder = (TransactionViewHolder) holder;
+            final Transaction transaction = mTransactions.get(position);
+            viewHolder.fromTextView.setText(transaction.getCategory());
+            viewHolder.dateTextView.setText(transaction.getCreatedDate());
+            viewHolder.moneyTextView.setText(String.format(
+                    mContext.getString(R.string.transaction_yuan),
+                    transaction.getMoneyInt(), transaction.getRemark()));
+            viewHolder.rootView.setTag(transaction);
+        } else {
+            // todo
+        }
     }
 
     @Override
     public int getItemCount() {
-        return mTransactions.size();
+        return mTransactions.size() == 0 ? 0 : mTransactions.size() + 1;
+    }
+
+    class LoadMoreViewHolder extends RecyclerView.ViewHolder {
+        LoadMoreViewHolder(View itemView) {
+            super(itemView);
+        }
     }
 
     class TransactionViewHolder extends RecyclerView.ViewHolder {

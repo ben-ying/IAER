@@ -2,6 +2,7 @@ package com.yjh.iaer.repository;
 
 
 import android.arch.lifecycle.LiveData;
+import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
@@ -41,6 +42,8 @@ public class TransactionRepository {
     // if previous request but later result we ignore the later result (transaction list).
     private int mRequestCode;
 
+    private String mNextUrl;
+
     @Inject
     public TransactionRepository(Webservice webservice, TransactionDao transactionDao) {
         this.mWebservice = webservice;
@@ -57,6 +60,7 @@ public class TransactionRepository {
                 if (mRequestCode == TRANSACTIONS_REQUEST) {
                     mTransactionDao.deleteAllByUser(userId);
                     mTransactionDao.saveAll(item.getResult().getResults());
+                    mNextUrl = item.getResult().getNext();
                 }
             }
 
@@ -77,7 +81,57 @@ public class TransactionRepository {
             @Override
             protected LiveData<ApiResponse<
                     CustomResponse<ListResponseResult<List<Transaction>>>>> createCall() {
-                return mWebservice.getTransactions(MyApplication.sUser.getToken(), userId);
+                return mWebservice.getTransactions(MyApplication.sUser.getToken(), userId, "1");
+            }
+
+            @Override
+            protected CustomResponse<ListResponseResult<List<Transaction>>> processResponse(
+                    ApiResponse<CustomResponse<ListResponseResult<List<Transaction>>>> response) {
+                return response.getBody();
+            }
+
+            @Override
+            protected void onFetchFailed(String errorMessage) {
+                super.onFetchFailed(errorMessage);
+            }
+        }.getAsLiveData();
+    }
+
+    public LiveData<Resource<List<Transaction>>> loadMoreTransactions(
+            final int userId, final boolean fetchNetwork) {
+        if (mNextUrl == null) {
+            return null;
+        }
+        return new NetworkBoundResource<List<Transaction>,
+                CustomResponse<ListResponseResult<List<Transaction>>>>() {
+            @Override
+            protected void saveCallResult(
+                    @NonNull CustomResponse<ListResponseResult<List<Transaction>>> item) {
+                if (mRequestCode == TRANSACTIONS_REQUEST) {
+                    mTransactionDao.saveAll(item.getResult().getResults());
+                    mNextUrl = item.getResult().getNext();
+                }
+            }
+
+            @Override
+            protected boolean shouldFetch(@Nullable List<Transaction> data) {
+                return true;
+            }
+
+            @Nullable
+            @Override
+            protected LiveData<List<Transaction>> loadFromDb() {
+                mRequestCode = TRANSACTIONS_REQUEST;
+                return mTransactionDao.loadAllByUser(userId);
+            }
+
+            @Nullable
+            @Override
+            protected LiveData<ApiResponse<
+                    CustomResponse<ListResponseResult<List<Transaction>>>>> createCall() {
+                Uri uri = Uri.parse(mNextUrl);
+                String page = uri.getQueryParameter("page");
+                return mWebservice.getTransactions(MyApplication.sUser.getToken(), userId, page);
             }
 
             @Override
