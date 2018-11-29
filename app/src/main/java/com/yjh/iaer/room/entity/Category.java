@@ -17,6 +17,9 @@ public class Category implements Serializable {
     public static final String FIELD_CATEGORY_ID = "category_id";
     public static final String FIELD_NAME = "name";
     public static final String FIELD_SEQUENCE = "sequence";
+    public static final String FIELD_YEAR = "year";
+    public static final String FIELD_MONTH = "month";
+    public static final String FIELD_MONEY = "money";
     public static final String FIELD_CREATED = "created";
     public static final String FIELD_MODIFIED = "modified";
 
@@ -30,6 +33,15 @@ public class Category implements Serializable {
     @SerializedName(FIELD_SEQUENCE)
     @ColumnInfo(name = FIELD_SEQUENCE)
     private int sequence;
+    @SerializedName(FIELD_YEAR)
+    @ColumnInfo(name = FIELD_YEAR)
+    private int year;
+    @SerializedName(FIELD_MONTH)
+    @ColumnInfo(name = FIELD_MONTH)
+    private int month;
+    @SerializedName(FIELD_MONEY)
+    @ColumnInfo(name = FIELD_MONEY)
+    private int money;
     @SerializedName(FIELD_CREATED)
     @ColumnInfo(name = FIELD_CREATED)
     private String created;
@@ -75,5 +87,29 @@ public class Category implements Serializable {
 
     public void setModified(String modified) {
         this.modified = modified;
+    }
+
+    public int getYear() {
+        return year;
+    }
+
+    public void setYear(int year) {
+        this.year = year;
+    }
+
+    public int getMonth() {
+        return month;
+    }
+
+    public void setMonth(int month) {
+        this.month = month;
+    }
+
+    public int getMoney() {
+        return money;
+    }
+
+    public void setMoney(int money) {
+        this.money = money;
     }
 }

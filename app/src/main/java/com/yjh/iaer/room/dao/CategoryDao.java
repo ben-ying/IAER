@@ -23,4 +23,9 @@ public interface CategoryDao {
     @Query("SELECT * FROM " + Category.TABLE_NAME +
             " ORDER BY " + Category.FIELD_SEQUENCE)
     LiveData<List<Category>> loadCategories();
+
+    @Query("SELECT * FROM " + Category.TABLE_NAME +
+            " WHERE " + Category.FIELD_SEQUENCE + " = -1" +
+            " ORDER BY " + Category.FIELD_SEQUENCE)
+    LiveData<List<Category>> loadEmptyCategories();
 }

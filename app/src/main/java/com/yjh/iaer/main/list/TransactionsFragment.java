@@ -194,7 +194,7 @@ public class TransactionsFragment extends BaseFragment
     }
 
     private void setData(@Nullable Resource<List<Transaction>> listResource) {
-        if (listResource == null) {
+        if (listResource == null || listResource.getData() == null) {
             // no data to load
             mIsLoading = false;
             mIsLoadMore = false;
@@ -202,7 +202,8 @@ public class TransactionsFragment extends BaseFragment
             mTransactions = listResource.getData();
             setAdapter();
 
-            if (listResource.getStatus() == Status.SUCCESS) {
+            if (listResource.getStatus() == Status.SUCCESS
+                    || listResource.getStatus() == Status.ERROR) {
                 mIsLoading = false;
                 mIsLoadMore = false;
                 progressBar.setVisibility(View.GONE);

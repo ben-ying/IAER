@@ -1,5 +1,6 @@
 package com.yjh.iaer.main.chart;
 
+import android.arch.lifecycle.ViewModelProvider;
 import android.arch.lifecycle.ViewModelProviders;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -12,11 +13,20 @@ import android.widget.TextView;
 import com.yjh.iaer.MyApplication;
 import com.yjh.iaer.R;
 import com.yjh.iaer.base.BaseFragment;
+import com.yjh.iaer.network.Resource;
+import com.yjh.iaer.network.Status;
+import com.yjh.iaer.room.entity.Category;
 import com.yjh.iaer.room.entity.Transaction;
+import com.yjh.iaer.util.CategoryComparator;
+import com.yjh.iaer.viewmodel.CategoryViewModel;
 import com.yjh.iaer.viewmodel.TransactionViewModel;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
+
+import javax.inject.Inject;
 
 import butterknife.BindString;
 import butterknife.BindView;
@@ -35,51 +45,36 @@ public abstract class BaseChartFragment extends BaseFragment {
 
     private List<Transaction> mAllTransactions;
 
-    @Nullable
-    @Override
-    public View onCreateView(LayoutInflater inflater,
-                             @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = super.onCreateView(inflater, container, savedInstanceState);
+    @Inject
+    ViewModelProvider.Factory viewModelFactory;
 
-        TransactionViewModel viewModel = ViewModelProviders.of(
-                this, viewModelFactory).get(TransactionViewModel.class);
-        viewModel.load(MyApplication.sUser.getUserId(), false);
-        viewModel.getTransactionsResource().observe(this, transactions -> {
-            if (transactions != null && transactions.getData() != null) {
-                mAllTransactions = transactions.getData();
-                Log.d("TRANSACTION", "size: " + mAllTransactions.size());
-                setData(mAllTransactions);
+
+    private void setCategoryList(@Nullable Resource<List<Category>> listResource) {
+        if (listResource.getStatus() == Status.SUCCESS) {
+            List<Category> categories = listResource.getData();
+            categories.sort(new CategoryComparator());
+            List<Category> categoryList = new ArrayList<>();
+            for (Category c : categories) {
+                if (c.getMoney() != 0) {
+                    categoryList.add(c);
+                }
             }
-        });
-
-        return view;
+            setData(categoryList);
+        }
     }
 
     public void setChartDate(int year, int month) {
-        if (mAllTransactions != null) {
-            List<Transaction> transactionList = new ArrayList<>();
-            if (year == 0 && month == 0) {
-                transactionList = mAllTransactions;
-                mDateString = "";
-            } else if (month == 0) {
-                for (Transaction transaction : mAllTransactions) {
-                    if (transaction.getYear() == year) {
-                        transactionList.add(transaction);
-                    }
-                }
-                mDateString = String.format(getString(R.string.chart_year), year);
-            } else {
-                for (Transaction transaction : mAllTransactions) {
-                    if (transaction.getYear() == year && transaction.getMonth() == month) {
-                        transactionList.add(transaction);
-                    }
-                }
-                mDateString = String.format(getString(R.string.chart_month), year, month);
-            }
-            if (transactionList.size() == 0) {
-                noDataHint = getString(R.string.no_data);
-            }
-            setData(transactionList);
+        CategoryViewModel categoryViewModel = ViewModelProviders.of(
+                this, viewModelFactory).get(CategoryViewModel.class);
+        categoryViewModel.loadStatisticsCategories(MyApplication.sUser.getToken(), year, month)
+                .observe(this, this::setCategoryList);
+
+        if (year == 0 && month == 0) {
+            mDateString = "";
+        } else if (month == 0) {
+            mDateString = String.format(getString(R.string.chart_year), year);
+        } else {
+            mDateString = String.format(getString(R.string.chart_month), year, month);
         }
     }
 
@@ -87,9 +82,8 @@ public abstract class BaseChartFragment extends BaseFragment {
         return mDateString;
     }
 
-    public void setData(List<Transaction> transactions) {
-        this.transactions = transactions;
-        noDataTextView.setVisibility(transactions.size() > 0 ? View.GONE : View.VISIBLE);
+    public void setData(List<Category> categories) {
+        noDataTextView.setVisibility(categories.size() > 0 ? View.GONE : View.VISIBLE);
         noDataTextView.setText(noDataHint);
     }
 

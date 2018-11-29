@@ -72,12 +72,24 @@ public abstract class NetworkBoundResource<ResultType, RequestType> {
 
             @Override
             protected void onPostExecute(Void aVoid) {
-                final LiveData<ResultType> dbSource = loadFromDb();
-                mResult.addSource(dbSource, resultType -> {
-                    mResult.setValue(Resource.success(resultType));
-                });
+                notifyData(response);
             }
         }.execute();
+    }
+
+    protected void notifyData(ApiResponse<RequestType> response) {
+        final LiveData<ResultType> dbSource = loadFromDb();
+        if (dbSource.getValue() != null) {
+            mResult.addSource(dbSource, resultType -> {
+                mResult.setValue(Resource.success(resultType));
+            });
+        } else {
+            // repository use setValue(ResultType resultType) to set network data
+        }
+    }
+
+    protected void setValue(ResultType resultType) {
+        mResult.setValue(Resource.success(resultType));
     }
 
     @WorkerThread

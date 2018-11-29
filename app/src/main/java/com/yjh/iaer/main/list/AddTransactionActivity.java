@@ -47,7 +47,6 @@ public class AddTransactionActivity extends BaseActivity {
 
     private boolean mCanSave;
     private TransactionViewModel mTransactionViewModel;
-    private CategoryViewModel mCategoryViewModel;
     private CompositeDisposable mCompositeDisposable;
 
     @Inject
@@ -80,9 +79,9 @@ public class AddTransactionActivity extends BaseActivity {
 
         mTransactionViewModel = ViewModelProviders.of(
                 this, viewModelFactory).get(TransactionViewModel.class);
-        mCategoryViewModel = ViewModelProviders.of(
+        CategoryViewModel categoryViewModel = ViewModelProviders.of(
                 this, viewModelFactory).get(CategoryViewModel.class);
-        mCategoryViewModel.loadAllCategories().observe(this, this::setCategoryList);
+        categoryViewModel.loadAllCategories().observe(this, this::setCategoryList);
     }
 
     @Override

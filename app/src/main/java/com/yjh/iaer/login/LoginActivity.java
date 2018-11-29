@@ -71,29 +71,6 @@ public class LoginActivity extends BaseActivity {
 
     @Override
     public void initView() {
-        final RxPermissions rxPermissions = new RxPermissions(this);
-
-//        ActivityCompat.requestPermissions(this,
-//                new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION},
-//                1);
-//        MyApplication.sLocalServer = SystemUtils.isLocalServer(this);
-        // in order to get wifi ssid
-//        Disposable disposable = rxPermissions
-//                .request(Manifest.permission.ACCESS_COARSE_LOCATION,
-//                        Manifest.permission.ACCESS_FINE_LOCATION)
-//                .subscribe(granted -> {
-//                    if (!granted) {
-//                        // At least one permission is denied
-//                        Toast.makeText(LoginActivity.this,
-//                                R.string.permission_not_granted,
-//                                Toast.LENGTH_LONG).show();
-//                        finish();
-//                    } else {
-//                        MyApplication.sLocalServer = SystemUtils.isLocalServer(this);
-//                    }
-//                });
-//        Log.d("RxPermissions", String.valueOf(disposable.isDisposed()));
-
         mUsername = getIntent().getStringExtra(Constant.USERNAME);
         mPassword = getIntent().getStringExtra(Constant.PASSWORD);
         mViewModel = ViewModelProviders.of(

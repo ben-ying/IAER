@@ -61,14 +61,14 @@ public class PieChartFragment extends BaseChartFragment
         l.setDrawInside(false);
     }
 
-    @Override
-    public void setData(List<Transaction> transactions) {
-        super.setData(transactions);
-        pieChart.setVisibility(transactions.size() > 0 ? View.VISIBLE : View.GONE);
-        pieChart.setData(generatePieData());
-        pieChart.invalidate();
-        pieChart.animateY(ANIMATION_MILLIS);
-    }
+//    @Override
+//    public void setData(List<Transaction> transactions) {
+//        super.setData(transactions);
+//        pieChart.setVisibility(transactions.size() > 0 ? View.VISIBLE : View.GONE);
+//        pieChart.setData(generatePieData());
+//        pieChart.invalidate();
+//        pieChart.animateY(ANIMATION_MILLIS);
+//    }
 
     protected PieData generatePieData() {
         final DecimalFormat format = new DecimalFormat("###,###,###");

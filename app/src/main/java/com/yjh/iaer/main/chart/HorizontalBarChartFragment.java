@@ -2,6 +2,7 @@ package com.yjh.iaer.main.chart;
 
 import android.os.Bundle;
 import android.view.View;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.github.mikephil.charting.charts.HorizontalBarChart;
@@ -16,6 +17,7 @@ import com.github.mikephil.charting.formatter.IAxisValueFormatter;
 import com.github.mikephil.charting.interfaces.datasets.IBarDataSet;
 import com.yjh.iaer.R;
 import com.yjh.iaer.custom.MyMarkerView;
+import com.yjh.iaer.room.entity.Category;
 import com.yjh.iaer.room.entity.Transaction;
 
 import java.text.DecimalFormat;
@@ -41,6 +43,8 @@ public class HorizontalBarChartFragment extends BaseChartFragment {
     TextView totalTextView;
     @BindView(R.id.description_layout)
     View descriptionLayout;
+    @BindView(R.id.progress_bar)
+    ProgressBar progressBar;
 
     public static HorizontalBarChartFragment newInstance(int i) {
 
@@ -71,53 +75,26 @@ public class HorizontalBarChartFragment extends BaseChartFragment {
     }
 
     @Override
-    public void setData(List<Transaction> transactions) {
-        super.setData(transactions);
+    public void setChartDate(int year, int month) {
+        super.setChartDate(year, month);
+        progressBar.setVisibility(View.VISIBLE);
+    }
 
-        Map<String, List<Transaction>> transactionMap = new HashMap<>();
+    @Override
+    public void setData(List<Category> categories) {
+        super.setData(categories);
 
-        for (Transaction transaction : transactions) {
-            List<Transaction> transactionList = transactionMap.get(transaction.getCategory());
-            if (transactionList == null) {
-                transactionList = new ArrayList<>();
-            }
-            transactionList.add(transaction);
-            transactionMap.put(transaction.getCategory(), transactionList);
-        }
+        progressBar.setVisibility(View.GONE);
+        chart.setVisibility(View.VISIBLE);
+        incomeTextView.setVisibility(View.VISIBLE);
+        consumptionTextView.setVisibility(View.VISIBLE);
+        totalTextView.setVisibility(View.VISIBLE);
+        descriptionLayout.setVisibility(View.VISIBLE);
+        chart.setVisibility(categories.size() > 0 ? View.VISIBLE : View.GONE);
+        descriptionLayout.setVisibility(categories.size() > 0 ? View.VISIBLE : View.GONE);
 
-        int mapSize = transactionMap.size();
-        if (mapSize < ChartActivity.CHART_PAGE_SIZE) {
-            for (int i = 0; i < ChartActivity.CHART_PAGE_SIZE - mapSize; i++) {
-                List<Transaction> transactionList = new ArrayList<>();
-                transactionList.add(new Transaction("0", "", ""));
-                transactionMap.put("testMapKey" + i, transactionList);
-            }
-        }
-
-        List<Map.Entry<String, List<Transaction>>> list = new ArrayList<>(transactionMap.entrySet());
-        list.sort((o1, o2) -> {
-            int money1 = 0;
-            int money2 = 0;
-            for (Transaction transaction : o1.getValue()) {
-                money1 += Math.abs(transaction.getMoneyInt());
-            }
-            for (Transaction transaction : o2.getValue()) {
-                money2 += Math.abs(transaction.getMoneyInt());
-            }
-            return money1 > money2 ? 1 : -1;
-        });
-
-        transactions = new ArrayList<>();
-        for (Map.Entry<String, List<Transaction>> entry : list) {
-            transactions.add(entry.getValue().get(0));
-        }
-
-        int size = transactionMap.size();
-        chart.setVisibility(size > 0 ? View.VISIBLE : View.GONE);
-        descriptionLayout.setVisibility(size > 0 ? View.VISIBLE : View.GONE);
-
-        if (size > 0) {
-            chart.setData(generateBarData(list));
+        if (categories.size() > 0) {
+            chart.setData(generateBarData(categories));
             chart.invalidate();
             chart.animateY(ANIMATION_MILLIS);
             // if data is empty set this, when has data chart always not shown
@@ -128,8 +105,8 @@ public class HorizontalBarChartFragment extends BaseChartFragment {
             xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
             List<Transaction> finalTransactions = transactions;
             xAxis.setValueFormatter((value, axis) -> {
-                        if (size > value && value == Math.round(value)) {
-                            return finalTransactions.get((int) value).getCategory();
+                        if (categories.size() > value && value == Math.round(value)) {
+                            return categories.get((int) value).getName();
                         }
                         return "";
                     }
@@ -138,7 +115,7 @@ public class HorizontalBarChartFragment extends BaseChartFragment {
         }
     }
 
-    private BarData generateBarData(List<Map.Entry<String, List<Transaction>>> list) {
+    private BarData generateBarData(List<Category> categories) {
         final DecimalFormat format = new DecimalFormat("###,###,###");
         ArrayList<IBarDataSet> sets = new ArrayList<>();
         ArrayList<BarEntry> entries = new ArrayList<>();
@@ -147,26 +124,16 @@ public class HorizontalBarChartFragment extends BaseChartFragment {
         int consumption = 0;
 
         int i = 0;
-        for (Map.Entry<String, List<Transaction>> entry : list) {
-            String description = "";
-            int money = 0;
-            for (Transaction transaction : entry.getValue()) {
-                money += transaction.getMoneyInt();
-                description += transaction.getCreatedDate() + "\n"
-                        + transaction.getRemark()
-                        + ": " + format.format(transaction.getMoneyInt()) + "\n";
-            }
-            BarEntry barEntry = new BarEntry(i, Math.abs(money));
-            if (money != 0) {
-                barEntry.setData(description.trim());
-            }
+        for (Category category : categories) {
+            BarEntry barEntry = new BarEntry(i, Math.abs(category.getMoney()));
+            barEntry.setData("");
             entries.add(barEntry);
-            if (money > 0) {
+            if (category.getMoney() > 0) {
                 colors.add(getActivity().getColor(R.color.google_red));
-                income += money;
+                income += category.getMoney();
             } else {
                 colors.add(getActivity().getColor(R.color.google_green));
-                consumption -= money;
+                consumption -= category.getMoney();
             }
             i++;
         }
@@ -198,114 +165,114 @@ public class HorizontalBarChartFragment extends BaseChartFragment {
         return barData;
     }
 
-    public void summary(int type) {
-        super.summary(type);
-
-        Map<String, List<Transaction>> transactionMap = new HashMap<>();
-
-        for (Transaction transaction : transactions) {
-            String key;
-            String symbol = transaction.getMoneyInt() > 0 ? "+" : "-";
-            if (type == 0) {
-                key = symbol + transaction.getYearStr() + transaction.getMonthStr();
-            } else {
-                key = symbol + transaction.getYearStr();
-            }
-            List<Transaction> transactionList = transactionMap.get(key);
-            if (transactionList == null) {
-                transactionList = new ArrayList<>();
-            }
-            transactionList.add(transaction);
-            transactionMap.put(key, transactionList);
-        }
-
-        int mapSize = transactionMap.size();
-        if (mapSize < ChartActivity.CHART_PAGE_SIZE) {
-            for (int i = 0; i < ChartActivity.CHART_PAGE_SIZE - mapSize; i++) {
-                List<Transaction> transactionList = new ArrayList<>();
-                transactionList.add(new Transaction("0", "", ""));
-                transactionMap.put("testMapKey" + i, transactionList);
-            }
-        }
-
-        List<Map.Entry<String, List<Transaction>>> list = new ArrayList<>(transactionMap.entrySet());
-        list.sort((o1, o2) -> {
-            int money1 = 0;
-            int money2 = 0;
-            boolean positiveValue1 = true;
-            boolean positiveValue2 = true;
-            int year1 = 0;
-            int year2 = 0;
-            int month1 = 0;
-            int month2 = 0;
-            for (Transaction transaction : o1.getValue()) {
-                money1 += Math.abs(transaction.getMoneyInt());
-                positiveValue1 = transaction.getMoneyInt() > 0;
-                year1 = transaction.getYear();
-                month1 = transaction.getMonth();
-            }
-            for (Transaction transaction : o2.getValue()) {
-                money2 += Math.abs(transaction.getMoneyInt());
-                positiveValue2 = transaction.getMoneyInt() > 0;
-                year2 = transaction.getYear();
-                month2 = transaction.getMonth();
-            }
-
-            if (money1 == 0) {
-                return -1;
-            } else if (money2 == 0) {
-                return 1;
-            } else {
-                if (year1 > year2) {
-                    return 1;
-                } else if (year1 < year2) {
-                    return -1;
-                } else if (month1 > month2) {
-                    return 1;
-                } else if (month1 < month2) {
-                    return -1;
-                }
-                return positiveValue1 ? 1 : -1;
-            }
-        });
-
-        transactions = new ArrayList<>();
-        for (Map.Entry<String, List<Transaction>> entry : list) {
-            transactions.add(entry.getValue().get(0));
-        }
-
-        int size = transactionMap.size();
-        chart.setVisibility(size > 0 ? View.VISIBLE : View.GONE);
-        descriptionLayout.setVisibility(size > 0 ? View.VISIBLE : View.GONE);
-
-        if (size > 0) {
-            chart.setData(generateBarData(list));
-            chart.invalidate();
-            chart.animateY(ANIMATION_MILLIS);
-            // if data is empty set this, when has data chart always not shown
-            chart.setVisibleXRange(ChartActivity.CHART_PAGE_SIZE, ChartActivity.CHART_PAGE_SIZE);
-            chart.moveViewTo(0, 0, YAxis.AxisDependency.LEFT);
-            XAxis xAxis = chart.getXAxis();
-            xAxis.setTextSize(7);
-            xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
-            xAxis.setValueFormatter((value, axis) -> {
-                        if (size > value && value == Math.round(value) && value < transactions.size()) {
-                            String year = transactions.get((int) value).getYearStr();
-                            String month = transactions.get((int) value).getMonthStr();
-                            if (year.isEmpty() || month.isEmpty()) {
-                                return "";
-                            } else {
-                                if (type == 0) {
-                                    return year + "/" + month;
-                                } else {
-                                    return year;
-                                }
-                            }
-                        }
-                        return "";
-                    }
-            );
-            chart.setDoubleTapToZoomEnabled(false);
-        }
-    }
+//    public void summary(int type) {
+//        super.summary(type);
+//
+//        Map<String, List<Transaction>> transactionMap = new HashMap<>();
+//
+//        for (Transaction transaction : transactions) {
+//            String key;
+//            String symbol = transaction.getMoneyInt() > 0 ? "+" : "-";
+//            if (type == 0) {
+//                key = symbol + transaction.getYearStr() + transaction.getMonthStr();
+//            } else {
+//                key = symbol + transaction.getYearStr();
+//            }
+//            List<Transaction> transactionList = transactionMap.get(key);
+//            if (transactionList == null) {
+//                transactionList = new ArrayList<>();
+//            }
+//            transactionList.add(transaction);
+//            transactionMap.put(key, transactionList);
+//        }
+//
+//        int mapSize = transactionMap.size();
+//        if (mapSize < ChartActivity.CHART_PAGE_SIZE) {
+//            for (int i = 0; i < ChartActivity.CHART_PAGE_SIZE - mapSize; i++) {
+//                List<Transaction> transactionList = new ArrayList<>();
+//                transactionList.add(new Transaction("0", "", ""));
+//                transactionMap.put("testMapKey" + i, transactionList);
+//            }
+//        }
+//
+//        List<Map.Entry<String, List<Transaction>>> list = new ArrayList<>(transactionMap.entrySet());
+//        list.sort((o1, o2) -> {
+//            int money1 = 0;
+//            int money2 = 0;
+//            boolean positiveValue1 = true;
+//            boolean positiveValue2 = true;
+//            int year1 = 0;
+//            int year2 = 0;
+//            int month1 = 0;
+//            int month2 = 0;
+//            for (Transaction transaction : o1.getValue()) {
+//                money1 += Math.abs(transaction.getMoneyInt());
+//                positiveValue1 = transaction.getMoneyInt() > 0;
+//                year1 = transaction.getYear();
+//                month1 = transaction.getMonth();
+//            }
+//            for (Transaction transaction : o2.getValue()) {
+//                money2 += Math.abs(transaction.getMoneyInt());
+//                positiveValue2 = transaction.getMoneyInt() > 0;
+//                year2 = transaction.getYear();
+//                month2 = transaction.getMonth();
+//            }
+//
+//            if (money1 == 0) {
+//                return -1;
+//            } else if (money2 == 0) {
+//                return 1;
+//            } else {
+//                if (year1 > year2) {
+//                    return 1;
+//                } else if (year1 < year2) {
+//                    return -1;
+//                } else if (month1 > month2) {
+//                    return 1;
+//                } else if (month1 < month2) {
+//                    return -1;
+//                }
+//                return positiveValue1 ? 1 : -1;
+//            }
+//        });
+//
+//        transactions = new ArrayList<>();
+//        for (Map.Entry<String, List<Transaction>> entry : list) {
+//            transactions.add(entry.getValue().get(0));
+//        }
+//
+//        int size = transactionMap.size();
+//        chart.setVisibility(size > 0 ? View.VISIBLE : View.GONE);
+//        descriptionLayout.setVisibility(size > 0 ? View.VISIBLE : View.GONE);
+//
+////        if (size > 0) {
+////            chart.setData(generateBarData(list));
+////            chart.invalidate();
+////            chart.animateY(ANIMATION_MILLIS);
+////            // if data is empty set this, when has data chart always not shown
+////            chart.setVisibleXRange(ChartActivity.CHART_PAGE_SIZE, ChartActivity.CHART_PAGE_SIZE);
+////            chart.moveViewTo(0, 0, YAxis.AxisDependency.LEFT);
+////            XAxis xAxis = chart.getXAxis();
+////            xAxis.setTextSize(7);
+////            xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
+////            xAxis.setValueFormatter((value, axis) -> {
+////                        if (size > value && value == Math.round(value) && value < transactions.size()) {
+////                            String year = transactions.get((int) value).getYearStr();
+////                            String month = transactions.get((int) value).getMonthStr();
+////                            if (year.isEmpty() || month.isEmpty()) {
+////                                return "";
+////                            } else {
+////                                if (type == 0) {
+////                                    return year + "/" + month;
+////                                } else {
+////                                    return year;
+////                                }
+////                            }
+////                        }
+////                        return "";
+////                    }
+////            );
+////            chart.setDoubleTapToZoomEnabled(false);
+////        }
+//    }
 }

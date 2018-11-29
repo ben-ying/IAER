@@ -70,4 +70,49 @@ public class CategoryRepository {
             }
         }.getAsLiveData();
     }
+
+    public LiveData<Resource<List<Category>>> loadStatisticsCategories(String token, int year, int month) {
+        return new NetworkBoundResource<List<Category>,
+                CustomResponse<ListResponseResult<List<Category>>>>() {
+            @Override
+            protected void saveCallResult(
+                    @NonNull CustomResponse<ListResponseResult<List<Category>>> item) {
+            }
+
+            @Override
+            protected void notifyData(ApiResponse<CustomResponse<ListResponseResult<List<Category>>>> response) {
+                setValue(response.getBody().getResult().getResults());
+            }
+
+            @Override
+            protected boolean shouldFetch(@Nullable List<Category> data) {
+                return true;
+            }
+
+            @NonNull
+            @Override
+            protected LiveData<List<Category>> loadFromDb() {
+                return mDao.loadEmptyCategories();
+            }
+
+            @Nullable
+            @Override
+            protected LiveData<ApiResponse<
+                    CustomResponse<ListResponseResult<List<Category>>>>> createCall() {
+                return mWebservice.getStatisticsCategories(token, year, month);
+            }
+
+            @Override
+            protected CustomResponse<ListResponseResult<List<Category>>> processResponse(
+                    ApiResponse<CustomResponse<ListResponseResult<List<Category>>>> response) {
+                return response.getBody();
+            }
+
+            @Override
+            protected void onFetchFailed(String errorMessage) {
+                super.onFetchFailed(errorMessage);
+            }
+        }.getAsLiveData();
+    }
+
 }

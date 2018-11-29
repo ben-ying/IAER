@@ -22,4 +22,8 @@ public class CategoryViewModel extends ViewModel {
     public LiveData<Resource<List<Category>>> loadAllCategories() {
         return mRepository.loadAllCategories();
     }
+
+    public LiveData<Resource<List<Category>>> loadStatisticsCategories(String token, int year, int month) {
+        return mRepository.loadStatisticsCategories(token, year, month);
+    }
 }

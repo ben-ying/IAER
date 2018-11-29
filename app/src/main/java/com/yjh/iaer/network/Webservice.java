@@ -28,6 +28,7 @@ public interface Webservice {
     String URL_USER_LOGIN = "user/login/";
     String URL_SEND_VERIFY_CODE = "user/send_verify_code/";
     String URL_CATEGORIES = "categories/";
+    String URL_STATISTICS_CATEGORIES = "statistics/category/";
     String URL_FUNDS = "funds/";
 
     @GET(URL_TRANSACTIONS)
@@ -80,6 +81,12 @@ public interface Webservice {
 
     @GET(URL_CATEGORIES)
     LiveData<ApiResponse<CustomResponse<ListResponseResult<List<Category>>>>> getCategories();
+
+    @GET(URL_STATISTICS_CATEGORIES)
+    LiveData<ApiResponse<CustomResponse<ListResponseResult<List<Category>>>>> getStatisticsCategories(
+            @Query("token") String token,
+            @Query("year") int year,
+            @Query("month") int month);
 
     @GET(URL_FUNDS)
     LiveData<ApiResponse<CustomResponse<ListResponseResult<List<Fund>>>>> getFunds();

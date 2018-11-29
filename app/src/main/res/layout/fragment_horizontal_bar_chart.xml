@@ -9,6 +9,7 @@
         android:id="@+id/horizontal_bar_chart"
         android:paddingStart="@dimen/text_padding"
         android:paddingEnd="@dimen/text_padding"
+        android:visibility="invisible"
         android:layout_width="match_parent"
         android:layout_height="@dimen/bar_chart_size" />
 
@@ -20,6 +21,7 @@
 
         <TextView
             android:id="@+id/tv_income"
+            android:visibility="invisible"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/legend_margin_left"
@@ -30,6 +32,7 @@
 
         <TextView
             android:id="@+id/tv_consumption"
+            android:visibility="invisible"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/tv_income"
@@ -41,6 +44,7 @@
 
         <TextView
             android:id="@+id/tv_total"
+            android:visibility="invisible"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/tv_consumption"
@@ -50,4 +54,6 @@
             android:textColor="@color/black_text"
             android:textSize="@dimen/legend_text_size" />
     </RelativeLayout>
+
+    <include layout="@layout/progress" />
 </RelativeLayout>
