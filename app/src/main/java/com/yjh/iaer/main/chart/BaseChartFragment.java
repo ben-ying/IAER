@@ -2,28 +2,22 @@ package com.yjh.iaer.main.chart;
 
 import android.arch.lifecycle.ViewModelProvider;
 import android.arch.lifecycle.ViewModelProviders;
-import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.yjh.iaer.MyApplication;
 import com.yjh.iaer.R;
 import com.yjh.iaer.base.BaseFragment;
+import com.yjh.iaer.model.StatisticsDate;
 import com.yjh.iaer.network.Resource;
 import com.yjh.iaer.network.Status;
 import com.yjh.iaer.room.entity.Category;
 import com.yjh.iaer.room.entity.Transaction;
 import com.yjh.iaer.util.CategoryComparator;
 import com.yjh.iaer.viewmodel.CategoryViewModel;
-import com.yjh.iaer.viewmodel.TransactionViewModel;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -45,6 +39,8 @@ public abstract class BaseChartFragment extends BaseFragment {
 
     private List<Transaction> mAllTransactions;
 
+    CategoryViewModel mCategoryViewModel;
+
     @Inject
     ViewModelProvider.Factory viewModelFactory;
 
@@ -63,10 +59,19 @@ public abstract class BaseChartFragment extends BaseFragment {
         }
     }
 
+    private void setSummaryList(@Nullable Resource<List<StatisticsDate>> listResource) {
+        if (listResource.getStatus() == Status.SUCCESS) {
+            noDataTextView.setVisibility(
+                    listResource.getData().size() > 0 ? View.GONE : View.VISIBLE);
+            noDataTextView.setText(noDataHint);
+            setSummaryData(listResource.getData());
+        }
+    }
+
     public void setChartDate(int year, int month) {
-        CategoryViewModel categoryViewModel = ViewModelProviders.of(
+        mCategoryViewModel = ViewModelProviders.of(
                 this, viewModelFactory).get(CategoryViewModel.class);
-        categoryViewModel.loadStatisticsCategories(MyApplication.sUser.getToken(), year, month)
+        mCategoryViewModel.loadStatisticsCategories(MyApplication.sUser.getToken(), year, month)
                 .observe(this, this::setCategoryList);
 
         if (year == 0 && month == 0) {
@@ -88,8 +93,11 @@ public abstract class BaseChartFragment extends BaseFragment {
     }
 
     public void summary(int type) {
-        transactions = mAllTransactions;
-        noDataTextView.setVisibility(transactions.size() > 0 ? View.GONE : View.VISIBLE);
-        noDataTextView.setText(noDataHint);
+        mCategoryViewModel.loadDateCategories(MyApplication.sUser.getToken(), type)
+                .observe(this, this::setSummaryList);
+    }
+
+    public void setSummaryData(List<StatisticsDate> list) {
+
     }
 }

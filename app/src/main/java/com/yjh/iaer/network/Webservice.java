@@ -5,6 +5,7 @@ import android.arch.lifecycle.LiveData;
 
 import com.yjh.iaer.model.CustomResponse;
 import com.yjh.iaer.model.ListResponseResult;
+import com.yjh.iaer.model.StatisticsDate;
 import com.yjh.iaer.room.entity.Category;
 import com.yjh.iaer.room.entity.Fund;
 import com.yjh.iaer.room.entity.Transaction;
@@ -87,6 +88,10 @@ public interface Webservice {
             @Query("token") String token,
             @Query("year") int year,
             @Query("month") int month);
+
+    @GET(URL_STATISTICS_CATEGORIES)
+    LiveData<ApiResponse<CustomResponse<ListResponseResult<List<StatisticsDate>>>>> getStatisticsDates(
+            @Query("token") String token, @Query("type") int type);
 
     @GET(URL_FUNDS)
     LiveData<ApiResponse<CustomResponse<ListResponseResult<List<Fund>>>>> getFunds();

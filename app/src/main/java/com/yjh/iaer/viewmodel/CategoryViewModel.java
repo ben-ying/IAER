@@ -3,6 +3,7 @@ package com.yjh.iaer.viewmodel;
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.ViewModel;
 
+import com.yjh.iaer.model.StatisticsDate;
 import com.yjh.iaer.network.Resource;
 import com.yjh.iaer.repository.CategoryRepository;
 import com.yjh.iaer.room.entity.Category;
@@ -25,5 +26,9 @@ public class CategoryViewModel extends ViewModel {
 
     public LiveData<Resource<List<Category>>> loadStatisticsCategories(String token, int year, int month) {
         return mRepository.loadStatisticsCategories(token, year, month);
+    }
+
+    public LiveData<Resource<List<StatisticsDate>>> loadDateCategories(String token, int type) {
+        return mRepository.loadDateCategories(token, type);
     }
 }

@@ -5,6 +5,7 @@ import android.arch.persistence.room.Dao;
 import android.arch.persistence.room.Insert;
 import android.arch.persistence.room.Query;
 
+import com.yjh.iaer.model.StatisticsDate;
 import com.yjh.iaer.room.entity.Category;
 
 import java.util.List;
@@ -28,4 +29,9 @@ public interface CategoryDao {
             " WHERE " + Category.FIELD_SEQUENCE + " = -1" +
             " ORDER BY " + Category.FIELD_SEQUENCE)
     LiveData<List<Category>> loadEmptyCategories();
+
+    @Query("SELECT * FROM " + Category.TABLE_NAME +
+            " WHERE " + Category.FIELD_SEQUENCE + " = -1" +
+            " ORDER BY " + Category.FIELD_SEQUENCE)
+    LiveData<List<StatisticsDate>> loadEmptyDateCategories();
 }

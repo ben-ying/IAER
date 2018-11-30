@@ -7,6 +7,7 @@ import android.support.annotation.Nullable;
 
 import com.yjh.iaer.model.CustomResponse;
 import com.yjh.iaer.model.ListResponseResult;
+import com.yjh.iaer.model.StatisticsDate;
 import com.yjh.iaer.network.ApiResponse;
 import com.yjh.iaer.network.NetworkBoundResource;
 import com.yjh.iaer.network.Resource;
@@ -115,4 +116,47 @@ public class CategoryRepository {
         }.getAsLiveData();
     }
 
+    public LiveData<Resource<List<StatisticsDate>>> loadDateCategories(String token, int type) {
+        return new NetworkBoundResource<List<StatisticsDate>,
+                CustomResponse<ListResponseResult<List<StatisticsDate>>>>() {
+            @Override
+            protected void saveCallResult(
+                    @NonNull CustomResponse<ListResponseResult<List<StatisticsDate>>> item) {
+            }
+
+            @Override
+            protected void notifyData(ApiResponse<CustomResponse<ListResponseResult<List<StatisticsDate>>>> response) {
+                setValue(response.getBody().getResult().getResults());
+            }
+
+            @Override
+            protected boolean shouldFetch(@Nullable List<StatisticsDate> data) {
+                return true;
+            }
+
+            @NonNull
+            @Override
+            protected LiveData<List<StatisticsDate>> loadFromDb() {
+                return mDao.loadEmptyDateCategories();
+            }
+
+            @Nullable
+            @Override
+            protected LiveData<ApiResponse<
+                    CustomResponse<ListResponseResult<List<StatisticsDate>>>>> createCall() {
+                return mWebservice.getStatisticsDates(token, type);
+            }
+
+            @Override
+            protected CustomResponse<ListResponseResult<List<StatisticsDate>>> processResponse(
+                    ApiResponse<CustomResponse<ListResponseResult<List<StatisticsDate>>>> response) {
+                return response.getBody();
+            }
+
+            @Override
+            protected void onFetchFailed(String errorMessage) {
+                super.onFetchFailed(errorMessage);
+            }
+        }.getAsLiveData();
+    }
 }

@@ -55,5 +55,22 @@
             android:textSize="@dimen/legend_text_size" />
     </RelativeLayout>
 
-    <include layout="@layout/progress" />
+    <ProgressBar
+        android:id="@+id/progress_bar"
+        android:layout_centerHorizontal="true"
+        android:layout_above="@+id/empty_view"
+        android:visibility="gone"
+        android:layout_gravity="center"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+    </ProgressBar>
+
+    <View
+        android:id="@+id/empty_view"
+        android:layout_centerInParent="true"
+        android:visibility="invisible"
+        android:layout_gravity="center"
+        android:layout_width="80dp"
+        android:layout_height="80dp">
+    </View>
 </RelativeLayout>
