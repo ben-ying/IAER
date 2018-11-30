@@ -17,7 +17,6 @@ import com.yjh.iaer.R;
 import com.yjh.iaer.custom.MyMarkerView;
 import com.yjh.iaer.model.StatisticsDate;
 import com.yjh.iaer.room.entity.Category;
-import com.yjh.iaer.room.entity.Transaction;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -99,7 +98,6 @@ public class HorizontalBarChartFragment extends BaseChartFragment {
             XAxis xAxis = chart.getXAxis();
             xAxis.setTextSize(7);
             xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
-            List<Transaction> finalTransactions = transactions;
             xAxis.setValueFormatter((value, axis) -> {
                         if (categories.size() > value && value == Math.round(value)) {
                             return categories.get((int) value).getName();
@@ -203,16 +201,16 @@ public class HorizontalBarChartFragment extends BaseChartFragment {
         xAxis.setTextSize(7);
         xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
         xAxis.setValueFormatter((value, axis) -> {
-                    if (list.size() > value && value == Math.round(value) && value < transactions.size()) {
-                        String year = transactions.get((int) value).getYearStr();
-                        String month = transactions.get((int) value).getMonthStr();
-                        if (year.isEmpty() || month.isEmpty()) {
+                    if (list.size() > value && value == Math.round(value) && value < list.size()) {
+                        int year = list.get((int) value).getYear();
+                        int month = list.get((int) value).getMonth();
+                        if (year == 0 || month == 0) {
                             return "";
                         } else {
                             if (mSummaryType == 0) {
                                 return year + "/" + month;
                             } else {
-                                return year;
+                                return String.valueOf(year);
                             }
                         }
                     }

@@ -2,8 +2,11 @@ package com.yjh.iaer.main.chart;
 
 import android.arch.lifecycle.ViewModelProvider;
 import android.arch.lifecycle.ViewModelProviders;
+import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.yjh.iaer.MyApplication;
@@ -27,7 +30,6 @@ import butterknife.BindView;
 
 public abstract class BaseChartFragment extends BaseFragment {
 
-    public List<Transaction> transactions;
     public static final int ANIMATION_MILLIS = 1500;
 
     @BindView(R.id.tv_no_data)
@@ -37,13 +39,18 @@ public abstract class BaseChartFragment extends BaseFragment {
 
     private String mDateString = "";
 
-    private List<Transaction> mAllTransactions;
-
     CategoryViewModel mCategoryViewModel;
 
     @Inject
     ViewModelProvider.Factory viewModelFactory;
 
+    @Nullable
+    @Override
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        mCategoryViewModel = ViewModelProviders.of(
+                this, viewModelFactory).get(CategoryViewModel.class);
+        return super.onCreateView(inflater, container, savedInstanceState);
+    }
 
     private void setCategoryList(@Nullable Resource<List<Category>> listResource) {
         if (listResource.getStatus() == Status.SUCCESS) {
@@ -69,8 +76,6 @@ public abstract class BaseChartFragment extends BaseFragment {
     }
 
     public void setChartDate(int year, int month) {
-        mCategoryViewModel = ViewModelProviders.of(
-                this, viewModelFactory).get(CategoryViewModel.class);
         mCategoryViewModel.loadStatisticsCategories(MyApplication.sUser.getToken(), year, month)
                 .observe(this, this::setCategoryList);
 
