@@ -72,7 +72,13 @@ public abstract class BaseChartFragment extends BaseFragment {
                     listResource.getData().size() > 0 ? View.GONE : View.VISIBLE);
             noDataTextView.setText(noDataHint);
             setSummaryData(listResource.getData());
+        } else if (listResource.getStatus() == Status.ERROR) {
+            initLoadingView(false);
         }
+    }
+
+    public void initLoadingView(boolean isLoading) {
+
     }
 
     public void setChartDate(int year, int month) {

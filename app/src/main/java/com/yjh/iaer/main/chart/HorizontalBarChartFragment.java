@@ -86,6 +86,12 @@ public class HorizontalBarChartFragment extends BaseChartFragment {
 
         if (categories.size() > 0) {
             List<Integer> moneyList = new ArrayList<>();
+            int listSize = categories.size();
+            if (listSize < ChartActivity.CHART_PAGE_SIZE) {
+                for (int i = 0; i < ChartActivity.CHART_PAGE_SIZE - listSize; i++) {
+                    categories.add(0, new Category("", 0));
+                }
+            }
             for (Category data : categories) {
                 moneyList.add(data.getMoney());
             }
@@ -109,7 +115,8 @@ public class HorizontalBarChartFragment extends BaseChartFragment {
         }
     }
 
-    private void initLoadingView(boolean isLoading) {
+    @Override
+    public void initLoadingView(boolean isLoading) {
         if (isLoading) {
             emptyView.setVisibility(View.INVISIBLE);
             progressBar.setVisibility(View.VISIBLE);
@@ -188,6 +195,12 @@ public class HorizontalBarChartFragment extends BaseChartFragment {
         initLoadingView(false);
 
         List<Integer> moneyList = new ArrayList<>();
+        int listSize = list.size();
+        if (listSize < ChartActivity.CHART_PAGE_SIZE) {
+            for (int i = 0; i < ChartActivity.CHART_PAGE_SIZE - listSize; i++) {
+                list.add(0, new StatisticsDate(0, 0, 0));
+            }
+        }
         for (StatisticsDate data : list) {
             moneyList.add(data.getMoney());
         }
@@ -204,10 +217,10 @@ public class HorizontalBarChartFragment extends BaseChartFragment {
                     if (list.size() > value && value == Math.round(value) && value < list.size()) {
                         int year = list.get((int) value).getYear();
                         int month = list.get((int) value).getMonth();
-                        if (year == 0 || month == 0) {
+                        if (year == 0) {
                             return "";
                         } else {
-                            if (mSummaryType == 0) {
+                            if (mSummaryType == 1) {
                                 return year + "/" + month;
                             } else {
                                 return String.valueOf(year);

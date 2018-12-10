@@ -30,6 +30,7 @@ public interface Webservice {
     String URL_SEND_VERIFY_CODE = "user/send_verify_code/";
     String URL_CATEGORIES = "categories/";
     String URL_STATISTICS_CATEGORIES = "statistics/category/";
+    String URL_STATISTICS_DATES = "statistics/date/";
     String URL_FUNDS = "funds/";
 
     @GET(URL_TRANSACTIONS)
@@ -89,7 +90,7 @@ public interface Webservice {
             @Query("year") int year,
             @Query("month") int month);
 
-    @GET(URL_STATISTICS_CATEGORIES)
+    @GET(URL_STATISTICS_DATES)
     LiveData<ApiResponse<CustomResponse<ListResponseResult<List<StatisticsDate>>>>> getStatisticsDates(
             @Query("token") String token, @Query("type") int type);
 

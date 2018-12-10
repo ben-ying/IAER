@@ -10,6 +10,12 @@ public class StatisticsDate {
     @SerializedName("money")
     private int money;
 
+    public StatisticsDate(int year, int month, int money) {
+        this.year = year;
+        this.month = month;
+        this.money = money;
+    }
+
     public int getYear() {
         return year;
     }

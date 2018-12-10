@@ -23,6 +23,11 @@ public class Category implements Serializable {
     public static final String FIELD_CREATED = "created";
     public static final String FIELD_MODIFIED = "modified";
 
+    public Category(String name, int money) {
+        this.name = name;
+        this.money = money;
+    }
+
     @PrimaryKey
     @SerializedName(FIELD_CATEGORY_ID)
     @ColumnInfo(name = FIELD_CATEGORY_ID)
