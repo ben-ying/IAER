@@ -24,6 +24,7 @@ import android.widget.ProgressBar;
 import com.yjh.iaer.MyApplication;
 import com.yjh.iaer.R;
 import com.yjh.iaer.base.BaseFragment;
+import com.yjh.iaer.custom.ExpandableHeightGridView;
 import com.yjh.iaer.network.Resource;
 import com.yjh.iaer.network.Status;
 import com.yjh.iaer.room.entity.Category;
@@ -60,7 +61,7 @@ public class TransactionsFragment extends BaseFragment
     private boolean mIsLoading;;
     private List<Transaction> mTransactions;
     private GridViewFilterAdapter mCategoryFilterAdapter;
-    private GridView mGridViewCategory;
+    private ExpandableHeightGridView mGridViewCategory;
     private View mPopupView;
 
     public static TransactionsFragment newInstance() {
@@ -252,12 +253,15 @@ public class TransactionsFragment extends BaseFragment
     }
 
     private void initPopWindow() {
-        GridView gridViewYear = mPopupView.findViewById(R.id.gv_year);
-        GridView gridViewMonth = mPopupView.findViewById(R.id.gv_month);
+        ExpandableHeightGridView gridViewYear = mPopupView.findViewById(R.id.gv_year);
+        ExpandableHeightGridView gridViewMonth = mPopupView.findViewById(R.id.gv_month);
         gridViewYear.setAdapter(new GridViewFilterAdapter(getActivity(),
                 GridViewFilterAdapter.TYPE_YEAR));
         gridViewMonth.setAdapter(new GridViewFilterAdapter(getActivity(),
                 GridViewFilterAdapter.TYPE_MONTH));
+        gridViewYear.setExpanded(true);
+        gridViewMonth.setExpanded(true);
+        mGridViewCategory.setExpanded(true);
 
         final PopupWindow popupWindow = new PopupWindow(mPopupView,
                 ViewGroup.LayoutParams.WRAP_CONTENT,
