@@ -1,6 +1,7 @@
 package com.yjh.iaer.main.chart;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -12,9 +13,13 @@ import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
+import com.github.mikephil.charting.data.Entry;
+import com.github.mikephil.charting.highlight.Highlight;
 import com.github.mikephil.charting.interfaces.datasets.IBarDataSet;
+import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
 import com.yjh.iaer.R;
 import com.yjh.iaer.custom.MyMarkerView;
+import com.yjh.iaer.main.list.TransactionsFragment;
 import com.yjh.iaer.model.StatisticsDate;
 import com.yjh.iaer.room.entity.Category;
 
@@ -61,14 +66,28 @@ public class HorizontalBarChartFragment extends BaseChartFragment {
     @Override
     public void initView() {
         chart.getDescription().setEnabled(false);
-        MyMarkerView mv = new MyMarkerView(
-                getActivity().getApplicationContext(), R.layout.custom_marker_view);
-        mv.setChartView(chart);
-        chart.setMarker(mv);
+//        MyMarkerView mv = new MyMarkerView(
+//                getActivity().getApplicationContext(), R.layout.custom_marker_view);
+//        mv.setChartView(chart);
+//        chart.setMarker(mv);
         chart.setDrawGridBackground(false);
         YAxis leftAxis = chart.getAxisLeft();
         leftAxis.setAxisMinimum(0f);
         chart.getAxisRight().setEnabled(false);
+        chart.setOnChartValueSelectedListener(new OnChartValueSelectedListener() {
+            @Override
+            public void onValueSelected(Entry e, Highlight h) {
+//                TransactionsFragment transactionsFragment = new TransactionsFragment();
+//                getActivity().getSupportFragmentManager().beginTransaction()
+//                        .replace(R.id.Layout_container, transactionsFragment)
+//                        .addToBackStack(null)
+//                        .commit();
+            }
+
+            @Override
+            public void onNothingSelected() {
+            }
+        });
     }
 
     @Override

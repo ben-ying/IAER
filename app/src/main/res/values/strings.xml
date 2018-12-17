@@ -89,6 +89,10 @@
     <string name="network_error">网络错误！</string>
     <string name="permission_not_granted">必须同意相关权限才能使用！</string>
     <string name="loading">加载中&#8230;</string>
+    <string name="all">选择所有</string>
+    <string name="by_year">年份</string>
+    <string name="by_month">月份</string>
+    <string name="by_category">类别</string>
 
     <!--app menu-->
     <string name="others">其它</string>

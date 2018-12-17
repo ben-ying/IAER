@@ -9,22 +9,29 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.GridView;
+import android.widget.PopupWindow;
 import android.widget.ProgressBar;
 
 import com.yjh.iaer.MyApplication;
 import com.yjh.iaer.R;
 import com.yjh.iaer.base.BaseFragment;
-import com.yjh.iaer.constant.Constant;
 import com.yjh.iaer.network.Resource;
 import com.yjh.iaer.network.Status;
+import com.yjh.iaer.room.entity.Category;
 import com.yjh.iaer.room.entity.Transaction;
+import com.yjh.iaer.viewmodel.CategoryViewModel;
 import com.yjh.iaer.viewmodel.TransactionViewModel;
 
-import java.util.Collections;
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
@@ -45,13 +52,16 @@ public class TransactionsFragment extends BaseFragment
     @BindView(R.id.scroll_view)
     NestedScrollView scrollView;
 
-    private TransactionViewModel mViewModel;
+    private TransactionViewModel mTransactionViewModel;
     private TransactionAdapter mAdapter;
     private Disposable mDisposable;
     private boolean mReverseSorting;
     private boolean mIsLoadMore;
     private boolean mIsLoading;;
-    public List<Transaction> mTransactions;
+    private List<Transaction> mTransactions;
+    private GridViewFilterAdapter mCategoryFilterAdapter;
+    private GridView mGridViewCategory;
+    private View mPopupView;
 
     public static TransactionsFragment newInstance() {
         Bundle args = new Bundle();
@@ -70,6 +80,9 @@ public class TransactionsFragment extends BaseFragment
         initRecyclerView();
 
         initViewModel();
+
+        mPopupView = LayoutInflater.from(getActivity()).inflate(R.layout.popup_filter, null, false);
+        mGridViewCategory = mPopupView.findViewById(R.id.gv_category);
     }
 
     @Override
@@ -94,7 +107,7 @@ public class TransactionsFragment extends BaseFragment
     @Override
     public void delete(int id) {
         progressBar.setVisibility(View.VISIBLE);
-        mViewModel.delete(id);
+        mTransactionViewModel.delete(id);
     }
 
     @Override
@@ -109,7 +122,9 @@ public class TransactionsFragment extends BaseFragment
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_sort:
-                sortDataByTime();
+//                sortDataByTime();
+                initPopWindow();
+
                 return true;
         }
         return super.onOptionsItemSelected(item);
@@ -152,15 +167,12 @@ public class TransactionsFragment extends BaseFragment
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setHasFixedSize(false);
         recyclerView.setNestedScrollingEnabled(false);
-        recyclerView.setOnScrollChangeListener(new View.OnScrollChangeListener() {
-            @Override
-            public void onScrollChange(View v, int scrollX, int scrollY, int oldScrollX, int oldScrollY) {
+        recyclerView.setOnScrollChangeListener((View v, int scrollX, int scrollY,
+                                                int oldScrollX, int oldScrollY) -> {
                 Log.d("", "");
-            }
         });
-        scrollView.setOnScrollChangeListener(new NestedScrollView.OnScrollChangeListener() {
-            @Override
-            public void onScrollChange(NestedScrollView v, int scrollX, int scrollY, int oldScrollX, int oldScrollY) {
+        scrollView.setOnScrollChangeListener((NestedScrollView v, int scrollX,
+                                              int scrollY, int oldScrollX, int oldScrollY) -> {
                 if (scrollY >= (v.getChildAt(0).getMeasuredHeight() - v.getMeasuredHeight())) {
                     boolean isRefreshing = swipeRefreshLayout.isRefreshing();
                     if (isRefreshing) {
@@ -168,32 +180,49 @@ public class TransactionsFragment extends BaseFragment
                         return;
                     }
                     if (!mIsLoading) {
-                        mViewModel.loadMore(MyApplication.sUser.getUserId(), true);
+                        mTransactionViewModel.loadMore(MyApplication.sUser.getUserId(), true);
                         mIsLoading = true;
                         mIsLoadMore = true;
                     }
                 }
-            }
         });
 
         swipeRefreshLayout.setColorSchemeResources(R.color.google_blue,
                 R.color.google_green, R.color.google_red, R.color.google_yellow);
         swipeRefreshLayout.setOnRefreshListener(() -> {
-            mViewModel.load(MyApplication.sUser.getUserId(), true);
+            mTransactionViewModel.load(MyApplication.sUser.getUserId(), true);
             mIsLoading = true;
             mIsLoadMore = false;
         });
     }
 
     private void initViewModel() {
-        mViewModel = ViewModelProviders.of(
+        mTransactionViewModel = ViewModelProviders.of(
                 this, viewModelFactory).get(TransactionViewModel.class);
-        mViewModel.getTransactionsResource().observe(this, this::setData);
-        mViewModel.load(MyApplication.sUser.getUserId(), true);
+        mTransactionViewModel.getTransactionsResource().observe(this, this::setListData);
+        mTransactionViewModel.load(MyApplication.sUser.getUserId(), true);
         swipeRefreshLayout.setRefreshing(true);
+
+        CategoryViewModel categoryViewModel = ViewModelProviders.of(
+                this, viewModelFactory).get(CategoryViewModel.class);
+        categoryViewModel.loadAllCategories().observe(this, this::setCategoryList);
+
     }
 
-    private void setData(@Nullable Resource<List<Transaction>> listResource) {
+    private void setCategoryList(@Nullable Resource<List<Category>> listResource) {
+        if (listResource.getStatus() == Status.SUCCESS) {
+            ArrayList<String> list = new ArrayList<>();
+            for (Category category :listResource.getData()) {
+                list.add(category.getName());
+            }
+            mCategoryFilterAdapter = new GridViewFilterAdapter(getActivity(),
+                    GridViewFilterAdapter.TYPE_CATEGORY);
+            mGridViewCategory.setAdapter(mCategoryFilterAdapter);
+            mCategoryFilterAdapter.setCategoryList(list);
+        }
+    }
+
+    private void setListData(@Nullable Resource<List<Transaction>> listResource) {
         if (listResource == null || listResource.getData() == null) {
             // no data to load
             mIsLoading = false;
@@ -220,5 +249,30 @@ public class TransactionsFragment extends BaseFragment
         } else {
             mAdapter.setData(mTransactions);
         }
+    }
+
+    private void initPopWindow() {
+        GridView gridViewYear = mPopupView.findViewById(R.id.gv_year);
+        GridView gridViewMonth = mPopupView.findViewById(R.id.gv_month);
+        gridViewYear.setAdapter(new GridViewFilterAdapter(getActivity(),
+                GridViewFilterAdapter.TYPE_YEAR));
+        gridViewMonth.setAdapter(new GridViewFilterAdapter(getActivity(),
+                GridViewFilterAdapter.TYPE_MONTH));
+
+        final PopupWindow popupWindow = new PopupWindow(mPopupView,
+                ViewGroup.LayoutParams.WRAP_CONTENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT,
+                true);
+
+        popupWindow.setBackgroundDrawable(getContext().getDrawable(R.color.white));
+        popupWindow.setElevation(20);
+        popupWindow.setTouchable(true);
+        popupWindow.setTouchInterceptor((View v, MotionEvent event) -> {
+                v.performClick();
+                return false;
+            }
+        );
+
+        popupWindow.showAtLocation(recyclerView, Gravity.CENTER, 0, 0);
     }
 }
