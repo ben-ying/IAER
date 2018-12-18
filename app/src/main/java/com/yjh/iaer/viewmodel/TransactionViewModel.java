@@ -60,6 +60,10 @@ public class TransactionViewModel extends ViewModel {
         });
     }
 
+    public boolean hasNextUrl() {
+        return mRepository.hasNextUrl();
+    }
+
     public LiveData<Resource<Transaction>> addTransactionResource(final String category,
                                                                   final String money,
                                                                   final String remark,

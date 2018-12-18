@@ -20,6 +20,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.PopupWindow;
 import android.widget.ProgressBar;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.yjh.iaer.MyApplication;
 import com.yjh.iaer.R;
@@ -51,6 +53,8 @@ public class TransactionsFragment extends BaseFragment
     ProgressBar progressBar;
     @BindView(R.id.scroll_view)
     NestedScrollView scrollView;
+    @BindView(R.id.tv_total)
+    TextView totalTextView;
 
     private TransactionViewModel mTransactionViewModel;
     private TransactionAdapter mAdapter;
@@ -176,16 +180,19 @@ public class TransactionsFragment extends BaseFragment
         scrollView.setOnScrollChangeListener((NestedScrollView v, int scrollX,
                                               int scrollY, int oldScrollX, int oldScrollY) -> {
                 if (scrollY >= (v.getChildAt(0).getMeasuredHeight() - v.getMeasuredHeight())) {
-                    boolean isRefreshing = swipeRefreshLayout.isRefreshing();
-                    if (isRefreshing) {
-                        mAdapter.notifyItemRemoved(mAdapter.getItemCount());
-                        return;
-                    }
                     if (!mIsLoading) {
-                        mTransactionViewModel.loadMore(MyApplication.sUser.getUserId(), true);
-                        mIsLoading = true;
-                        mIsLoadMore = true;
+                        if (mTransactionViewModel.hasNextUrl()) {
+                            mTransactionViewModel.loadMore(MyApplication.sUser.getUserId(), true);
+                            mIsLoading = true;
+                            mIsLoadMore = true;
+                        } else {
+                            mIsLoading = false;
+                            mIsLoadMore = false;
+                            mAdapter.setType(TransactionAdapter.NO_FOOTER);
+                            Toast.makeText(getContext(), R.string.load_all, Toast.LENGTH_LONG).show();
+                        }
                     }
+
                 }
         });
 
@@ -208,7 +215,6 @@ public class TransactionsFragment extends BaseFragment
         CategoryViewModel categoryViewModel = ViewModelProviders.of(
                 this, viewModelFactory).get(CategoryViewModel.class);
         categoryViewModel.loadAllCategories().observe(this, this::setCategoryList);
-
     }
 
     private void setCategoryList(@Nullable Resource<List<Category>> listResource) {
@@ -235,6 +241,9 @@ public class TransactionsFragment extends BaseFragment
                 mIsLoadMore = false;
                 progressBar.setVisibility(View.GONE);
                 swipeRefreshLayout.setRefreshing(false);
+                if (listResource.getStatus() == Status.SUCCESS && mTransactions.size() == 0) {
+                    Toast.makeText(getContext(), R.string.no_data, Toast.LENGTH_LONG).show();
+                }
             }
         }
     }
@@ -289,6 +298,7 @@ public class TransactionsFragment extends BaseFragment
                     mYearFilterAdapter.getFilters(),
                     mMonthFilterAdapter.getFilters(),
                     mCategoryFilterAdapter.getFilters());
+            swipeRefreshLayout.setRefreshing(true);
             mIsLoading = true;
             mIsLoadMore = false;
         });

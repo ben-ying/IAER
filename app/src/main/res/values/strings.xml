@@ -94,6 +94,7 @@
     <string name="by_month">月份</string>
     <string name="by_category">类别</string>
     <string name="filter">过滤</string>
+    <string name="load_all">已全部加载完</string>
 
     <!--app menu-->
     <string name="others">其它</string>

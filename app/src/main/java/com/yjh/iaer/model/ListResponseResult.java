@@ -5,6 +5,8 @@ import com.google.gson.annotations.SerializedName;
 public class ListResponseResult<T> {
     @SerializedName("count")
     private int count;
+    @SerializedName("total")
+    private int total;
     @SerializedName("next")
     private String next;
     @SerializedName("previous")
@@ -26,6 +28,14 @@ public class ListResponseResult<T> {
 
     public String getNext() {
         return next;
+    }
+
+    public int getTotal() {
+        return total;
+    }
+
+    public void setTotal(int total) {
+        this.total = total;
     }
 
     public void setNext(String next) {

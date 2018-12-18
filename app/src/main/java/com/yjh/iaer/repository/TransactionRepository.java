@@ -42,12 +42,16 @@ public class TransactionRepository {
     // if previous request but later result we ignore the later result (transaction list).
     private int mRequestCode;
 
-    private String mNextUrl;
+    private String mMoreTransactionUrl;
 
     @Inject
     public TransactionRepository(Webservice webservice, TransactionDao transactionDao) {
         this.mWebservice = webservice;
         this.mTransactionDao = transactionDao;
+    }
+
+    public boolean hasNextUrl() {
+        return mMoreTransactionUrl != null;
     }
 
     public LiveData<Resource<List<Transaction>>> loadTransactions(
@@ -61,7 +65,7 @@ public class TransactionRepository {
                 if (mRequestCode == TRANSACTIONS_REQUEST) {
                     mTransactionDao.deleteAllByUser(userId);
                     mTransactionDao.saveAll(item.getResult().getResults());
-                    mNextUrl = item.getResult().getNext();
+                    mMoreTransactionUrl = item.getResult().getNext();
                 }
             }
 
@@ -101,7 +105,7 @@ public class TransactionRepository {
 
     public LiveData<Resource<List<Transaction>>> loadMoreTransactions(
             final int userId, final boolean fetchNetwork) {
-        if (mNextUrl == null) {
+        if (mMoreTransactionUrl == null) {
             return null;
         }
         return new NetworkBoundResource<List<Transaction>,
@@ -111,7 +115,7 @@ public class TransactionRepository {
                     @NonNull CustomResponse<ListResponseResult<List<Transaction>>> item) {
                 if (mRequestCode == TRANSACTIONS_REQUEST) {
                     mTransactionDao.saveAll(item.getResult().getResults());
-                    mNextUrl = item.getResult().getNext();
+                    mMoreTransactionUrl = item.getResult().getNext();
                 }
             }
 
@@ -131,7 +135,7 @@ public class TransactionRepository {
             @Override
             protected LiveData<ApiResponse<
                     CustomResponse<ListResponseResult<List<Transaction>>>>> createCall() {
-                Uri uri = Uri.parse(mNextUrl);
+                Uri uri = Uri.parse(mMoreTransactionUrl);
                 String page = uri.getQueryParameter("page");
                 String years = uri.getQueryParameter("years");
                 String months = uri.getQueryParameter("months");
