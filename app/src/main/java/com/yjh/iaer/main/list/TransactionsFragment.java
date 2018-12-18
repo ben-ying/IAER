@@ -89,6 +89,12 @@ public class TransactionsFragment extends BaseFragment
 
         mPopupView = LayoutInflater.from(getActivity()).inflate(R.layout.popup_filter, null, false);
         mGridViewCategory = mPopupView.findViewById(R.id.gv_category);
+        mYearFilterAdapter = new GridViewFilterAdapter(getContext(),
+                GridViewFilterAdapter.TYPE_YEAR);
+        mMonthFilterAdapter = new GridViewFilterAdapter(getContext(),
+                GridViewFilterAdapter.TYPE_MONTH);
+        mCategoryFilterAdapter = new GridViewFilterAdapter(getContext(),
+                GridViewFilterAdapter.TYPE_CATEGORY);
     }
 
     @Override
@@ -219,8 +225,6 @@ public class TransactionsFragment extends BaseFragment
 
     private void setCategoryList(@Nullable Resource<List<Category>> listResource) {
         if (listResource.getStatus() == Status.SUCCESS) {
-            mCategoryFilterAdapter = new GridViewFilterAdapter(getActivity(),
-                    GridViewFilterAdapter.TYPE_CATEGORY);
             mGridViewCategory.setAdapter(mCategoryFilterAdapter);
             mCategoryFilterAdapter.setCategoryList(listResource.getData());
         }
@@ -261,11 +265,7 @@ public class TransactionsFragment extends BaseFragment
     private void initPopWindow() {
         ExpandableHeightGridView gridViewYear = mPopupView.findViewById(R.id.gv_year);
         ExpandableHeightGridView gridViewMonth = mPopupView.findViewById(R.id.gv_month);
-        mYearFilterAdapter = new GridViewFilterAdapter(getActivity(),
-                GridViewFilterAdapter.TYPE_YEAR);
         gridViewYear.setAdapter(mYearFilterAdapter);
-        mMonthFilterAdapter = new GridViewFilterAdapter(getActivity(),
-                GridViewFilterAdapter.TYPE_MONTH);
         gridViewMonth.setAdapter(mMonthFilterAdapter);
         gridViewYear.setExpanded(true);
         gridViewMonth.setExpanded(true);
@@ -288,11 +288,6 @@ public class TransactionsFragment extends BaseFragment
         AppCompatButton filterButton = mPopupView.findViewById(R.id.btn_filter);
         filterButton.setOnClickListener((View v) -> {
             popupWindow.dismiss();
-            if (mCategoryFilterAdapter == null) {
-                mCategoryFilterAdapter = new GridViewFilterAdapter(getActivity(),
-                        GridViewFilterAdapter.TYPE_CATEGORY);
-            }
-
             mTransactionViewModel.load(MyApplication.sUser.getUserId(),
                     true,
                     mYearFilterAdapter.getFilters(),
