@@ -93,6 +93,7 @@
     <string name="by_year">年份</string>
     <string name="by_month">月份</string>
     <string name="by_category">类别</string>
+    <string name="filter">过滤</string>
 
     <!--app menu-->
     <string name="others">其它</string>

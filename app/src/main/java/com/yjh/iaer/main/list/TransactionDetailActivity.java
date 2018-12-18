@@ -105,7 +105,7 @@ public class TransactionDetailActivity extends BaseActivity {
             if (mEditable) {
                 onEditClick();
             } else {
-                mViewModel.load(mTransaction.getIaerId(), true);
+                mViewModel.load(mTransaction.getIaerId(), true, "", "", "");
             }
             return true;
         }

@@ -51,7 +51,8 @@ public class TransactionRepository {
     }
 
     public LiveData<Resource<List<Transaction>>> loadTransactions(
-            final int userId, final boolean fetchNetwork) {
+            final int userId, final boolean fetchNetwork,
+            final String years, final String months, final String categories) {
         return new NetworkBoundResource<List<Transaction>,
                 CustomResponse<ListResponseResult<List<Transaction>>>>() {
             @Override
@@ -81,7 +82,8 @@ public class TransactionRepository {
             @Override
             protected LiveData<ApiResponse<
                     CustomResponse<ListResponseResult<List<Transaction>>>>> createCall() {
-                return mWebservice.getTransactions(MyApplication.sUser.getToken(), userId, "1");
+                return mWebservice.getTransactions(MyApplication.sUser.getToken(),
+                        userId, "1", years, months, categories);
             }
 
             @Override
@@ -131,7 +133,11 @@ public class TransactionRepository {
                     CustomResponse<ListResponseResult<List<Transaction>>>>> createCall() {
                 Uri uri = Uri.parse(mNextUrl);
                 String page = uri.getQueryParameter("page");
-                return mWebservice.getTransactions(MyApplication.sUser.getToken(), userId, page);
+                String years = uri.getQueryParameter("years");
+                String months = uri.getQueryParameter("months");
+                String categories = uri.getQueryParameter("categories");
+                return mWebservice.getTransactions(MyApplication.sUser.getToken(),
+                        userId, page, years, months, categories);
             }
 
             @Override

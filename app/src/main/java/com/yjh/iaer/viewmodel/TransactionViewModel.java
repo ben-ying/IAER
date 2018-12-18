@@ -39,7 +39,8 @@ public class TransactionViewModel extends ViewModel {
         mTransactions = Transformations.switchMap(mIaerIdLiveData, iaerId -> {
             switch (iaerId.type) {
                 case TYPE_LOAD:
-                    return mRepository.loadTransactions(iaerId.userId, iaerId.fetchNetwork);
+                    return mRepository.loadTransactions(iaerId.userId,
+                            iaerId.fetchNetwork, iaerId.years, iaerId.months, iaerId.categories);
                 case TYPE_LOAD_MORE:
                     return mRepository.loadMoreTransactions(iaerId.userId, iaerId.fetchNetwork);
                 case TYPE_DELETE:
@@ -86,10 +87,14 @@ public class TransactionViewModel extends ViewModel {
         mTransactionMutableLiveData.setValue(transaction);
     }
 
-    public void load(int userId, boolean fetchNetwork) {
+    public void load(int userId, boolean fetchNetwork,
+                     String years, String months, String categories) {
         mReId.type = TYPE_LOAD;
         mReId.userId = userId;
         mReId.fetchNetwork = fetchNetwork;
+        mReId.years = years;
+        mReId.months = months;
+        mReId.categories = categories;
         mIaerIdLiveData.setValue(mReId);
     }
 
@@ -112,5 +117,8 @@ public class TransactionViewModel extends ViewModel {
         int type;
         int userId;
         boolean fetchNetwork;
+        String years;
+        String months;
+        String categories;
     }
 }

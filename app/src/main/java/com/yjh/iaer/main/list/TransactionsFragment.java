@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -17,7 +18,6 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.GridView;
 import android.widget.PopupWindow;
 import android.widget.ProgressBar;
 
@@ -32,7 +32,6 @@ import com.yjh.iaer.room.entity.Transaction;
 import com.yjh.iaer.viewmodel.CategoryViewModel;
 import com.yjh.iaer.viewmodel.TransactionViewModel;
 
-import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
@@ -60,6 +59,8 @@ public class TransactionsFragment extends BaseFragment
     private boolean mIsLoadMore;
     private boolean mIsLoading;;
     private List<Transaction> mTransactions;
+    private GridViewFilterAdapter mYearFilterAdapter;
+    private GridViewFilterAdapter mMonthFilterAdapter;
     private GridViewFilterAdapter mCategoryFilterAdapter;
     private ExpandableHeightGridView mGridViewCategory;
     private View mPopupView;
@@ -122,7 +123,7 @@ public class TransactionsFragment extends BaseFragment
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.action_sort:
+            case R.id.action_filter:
 //                sortDataByTime();
                 initPopWindow();
 
@@ -133,8 +134,8 @@ public class TransactionsFragment extends BaseFragment
 
     @Override
     public void onPrepareOptionsMenu(Menu menu) {
-        menu.findItem(R.id.action_sort).setIcon(
-                mReverseSorting ? R.mipmap.ic_resort_white_24dp : R.mipmap.ic_sort_white_24dp);
+//        menu.findItem(R.id.action_sort).setIcon(
+//                mReverseSorting ? R.mipmap.ic_resort_white_24dp : R.mipmap.ic_sort_white_24dp);
         super.onPrepareOptionsMenu(menu);
     }
 
@@ -191,7 +192,7 @@ public class TransactionsFragment extends BaseFragment
         swipeRefreshLayout.setColorSchemeResources(R.color.google_blue,
                 R.color.google_green, R.color.google_red, R.color.google_yellow);
         swipeRefreshLayout.setOnRefreshListener(() -> {
-            mTransactionViewModel.load(MyApplication.sUser.getUserId(), true);
+            mTransactionViewModel.load(MyApplication.sUser.getUserId(), true, "", "", "");
             mIsLoading = true;
             mIsLoadMore = false;
         });
@@ -201,7 +202,7 @@ public class TransactionsFragment extends BaseFragment
         mTransactionViewModel = ViewModelProviders.of(
                 this, viewModelFactory).get(TransactionViewModel.class);
         mTransactionViewModel.getTransactionsResource().observe(this, this::setListData);
-        mTransactionViewModel.load(MyApplication.sUser.getUserId(), true);
+        mTransactionViewModel.load(MyApplication.sUser.getUserId(), true, "", "", "");
         swipeRefreshLayout.setRefreshing(true);
 
         CategoryViewModel categoryViewModel = ViewModelProviders.of(
@@ -212,14 +213,10 @@ public class TransactionsFragment extends BaseFragment
 
     private void setCategoryList(@Nullable Resource<List<Category>> listResource) {
         if (listResource.getStatus() == Status.SUCCESS) {
-            ArrayList<String> list = new ArrayList<>();
-            for (Category category :listResource.getData()) {
-                list.add(category.getName());
-            }
             mCategoryFilterAdapter = new GridViewFilterAdapter(getActivity(),
                     GridViewFilterAdapter.TYPE_CATEGORY);
             mGridViewCategory.setAdapter(mCategoryFilterAdapter);
-            mCategoryFilterAdapter.setCategoryList(list);
+            mCategoryFilterAdapter.setCategoryList(listResource.getData());
         }
     }
 
@@ -255,10 +252,12 @@ public class TransactionsFragment extends BaseFragment
     private void initPopWindow() {
         ExpandableHeightGridView gridViewYear = mPopupView.findViewById(R.id.gv_year);
         ExpandableHeightGridView gridViewMonth = mPopupView.findViewById(R.id.gv_month);
-        gridViewYear.setAdapter(new GridViewFilterAdapter(getActivity(),
-                GridViewFilterAdapter.TYPE_YEAR));
-        gridViewMonth.setAdapter(new GridViewFilterAdapter(getActivity(),
-                GridViewFilterAdapter.TYPE_MONTH));
+        mYearFilterAdapter = new GridViewFilterAdapter(getActivity(),
+                GridViewFilterAdapter.TYPE_YEAR);
+        gridViewYear.setAdapter(mYearFilterAdapter);
+        mMonthFilterAdapter = new GridViewFilterAdapter(getActivity(),
+                GridViewFilterAdapter.TYPE_MONTH);
+        gridViewMonth.setAdapter(mMonthFilterAdapter);
         gridViewYear.setExpanded(true);
         gridViewMonth.setExpanded(true);
         mGridViewCategory.setExpanded(true);
@@ -276,6 +275,23 @@ public class TransactionsFragment extends BaseFragment
                 return false;
             }
         );
+
+        AppCompatButton filterButton = mPopupView.findViewById(R.id.btn_filter);
+        filterButton.setOnClickListener((View v) -> {
+            popupWindow.dismiss();
+            if (mCategoryFilterAdapter == null) {
+                mCategoryFilterAdapter = new GridViewFilterAdapter(getActivity(),
+                        GridViewFilterAdapter.TYPE_CATEGORY);
+            }
+
+            mTransactionViewModel.load(MyApplication.sUser.getUserId(),
+                    true,
+                    mYearFilterAdapter.getFilters(),
+                    mMonthFilterAdapter.getFilters(),
+                    mCategoryFilterAdapter.getFilters());
+            mIsLoading = true;
+            mIsLoadMore = false;
+        });
 
         popupWindow.showAtLocation(recyclerView, Gravity.CENTER, 0, 0);
     }
