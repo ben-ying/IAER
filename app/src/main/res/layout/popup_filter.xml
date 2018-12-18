@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <LinearLayout
+        android:id="@+id/rl_filter"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="@dimen/small_margin">
+
+        <TextView
+            style="@style/text_view_filter"
+            android:layout_marginTop="0dp"
+            android:text="@string/by_year" />
+
+        <com.yjh.iaer.custom.ExpandableHeightGridView
+            android:id="@+id/gv_year"
+            style="@style/grid_view_filter" />
+
+        <TextView
+            style="@style/text_view_filter"
+            android:text="@string/by_month" />
+
+        <com.yjh.iaer.custom.ExpandableHeightGridView
+            android:id="@+id/gv_month"
+            style="@style/grid_view_filter" />
+
+        <TextView
+            style="@style/text_view_filter"
+            android:text="@string/by_category" />
+
+        <com.yjh.iaer.custom.ExpandableHeightGridView
+            android:id="@+id/gv_category"
+            style="@style/grid_view_filter" />
+
+        <android.support.v7.widget.AppCompatButton
+            android:id="@+id/btn_filter"
+            style="@style/default_bottom_button"
+            android:text="@string/filter" />
+    </LinearLayout>
+</ScrollView>
