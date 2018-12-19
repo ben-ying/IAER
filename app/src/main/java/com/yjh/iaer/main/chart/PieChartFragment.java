@@ -73,7 +73,7 @@ public class PieChartFragment extends BaseChartFragment
 //    protected PieData generatePieData() {
 //        final DecimalFormat format = new DecimalFormat("###,###,###");
 //        int income = 0;
-//        int consumption = 0;
+//        int expenditure = 0;
 //        Map<String, Integer> map = new HashMap<>();
 //        Map<String, Integer> sortedMap = new HashMap<>();
 //        sortedMap.put(getString(R.string.category_others), 0);
@@ -86,7 +86,7 @@ public class PieChartFragment extends BaseChartFragment
 //            if (transaction.getMoneyInt() > 0) {
 //                income += transaction.getMoneyInt();
 //            } else {
-//                consumption -= transaction.getMoneyInt();
+//                expenditure -= transaction.getMoneyInt();
 //            }
 //        }
 //
@@ -124,8 +124,8 @@ public class PieChartFragment extends BaseChartFragment
 //        PieDataSet pieDataSet = new PieDataSet(
 //                entries, getDateString() +
 //                String.format(getString(R.string.summary),
-//                        format.format(income), format.format(consumption),
-//                        format.format(income - consumption)));
+//                        format.format(income), format.format(expenditure),
+//                        format.format(income - expenditure)));
 //        pieDataSet.setSliceSpace(2f);
 //        pieDataSet.setValueTextColor(Color.WHITE);
 //        pieDataSet.setValueTextSize(12f);

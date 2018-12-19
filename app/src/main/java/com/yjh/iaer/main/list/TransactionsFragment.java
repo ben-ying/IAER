@@ -20,6 +20,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.PopupWindow;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -53,14 +54,11 @@ public class TransactionsFragment extends BaseFragment
     ProgressBar progressBar;
     @BindView(R.id.scroll_view)
     NestedScrollView scrollView;
-    @BindView(R.id.tv_total)
-    TextView totalTextView;
 
     private TransactionViewModel mTransactionViewModel;
     private TransactionAdapter mAdapter;
     private Disposable mDisposable;
     private boolean mReverseSorting;
-    private boolean mIsLoadMore;
     private boolean mIsLoading;;
     private List<Transaction> mTransactions;
     private GridViewFilterAdapter mYearFilterAdapter;
@@ -68,6 +66,9 @@ public class TransactionsFragment extends BaseFragment
     private GridViewFilterAdapter mCategoryFilterAdapter;
     private ExpandableHeightGridView mGridViewCategory;
     private View mPopupView;
+    private String mFilterYears;
+    private String mFilterMonths;
+    private String mFilterCategories;
 
     public static TransactionsFragment newInstance() {
         Bundle args = new Bundle();
@@ -188,12 +189,9 @@ public class TransactionsFragment extends BaseFragment
                 if (scrollY >= (v.getChildAt(0).getMeasuredHeight() - v.getMeasuredHeight())) {
                     if (!mIsLoading) {
                         if (mTransactionViewModel.hasNextUrl()) {
-                            mTransactionViewModel.loadMore(MyApplication.sUser.getUserId(), true);
-                            mIsLoading = true;
-                            mIsLoadMore = true;
+                            loadTransactions(mFilterYears, mFilterMonths, mFilterCategories, true);
                         } else {
                             mIsLoading = false;
-                            mIsLoadMore = false;
                             mAdapter.setType(TransactionAdapter.NO_FOOTER);
                             Toast.makeText(getContext(), R.string.load_all, Toast.LENGTH_LONG).show();
                         }
@@ -205,9 +203,7 @@ public class TransactionsFragment extends BaseFragment
         swipeRefreshLayout.setColorSchemeResources(R.color.google_blue,
                 R.color.google_green, R.color.google_red, R.color.google_yellow);
         swipeRefreshLayout.setOnRefreshListener(() -> {
-            mTransactionViewModel.load(MyApplication.sUser.getUserId(), true, "", "", "");
-            mIsLoading = true;
-            mIsLoadMore = false;
+            loadTransactions(null, null, null, false);
         });
     }
 
@@ -215,8 +211,7 @@ public class TransactionsFragment extends BaseFragment
         mTransactionViewModel = ViewModelProviders.of(
                 this, viewModelFactory).get(TransactionViewModel.class);
         mTransactionViewModel.getTransactionsResource().observe(this, this::setListData);
-        mTransactionViewModel.load(MyApplication.sUser.getUserId(), true, "", "", "");
-        swipeRefreshLayout.setRefreshing(true);
+        loadTransactions(null, null, null, false);
 
         CategoryViewModel categoryViewModel = ViewModelProviders.of(
                 this, viewModelFactory).get(CategoryViewModel.class);
@@ -234,7 +229,6 @@ public class TransactionsFragment extends BaseFragment
         if (listResource == null || listResource.getData() == null) {
             // no data to load
             mIsLoading = false;
-            mIsLoadMore = false;
         } else if (listResource.getData() != null ) {
             mTransactions = listResource.getData();
             setAdapter();
@@ -242,11 +236,15 @@ public class TransactionsFragment extends BaseFragment
             if (listResource.getStatus() == Status.SUCCESS
                     || listResource.getStatus() == Status.ERROR) {
                 mIsLoading = false;
-                mIsLoadMore = false;
                 progressBar.setVisibility(View.GONE);
                 swipeRefreshLayout.setRefreshing(false);
-                if (listResource.getStatus() == Status.SUCCESS && mTransactions.size() == 0) {
-                    Toast.makeText(getContext(), R.string.no_data, Toast.LENGTH_LONG).show();
+                if (listResource.getStatus() == Status.SUCCESS) {
+                    if (mTransactions.size() == 0) {
+                        Toast.makeText(getContext(), R.string.no_data, Toast.LENGTH_LONG).show();
+                    } else {
+                        mAdapter.setHeaderValue(mTransactionViewModel.getIncome(),
+                                mTransactionViewModel.getExpenditure());
+                    }
                 }
             }
         }
@@ -288,16 +286,29 @@ public class TransactionsFragment extends BaseFragment
         AppCompatButton filterButton = mPopupView.findViewById(R.id.btn_filter);
         filterButton.setOnClickListener((View v) -> {
             popupWindow.dismiss();
-            mTransactionViewModel.load(MyApplication.sUser.getUserId(),
-                    true,
-                    mYearFilterAdapter.getFilters(),
+            loadTransactions(mYearFilterAdapter.getFilters(),
                     mMonthFilterAdapter.getFilters(),
-                    mCategoryFilterAdapter.getFilters());
-            swipeRefreshLayout.setRefreshing(true);
-            mIsLoading = true;
-            mIsLoadMore = false;
+                    mCategoryFilterAdapter.getFilters(),
+                    false);
         });
 
         popupWindow.showAtLocation(recyclerView, Gravity.CENTER, 0, 0);
+    }
+
+    private void loadTransactions(@Nullable String years, @Nullable String months,
+                                  @Nullable String categories, boolean loadMore) {
+        mFilterYears = years;
+        mFilterMonths = months;
+        mFilterCategories = categories;
+        if (loadMore) {
+            mTransactionViewModel.loadMore(MyApplication.sUser.getUserId(), true);
+        } else {
+            if (!swipeRefreshLayout.isRefreshing()) {
+                swipeRefreshLayout.setRefreshing(true);
+            }
+            mTransactionViewModel.load(MyApplication.sUser.getUserId(),
+                    true, years, months, categories);
+        }
+        mIsLoading = true;
     }
 }

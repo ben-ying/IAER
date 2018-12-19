@@ -35,8 +35,8 @@ public class HorizontalBarChartFragment extends BaseChartFragment {
     HorizontalBarChart chart;
     @BindView(R.id.tv_income)
     TextView incomeTextView;
-    @BindView(R.id.tv_consumption)
-    TextView consumptionTextView;
+    @BindView(R.id.tv_expenditure)
+    TextView expenditureTextView;
     @BindView(R.id.tv_total)
     TextView totalTextView;
     @BindView(R.id.description_layout)
@@ -144,7 +144,7 @@ public class HorizontalBarChartFragment extends BaseChartFragment {
             emptyView.setVisibility(View.GONE);
             chart.setVisibility(View.VISIBLE);
             incomeTextView.setVisibility(View.VISIBLE);
-            consumptionTextView.setVisibility(View.VISIBLE);
+            expenditureTextView.setVisibility(View.VISIBLE);
             totalTextView.setVisibility(View.VISIBLE);
             descriptionLayout.setVisibility(View.VISIBLE);
         }
@@ -156,7 +156,7 @@ public class HorizontalBarChartFragment extends BaseChartFragment {
         ArrayList<BarEntry> entries = new ArrayList<>();
         List<Integer> colors = new ArrayList<>();
         int income = 0;
-        int consumption = 0;
+        int expenditure = 0;
 
         int i = 0;
         for (int money : moneyList) {
@@ -168,21 +168,21 @@ public class HorizontalBarChartFragment extends BaseChartFragment {
                 income += money;
             } else {
                 colors.add(getActivity().getColor(R.color.google_green));
-                consumption -= money;
+                expenditure -= money;
             }
             i++;
         }
 
         BarDataSet ds = new BarDataSet(entries, getDateString() +
                 String.format(getString(R.string.summary),
-                        format.format(income), format.format(consumption),
-                        format.format(income - consumption)));
+                        format.format(income), format.format(expenditure),
+                        format.format(income - expenditure)));
         incomeTextView.setText(String.format(
                 getString(R.string.income), format.format(income)));
-        consumptionTextView.setText(String.format(
-                getString(R.string.consumption), format.format(consumption)));
+        expenditureTextView.setText(String.format(
+                getString(R.string.expenditure), format.format(expenditure)));
         totalTextView.setText(String.format(
-                getString(R.string.surplus), format.format(income - consumption)));
+                getString(R.string.surplus), format.format(income - expenditure)));
         ds.setColors(colors);
         sets.add(ds);
         Legend legend = chart.getLegend();

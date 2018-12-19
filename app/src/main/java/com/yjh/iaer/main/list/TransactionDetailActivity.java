@@ -118,7 +118,7 @@ public class TransactionDetailActivity extends BaseActivity {
                 getString(R.string.category), mTransaction.getCategory()));
         moneyTextView.setText(mTransaction.getMoneyInt() > 0 ?
                 String.format(getString(R.string.money_income), mTransaction.getMoneyInt()) :
-                String.format(getString(R.string.money_consumption), -mTransaction.getMoneyInt()));
+                String.format(getString(R.string.money_expenditure), -mTransaction.getMoneyInt()));
         remarkTextView.setText(String.format(
                 getString(R.string.remark), mTransaction.getRemark()));
         dateTextView.setText(mTransaction.getCreatedDate());

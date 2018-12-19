@@ -31,7 +31,7 @@
             android:textSize="@dimen/legend_text_size" />
 
         <TextView
-            android:id="@+id/tv_consumption"
+            android:id="@+id/tv_expenditure"
             android:visibility="invisible"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -47,7 +47,7 @@
             android:visibility="invisible"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/tv_consumption"
+            android:layout_below="@+id/tv_expenditure"
             android:layout_marginStart="@dimen/legend_margin_left"
             android:drawablePadding="@dimen/legend_padding"
             android:drawableStart="@drawable/square_primary"

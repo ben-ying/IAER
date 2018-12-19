@@ -5,8 +5,10 @@ import com.google.gson.annotations.SerializedName;
 public class ListResponseResult<T> {
     @SerializedName("count")
     private int count;
-    @SerializedName("total")
-    private int total;
+    @SerializedName("income")
+    private int income;
+    @SerializedName("expenditure")
+    private int expenditure;
     @SerializedName("next")
     private String next;
     @SerializedName("previous")
@@ -30,12 +32,20 @@ public class ListResponseResult<T> {
         return next;
     }
 
-    public int getTotal() {
-        return total;
+    public int getIncome() {
+        return income;
     }
 
-    public void setTotal(int total) {
-        this.total = total;
+    public void setIncome(int income) {
+        this.income = income;
+    }
+
+    public int getExpenditure() {
+        return expenditure;
+    }
+
+    public void setExpenditure(int expenditure) {
+        this.expenditure = expenditure;
     }
 
     public void setNext(String next) {

@@ -62,12 +62,12 @@
     <string name="hint_remark">备注</string>
     <string name="menu_add">添加</string>
     <string name="money_income">收入：%d</string>
-    <string name="money_consumption">支出：%d</string>
-    <string name="income">收入%s</string>
+    <string name="money_expenditure">支出：%d</string>
+    <string name="income">收入：%s</string>
     <string name="input">收入</string>
     <string name="output">支出</string>
-    <string name="consumption">支出%s</string>
-    <string name="surplus">结余%s</string>
+    <string name="expenditure">支出：%s</string>
+    <string name="surplus">结余：%s</string>
     <string name="category">来自：%s</string>
     <string name="remark">备注：%s</string>
 
@@ -95,6 +95,8 @@
     <string name="by_category">类别</string>
     <string name="filter">过滤</string>
     <string name="load_all">已全部加载完</string>
+    <string name="income_all_title">已全部加载完</string>
+    <string name="expenditure_all_title">已全部加载完</string>
 
     <!--app menu-->
     <string name="others">其它</string>

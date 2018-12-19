@@ -64,12 +64,20 @@ public class TransactionViewModel extends ViewModel {
         return mRepository.hasNextUrl();
     }
 
+    public int getIncome() {
+        return mRepository.getIncome();
+    }
+
+    public int getExpenditure() {
+        return mRepository.getExpenditure();
+    }
+
     public LiveData<Resource<Transaction>> addTransactionResource(final String category,
                                                                   final String money,
                                                                   final String remark,
-                                                                  boolean consumption) {
+                                                                  boolean expenditure) {
         return mRepository.addTransaction(
-                category, consumption ? "-" + money : money, remark);
+                category, expenditure ? "-" + money : money, remark);
     }
 
     public LiveData<Resource<List<Transaction>>> getTransactionsResource() {

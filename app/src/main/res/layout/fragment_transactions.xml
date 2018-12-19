@@ -3,20 +3,9 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <TextView
-        android:id="@+id/tv_total"
-        android:textColor="@color/black_text"
-        android:textSize="@dimen/setting_text_size"
-        android:visibility="gone"
-        android:paddingStart="@dimen/recycler_view_padding"
-        android:paddingEnd="@dimen/recycler_view_padding"
-        android:background="@color/hint_disabled_black_text"
-        android:gravity="center_vertical"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/sticky_height" />
-
     <android.support.v4.widget.SwipeRefreshLayout
         android:id="@+id/swipe_refresh_layout"
+
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
