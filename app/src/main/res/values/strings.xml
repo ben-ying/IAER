@@ -67,6 +67,12 @@
     <string name="input">收入</string>
     <string name="output">支出</string>
     <string name="expenditure">支出：%s</string>
+    <string name="current_income">当前收入：%s</string>
+    <string name="current_expenditure">当前支出：%s</string>
+    <string name="this_month_income">本月收入：%s</string>
+    <string name="this_month_expenditure">本月支出：%s</string>
+    <string name="this_year_income">今年收入：%s</string>
+    <string name="this_year_expenditure">今年支出：%s</string>
     <string name="surplus">结余：%s</string>
     <string name="category">来自：%s</string>
     <string name="remark">备注：%s</string>

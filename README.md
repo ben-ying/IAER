@@ -1,2 +1,2 @@
 # IAER
-Income and expenditure recorder
+Income and Expenditure recorder

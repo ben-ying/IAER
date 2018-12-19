@@ -5,6 +5,7 @@ import android.arch.lifecycle.MutableLiveData;
 import android.arch.lifecycle.Transformations;
 import android.arch.lifecycle.ViewModel;
 
+import com.yjh.iaer.model.ListResponseResult;
 import com.yjh.iaer.network.Resource;
 import com.yjh.iaer.repository.TransactionRepository;
 import com.yjh.iaer.room.dao.TransactionDao;
@@ -64,12 +65,8 @@ public class TransactionViewModel extends ViewModel {
         return mRepository.hasNextUrl();
     }
 
-    public int getIncome() {
-        return mRepository.getIncome();
-    }
-
-    public int getExpenditure() {
-        return mRepository.getExpenditure();
+    public ListResponseResult<List<Transaction>> getResult () {
+        return mRepository.getResult();
     }
 
     public LiveData<Resource<Transaction>> addTransactionResource(final String category,

@@ -242,9 +242,14 @@ public class TransactionsFragment extends BaseFragment
                     if (mTransactions.size() == 0) {
                         Toast.makeText(getContext(), R.string.no_data, Toast.LENGTH_LONG).show();
                     } else {
-                        mAdapter.setHeaderValue(mTransactionViewModel.getIncome(),
-                                mTransactionViewModel.getExpenditure());
+                        mAdapter.setHeaderValue(mTransactionViewModel.getResult());
                     }
+                }
+
+                if (mFilterYears == null && mFilterMonths == null && mFilterCategories == null) {
+                    mAdapter.setShowHeader(false);
+                } else {
+                    mAdapter.setShowHeader(true);
                 }
             }
         }

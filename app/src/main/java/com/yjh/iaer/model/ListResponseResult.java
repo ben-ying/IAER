@@ -5,10 +5,18 @@ import com.google.gson.annotations.SerializedName;
 public class ListResponseResult<T> {
     @SerializedName("count")
     private int count;
-    @SerializedName("income")
-    private int income;
-    @SerializedName("expenditure")
-    private int expenditure;
+    @SerializedName("current_income")
+    private int currentIncome;
+    @SerializedName("current_expenditure")
+    private int currentExpenditure;
+    @SerializedName("this_month_income")
+    private int thisMonthIncome;
+    @SerializedName("this_month_expenditure")
+    private int thisMonthExpenditure;
+    @SerializedName("this_year_income")
+    private int thisYearIncome;
+    @SerializedName("this_year_expenditure")
+    private int thisYearExpenditure;
     @SerializedName("next")
     private String next;
     @SerializedName("previous")
@@ -32,20 +40,52 @@ public class ListResponseResult<T> {
         return next;
     }
 
-    public int getIncome() {
-        return income;
+    public int getCurrentIncome() {
+        return currentIncome;
     }
 
-    public void setIncome(int income) {
-        this.income = income;
+    public void setCurrentIncome(int currentIncome) {
+        this.currentIncome = currentIncome;
     }
 
-    public int getExpenditure() {
-        return expenditure;
+    public int getCurrentExpenditure() {
+        return currentExpenditure;
     }
 
-    public void setExpenditure(int expenditure) {
-        this.expenditure = expenditure;
+    public void setCurrentExpenditure(int currentExpenditure) {
+        this.currentExpenditure = currentExpenditure;
+    }
+
+    public int getThisMonthIncome() {
+        return thisMonthIncome;
+    }
+
+    public void setThisMonthIncome(int thisMonthIncome) {
+        this.thisMonthIncome = thisMonthIncome;
+    }
+
+    public int getThisMonthExpenditure() {
+        return thisMonthExpenditure;
+    }
+
+    public void setThisMonthExpenditure(int thisMonthExpenditure) {
+        this.thisMonthExpenditure = thisMonthExpenditure;
+    }
+
+    public int getThisYearIncome() {
+        return thisYearIncome;
+    }
+
+    public void setThisYearIncome(int thisYearIncome) {
+        this.thisYearIncome = thisYearIncome;
+    }
+
+    public int getThisYearExpenditure() {
+        return thisYearExpenditure;
+    }
+
+    public void setThisYearExpenditure(int thisYearExpenditure) {
+        this.thisYearExpenditure = thisYearExpenditure;
     }
 
     public void setNext(String next) {

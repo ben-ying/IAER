@@ -43,8 +43,7 @@ public class TransactionRepository {
     private int mRequestCode;
 
     private String mMoreTransactionUrl;
-    private int mIncome;
-    private int mExpenditure;
+    private ListResponseResult<List<Transaction>> mResult;
 
     @Inject
     public TransactionRepository(Webservice webservice, TransactionDao transactionDao) {
@@ -56,12 +55,8 @@ public class TransactionRepository {
         return mMoreTransactionUrl != null;
     }
 
-    public int getIncome() {
-        return mIncome;
-    }
-
-    public int getExpenditure() {
-        return mExpenditure;
+    public ListResponseResult<List<Transaction>> getResult () {
+        return mResult;
     }
 
     public LiveData<Resource<List<Transaction>>> loadTransactions(
@@ -73,8 +68,7 @@ public class TransactionRepository {
             protected void saveCallResult(
                     @NonNull CustomResponse<ListResponseResult<List<Transaction>>> item) {
                 if (mRequestCode == TRANSACTIONS_REQUEST) {
-                    mIncome = item.getResult().getIncome();
-                    mExpenditure = item.getResult().getExpenditure();
+                    mResult = item.getResult();
                     mTransactionDao.deleteAllByUser(userId);
                     mTransactionDao.saveAll(item.getResult().getResults());
                     mMoreTransactionUrl = item.getResult().getNext();

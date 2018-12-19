@@ -3,7 +3,6 @@ package com.yjh.iaer.main.list;
 import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,6 +11,7 @@ import android.widget.TextView;
 
 import com.yjh.iaer.R;
 import com.yjh.iaer.constant.Constant;
+import com.yjh.iaer.model.ListResponseResult;
 import com.yjh.iaer.room.entity.Transaction;
 import com.yjh.iaer.util.AlertUtils;
 
@@ -37,9 +37,9 @@ public class TransactionAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
     private int mDisplayType;
     private List<Transaction> mTransactions;
     private TransactionInterface mInterface;
-    private int mIncome;
-    private int mExpenditure;
     private DecimalFormat mFormat;
+    private boolean mShowHeader;
+    ListResponseResult<List<Transaction>> mResult;
 
     interface TransactionInterface {
         void delete(int id);
@@ -62,18 +62,22 @@ public class TransactionAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
 
     public void setType(int type) {
         this.mDisplayType = type;
-        notifyItemRangeChanged(getItemCount(), 1);
+        notifyDataSetChanged();
     }
 
-    public void setHeaderValue(int income, int expenditure) {
-        this.mIncome = income;
-        this.mExpenditure = expenditure;
+    public void setShowHeader(boolean showHeader) {
+        this.mShowHeader = showHeader;
+        notifyDataSetChanged();
+    }
+
+    public void setHeaderValue(ListResponseResult<List<Transaction>> result) {
+        this.mResult = result;
         notifyDataSetChanged();
     }
 
     @Override
     public int getItemViewType(int position) {
-        if (position == 0) {
+        if (position == 0 && mShowHeader) {
             return TYPE_HEADER;
         } else if (position + 1 == getItemCount() && mDisplayType == HAS_FOOTER) {
             return TYPE_FOOTER;
@@ -102,7 +106,7 @@ public class TransactionAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
         if (holder instanceof TransactionViewHolder) {
             TransactionViewHolder viewHolder = (TransactionViewHolder) holder;
-            final Transaction transaction = mTransactions.get(position - 1);
+            Transaction transaction = mTransactions.get(mShowHeader ? (position - 1) : position);
             viewHolder.fromTextView.setText(transaction.getCategory());
             viewHolder.dateTextView.setText(transaction.getCreatedDate());
             viewHolder.moneyTextView.setText(String.format(
@@ -111,10 +115,18 @@ public class TransactionAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
             viewHolder.rootView.setTag(transaction);
         } else if (holder instanceof HeaderViewHolder) {
             HeaderViewHolder viewHolder = (HeaderViewHolder) holder;
-            viewHolder.incomeTextView.setText(String.format(
-                    mContext.getString(R.string.income), mFormat.format(mIncome)));
-            viewHolder.expenditureTextView.setText(String.format(
-                    mContext.getString(R.string.expenditure), mFormat.format(mExpenditure)));
+            viewHolder.currentIncomeTextView.setText(String.format(
+                    mContext.getString(R.string.current_income), mFormat.format(mResult.getCurrentIncome())));
+            viewHolder.currentExpenditureTextView.setText(String.format(
+                    mContext.getString(R.string.current_expenditure), mFormat.format(mResult.getCurrentExpenditure())));
+            viewHolder.thisMonthIncomeTextView.setText(String.format(
+                    mContext.getString(R.string.this_month_income), mFormat.format(mResult.getThisMonthIncome())));
+            viewHolder.thisMonthExpenditureTextView.setText(String.format(
+                    mContext.getString(R.string.this_month_expenditure), mFormat.format(mResult.getThisMonthExpenditure())));
+            viewHolder.thisYearIncomeTextView.setText(String.format(
+                    mContext.getString(R.string.this_year_income), mFormat.format(mResult.getThisYearIncome())));
+            viewHolder.thisYearExpenditureTextView.setText(String.format(
+                    mContext.getString(R.string.this_year_expenditure), mFormat.format(mResult.getThisYearExpenditure())));
         } else {
             // todo
         }
@@ -123,9 +135,13 @@ public class TransactionAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
     @Override
     public int getItemCount() {
         if (mDisplayType == HAS_FOOTER) {
-            return mTransactions.size() == 0 ? 0 : mTransactions.size() + 2;
+            if (mShowHeader) {
+                return mTransactions.size() == 0 ? 0 : mTransactions.size() + 2;
+            } else {
+                return mTransactions.size() == 0 ? 0 : mTransactions.size() + 1;
+            }
         } else {
-            return mTransactions.size() + 1;
+            return mTransactions.size() == 0 ? 0 : mTransactions.size() + 1;
         }
     }
 
@@ -136,10 +152,18 @@ public class TransactionAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
     }
 
     class HeaderViewHolder extends RecyclerView.ViewHolder {
-        @BindView(R.id.tv_income)
-        TextView incomeTextView;
-        @BindView(R.id.tv_expenditure)
-        TextView expenditureTextView;
+        @BindView(R.id.tv_current_income)
+        TextView currentIncomeTextView;
+        @BindView(R.id.tv_current_expenditure)
+        TextView currentExpenditureTextView;
+        @BindView(R.id.tv_this_month_income)
+        TextView thisMonthIncomeTextView;
+        @BindView(R.id.tv_this_month_expenditure)
+        TextView thisMonthExpenditureTextView;
+        @BindView(R.id.tv_this_year_income)
+        TextView thisYearIncomeTextView;
+        @BindView(R.id.tv_this_year_expenditure)
+        TextView thisYearExpenditureTextView;
 
         HeaderViewHolder(View itemView) {
             super(itemView);
