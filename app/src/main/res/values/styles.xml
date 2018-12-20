@@ -75,4 +75,15 @@
         <item name="android:textColor">@color/black_text</item>
         <item name="android:layout_marginTop">@dimen/small_margin</item>
     </style>
+
+    <style name="home_setting_switch">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textColor">@color/black_text</item>
+        <item name="android:textSize">@dimen/label_text_size</item>
+        <item name="android:layout_margin">@dimen/small_margin</item>
+        <item name="android:paddingLeft">@dimen/button_margin_vertical</item>
+        <item name="android:paddingRight">@dimen/button_margin_vertical</item>
+    </style>
+
 </resources>

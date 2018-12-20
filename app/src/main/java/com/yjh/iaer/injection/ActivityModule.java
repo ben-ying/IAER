@@ -7,6 +7,8 @@ import com.yjh.iaer.main.MainActivity;
 import com.yjh.iaer.main.chart.ChartActivity;
 import com.yjh.iaer.main.list.AddTransactionActivity;
 import com.yjh.iaer.main.list.TransactionDetailActivity;
+import com.yjh.iaer.nav.HomeSettingActivity;
+import com.yjh.iaer.nav.SettingItemsActivity;
 import com.yjh.iaer.nav.SwitchAccountActivity;
 
 import dagger.Module;
@@ -30,4 +32,8 @@ public abstract class ActivityModule {
     abstract RegisterActivity contributeRegisterActivity();
     @ContributesAndroidInjector(modules = FragmentBuildersModule.class)
     abstract ResetPasswordActivity contributeResetPasswordActivity();
+    @ContributesAndroidInjector(modules = FragmentBuildersModule.class)
+    abstract SettingItemsActivity contributeSettingItemsActivity();
+    @ContributesAndroidInjector(modules = FragmentBuildersModule.class)
+    abstract HomeSettingActivity contributeHomeSettingActivity();
 }

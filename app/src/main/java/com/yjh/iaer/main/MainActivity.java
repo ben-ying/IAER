@@ -26,6 +26,7 @@ import com.yjh.iaer.login.LoginActivity;
 import com.yjh.iaer.main.chart.ChartActivity;
 import com.yjh.iaer.main.list.AddTransactionActivity;
 import com.yjh.iaer.main.list.TransactionsFragment;
+import com.yjh.iaer.nav.SettingItemsActivity;
 import com.yjh.iaer.nav.SwitchAccountActivity;
 import com.yjh.iaer.network.Status;
 import com.yjh.iaer.util.AlertUtils;
@@ -143,8 +144,10 @@ public class MainActivity extends BaseActivity
                     intent = new Intent(MainActivity.this, SwitchAccountActivity.class);
                     startActivity(intent);
                     break;
-//                case R.id.nav_manage:
-//                    break;
+                case R.id.nav_setting:
+                    intent = new Intent(MainActivity.this, SettingItemsActivity.class);
+                    startActivity(intent);
+                    break;
 //                case R.id.nav_share:
 //                    break;
 //                case R.id.nav_send:

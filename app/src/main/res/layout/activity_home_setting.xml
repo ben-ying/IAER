@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true" >
+
+    <include layout="@layout/appbar" />
+
+    <RelativeLayout
+        android:layout_below="@+id/appbar"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" >
+
+        <TextView
+            android:id="@+id/tv_statistics"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/black_text"
+            android:layout_margin="@dimen/small_margin"
+            android:textSize="@dimen/label_text_size"
+            android:text="@string/statistics_label"/>
+
+        <Switch
+            android:id="@+id/switch_current"
+            android:layout_below="@+id/tv_statistics"
+            style="@style/home_setting_switch"
+            android:text="@string/show_current" />
+
+        <Switch
+            android:id="@+id/switch_this_month"
+            android:layout_below="@+id/switch_current"
+            style="@style/home_setting_switch"
+            android:text="@string/show_this_month" />
+
+        <Switch
+            android:id="@+id/switch_this_year"
+            android:layout_below="@+id/switch_this_month"
+            style="@style/home_setting_switch"
+            android:text="@string/show_this_year" />
+
+    </RelativeLayout>
+
+    <include layout="@layout/progress" />
+</RelativeLayout>
