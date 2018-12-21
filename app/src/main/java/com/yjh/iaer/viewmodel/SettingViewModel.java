@@ -17,8 +17,8 @@ public class SettingViewModel extends ViewModel {
         this.mRepository = repository;
     }
 
-    public LiveData<Resource<Setting>> loadUserSetting(String token, int userId) {
-        return mRepository.loadUserSetting(token, userId);
+    public LiveData<Resource<Setting>> loadUserSetting(String token, int userId, boolean alwaysFetch) {
+        return mRepository.loadUserSetting(token, userId, alwaysFetch);
     }
 
     public LiveData<Resource<Setting>> updateUserSetting(String token, int userId, Setting setting) {

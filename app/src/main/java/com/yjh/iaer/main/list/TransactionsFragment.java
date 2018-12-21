@@ -31,8 +31,10 @@ import com.yjh.iaer.custom.ExpandableHeightGridView;
 import com.yjh.iaer.network.Resource;
 import com.yjh.iaer.network.Status;
 import com.yjh.iaer.room.entity.Category;
+import com.yjh.iaer.room.entity.Setting;
 import com.yjh.iaer.room.entity.Transaction;
 import com.yjh.iaer.viewmodel.CategoryViewModel;
+import com.yjh.iaer.viewmodel.SettingViewModel;
 import com.yjh.iaer.viewmodel.TransactionViewModel;
 
 import java.util.Comparator;
@@ -218,6 +220,12 @@ public class TransactionsFragment extends BaseFragment
         categoryViewModel.loadAllCategories().observe(this, this::setCategoryList);
     }
 
+    private void setSetting(@Nullable Resource<Setting> listResource) {
+        if (listResource.getStatus() == Status.SUCCESS) {
+            mAdapter.setSetting(listResource.getData());
+        }
+    }
+
     private void setCategoryList(@Nullable Resource<List<Category>> listResource) {
         if (listResource.getStatus() == Status.SUCCESS) {
             mGridViewCategory.setAdapter(mCategoryFilterAdapter);
@@ -246,11 +254,17 @@ public class TransactionsFragment extends BaseFragment
                     }
                 }
 
-                if (mFilterYears == null && mFilterMonths == null && mFilterCategories == null) {
-                    mAdapter.setShowHeader(false);
-                } else {
-                    mAdapter.setShowHeader(true);
-                }
+                SettingViewModel settingViewModel = ViewModelProviders.of(
+                        this, viewModelFactory).get(SettingViewModel.class);
+                settingViewModel.loadUserSetting(MyApplication.sUser.getToken(),
+                        MyApplication.sUser.getUserId(), true)
+                        .observe(this, this::setSetting);
+
+//                if (mFilterYears == null && mFilterMonths == null && mFilterCategories == null) {
+//                    mAdapter.setShowHeader(false);
+//                } else {
+//                    mAdapter.setShowHeader(true);
+//                }
             }
         }
     }

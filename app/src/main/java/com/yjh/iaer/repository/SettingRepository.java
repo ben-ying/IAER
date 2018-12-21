@@ -29,7 +29,7 @@ public class SettingRepository {
         this.mDao = settingDao;
     }
 
-    public LiveData<Resource<Setting>> loadUserSetting(String token, int userId) {
+    public LiveData<Resource<Setting>> loadUserSetting(String token, int userId, boolean alwaysFetch) {
         return new NetworkBoundResource<Setting,
                         CustomResponse<Setting>>() {
             @Override
@@ -41,7 +41,7 @@ public class SettingRepository {
 
             @Override
             protected boolean shouldFetch(@Nullable Setting data) {
-                return data == null;
+                return alwaysFetch || data == null;
             }
 
             @NonNull

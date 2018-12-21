@@ -116,4 +116,8 @@ public class Setting implements Serializable {
                 && homeShowThisMonth == setting.isHomeShowThisMonth()
                 && homeShowThisYear == setting.isHomeShowThisYear();
     }
+
+    public boolean showHeader() {
+        return homeShowCurrent ||homeShowThisMonth || homeShowThisYear;
+    }
 }

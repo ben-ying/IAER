@@ -54,7 +54,8 @@ public class HomeSettingActivity extends BaseActivity
 
         mViewModel = ViewModelProviders.of(
                 this, viewModelFactory).get(SettingViewModel.class);
-        mViewModel.loadUserSetting(MyApplication.sUser.getToken(), MyApplication.sUser.getUserId())
+        mViewModel.loadUserSetting(MyApplication.sUser.getToken(),
+                MyApplication.sUser.getUserId(), false)
                 .observe(this, this::setSetting);
     }
 

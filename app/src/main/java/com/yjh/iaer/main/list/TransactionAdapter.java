@@ -12,11 +12,13 @@ import android.widget.TextView;
 import com.yjh.iaer.R;
 import com.yjh.iaer.constant.Constant;
 import com.yjh.iaer.model.ListResponseResult;
+import com.yjh.iaer.room.entity.Setting;
 import com.yjh.iaer.room.entity.Transaction;
 import com.yjh.iaer.util.AlertUtils;
 
 import java.text.DecimalFormat;
 import java.util.List;
+import java.util.Set;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -39,7 +41,8 @@ public class TransactionAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
     private TransactionInterface mInterface;
     private DecimalFormat mFormat;
     private boolean mShowHeader;
-    ListResponseResult<List<Transaction>> mResult;
+    private Setting mSetting;
+    private ListResponseResult<List<Transaction>> mResult;
 
     interface TransactionInterface {
         void delete(int id);
@@ -72,6 +75,12 @@ public class TransactionAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
 
     public void setHeaderValue(ListResponseResult<List<Transaction>> result) {
         this.mResult = result;
+        notifyDataSetChanged();
+    }
+
+    public void setSetting(Setting setting) {
+        this.mSetting = setting;
+        this.mShowHeader = setting.showHeader();
         notifyDataSetChanged();
     }
 
@@ -115,18 +124,41 @@ public class TransactionAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
             viewHolder.rootView.setTag(transaction);
         } else if (holder instanceof HeaderViewHolder) {
             HeaderViewHolder viewHolder = (HeaderViewHolder) holder;
-            viewHolder.currentIncomeTextView.setText(String.format(
-                    mContext.getString(R.string.current_income), mFormat.format(mResult.getCurrentIncome())));
-            viewHolder.currentExpenditureTextView.setText(String.format(
-                    mContext.getString(R.string.current_expenditure), mFormat.format(mResult.getCurrentExpenditure())));
-            viewHolder.thisMonthIncomeTextView.setText(String.format(
-                    mContext.getString(R.string.this_month_income), mFormat.format(mResult.getThisMonthIncome())));
-            viewHolder.thisMonthExpenditureTextView.setText(String.format(
-                    mContext.getString(R.string.this_month_expenditure), mFormat.format(mResult.getThisMonthExpenditure())));
-            viewHolder.thisYearIncomeTextView.setText(String.format(
-                    mContext.getString(R.string.this_year_income), mFormat.format(mResult.getThisYearIncome())));
-            viewHolder.thisYearExpenditureTextView.setText(String.format(
-                    mContext.getString(R.string.this_year_expenditure), mFormat.format(mResult.getThisYearExpenditure())));
+            if (mResult != null) {
+                viewHolder.currentIncomeTextView.setText(String.format(
+                        mContext.getString(R.string.current_income),
+                        mFormat.format(mResult.getCurrentIncome())));
+                viewHolder.currentExpenditureTextView.setText(String.format(
+                        mContext.getString(R.string.current_expenditure),
+                        mFormat.format(mResult.getCurrentExpenditure())));
+                viewHolder.thisMonthIncomeTextView.setText(String.format(
+                        mContext.getString(R.string.this_month_income),
+                        mFormat.format(mResult.getThisMonthIncome())));
+                viewHolder.thisMonthExpenditureTextView.setText(String.format(
+                        mContext.getString(R.string.this_month_expenditure),
+                        mFormat.format(mResult.getThisMonthExpenditure())));
+                viewHolder.thisYearIncomeTextView.setText(String.format(
+                        mContext.getString(R.string.this_year_income),
+                        mFormat.format(mResult.getThisYearIncome())));
+                viewHolder.thisYearExpenditureTextView.setText(String.format(
+                        mContext.getString(R.string.this_year_expenditure),
+                        mFormat.format(mResult.getThisYearExpenditure())));
+            }
+            viewHolder.currentLayout.setVisibility(View.VISIBLE);
+            viewHolder.thisMonthLayout.setVisibility(View.VISIBLE);
+            viewHolder.thisYearLayout.setVisibility(View.VISIBLE);
+
+            if (mSetting != null) {
+                if (!mSetting.isHomeShowCurrent()) {
+                    viewHolder.currentLayout.setVisibility(View.GONE);
+                }
+                if (!mSetting.isHomeShowThisMonth()) {
+                    viewHolder.thisMonthLayout.setVisibility(View.GONE);
+                }
+                if (!mSetting.isHomeShowThisYear()) {
+                    viewHolder.thisYearLayout.setVisibility(View.GONE);
+                }
+            }
         } else {
             // todo
         }
@@ -152,6 +184,12 @@ public class TransactionAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
     }
 
     class HeaderViewHolder extends RecyclerView.ViewHolder {
+        @BindView(R.id.ll_current)
+        View currentLayout;
+        @BindView(R.id.ll_this_month)
+        View thisMonthLayout;
+        @BindView(R.id.ll_this_year)
+        View thisYearLayout;
         @BindView(R.id.tv_current_income)
         TextView currentIncomeTextView;
         @BindView(R.id.tv_current_expenditure)
