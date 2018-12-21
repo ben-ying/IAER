@@ -6,6 +6,7 @@ import android.arch.lifecycle.ViewModelProvider;
 import com.yjh.iaer.room.entity.User;
 import com.yjh.iaer.viewmodel.CategoryViewModel;
 import com.yjh.iaer.viewmodel.FundViewModel;
+import com.yjh.iaer.viewmodel.SettingViewModel;
 import com.yjh.iaer.viewmodel.TransactionViewModel;
 import com.yjh.iaer.viewmodel.UserViewModel;
 
@@ -34,6 +35,11 @@ abstract class ViewModelModule {
     @IntoMap
     @ViewModelKey(FundViewModel.class)
     abstract ViewModel bindFundViewModel(FundViewModel fundViewModel);
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(SettingViewModel.class)
+    abstract ViewModel bindSettingViewModel(SettingViewModel settingViewModel);
 
     @Binds
     abstract ViewModelProvider.Factory bindViewModelFactory(ViewModelFactory factory);

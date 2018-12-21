@@ -31,13 +31,13 @@ public class Fund implements Serializable {
     private String name;
     @SerializedName(FIELD_MONTHLY_MONEY)
     @ColumnInfo(name = FIELD_MONTHLY_MONEY)
-    private String monthly_money;
+    private String monthlyMoney;
     @SerializedName(FIELD_YEARLY_MONEY)
     @ColumnInfo(name = FIELD_YEARLY_MONEY)
-    private String yearly_money;
+    private String yearlyMoney;
     @SerializedName(FIELD_ALTERNATE_MONEY)
     @ColumnInfo(name = FIELD_ALTERNATE_MONEY)
-    private String alternate_money;
+    private String alternateMoney;
     @SerializedName(FIELD_CREATED)
     @ColumnInfo(name = FIELD_CREATED)
     private String created;
@@ -61,28 +61,28 @@ public class Fund implements Serializable {
         this.name = name;
     }
 
-    public String getMonthly_money() {
-        return monthly_money;
+    public String getMonthlyMoney() {
+        return monthlyMoney;
     }
 
-    public void setMonthly_money(String monthly_money) {
-        this.monthly_money = monthly_money;
+    public void setMonthlyMoney(String monthlyMoney) {
+        this.monthlyMoney = monthlyMoney;
     }
 
-    public String getYearly_money() {
-        return yearly_money;
+    public String getYearlyMoney() {
+        return yearlyMoney;
     }
 
-    public void setYearly_money(String yearly_money) {
-        this.yearly_money = yearly_money;
+    public void setYearlyMoney(String yearlyMoney) {
+        this.yearlyMoney = yearlyMoney;
     }
 
-    public String getAlternate_money() {
-        return alternate_money;
+    public String getAlternateMoney() {
+        return alternateMoney;
     }
 
-    public void setAlternate_money(String alternate_money) {
-        this.alternate_money = alternate_money;
+    public void setAlternateMoney(String alternateMoney) {
+        this.alternateMoney = alternateMoney;
     }
 
     public String getCreated() {

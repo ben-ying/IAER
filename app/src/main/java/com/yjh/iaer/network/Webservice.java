@@ -8,6 +8,7 @@ import com.yjh.iaer.model.ListResponseResult;
 import com.yjh.iaer.model.StatisticsDate;
 import com.yjh.iaer.room.entity.Category;
 import com.yjh.iaer.room.entity.Fund;
+import com.yjh.iaer.room.entity.Setting;
 import com.yjh.iaer.room.entity.Transaction;
 import com.yjh.iaer.room.entity.User;
 
@@ -19,6 +20,7 @@ import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
 import retrofit2.http.HTTP;
 import retrofit2.http.POST;
+import retrofit2.http.PUT;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
 
@@ -32,6 +34,7 @@ public interface Webservice {
     String URL_STATISTICS_CATEGORIES = "statistics/category/";
     String URL_STATISTICS_DATES = "statistics/date/";
     String URL_FUNDS = "funds/";
+    String URL_SETTING = "setting/";
 
     @GET(URL_TRANSACTIONS) // years, months or categories is empty if select all.
     LiveData<ApiResponse<CustomResponse<ListResponseResult<List<Transaction>>>>> getTransactions(
@@ -101,4 +104,15 @@ public interface Webservice {
 
     @GET(URL_FUNDS)
     LiveData<ApiResponse<CustomResponse<ListResponseResult<List<Fund>>>>> getFunds();
+
+    @GET(URL_SETTING)
+    LiveData<ApiResponse<CustomResponse<Setting>>> getSetting(@Query("token") String token);
+
+    @FormUrlEncoded
+    @PUT(URL_SETTING)
+    LiveData<ApiResponse<CustomResponse<Setting>>> updateSetting(
+            @Field("token") String token,
+            @Field("home_show_current") int homeShowCurrent,
+            @Field("home_show_this_month") int homeShowThisMonth,
+            @Field("home_show_this_year") int homeShowThisYear);
 }
