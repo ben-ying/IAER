@@ -26,7 +26,6 @@ public class TransactionViewModel extends ViewModel {
     private ReId mReId = new ReId();
     private TransactionRepository mRepository;
     private LiveData<Resource<List<Transaction>>> mTransactions;
-    private LiveData<Resource<Transaction>> mTransaction;
 
     @Inject
     TransactionDao dao;
@@ -46,16 +45,6 @@ public class TransactionViewModel extends ViewModel {
                     return mRepository.loadMoreTransactions(iaerId.userId, iaerId.fetchNetwork);
                 case TYPE_DELETE:
                     return mRepository.deleteTransaction(iaerId.id);
-            }
-            return null;
-        });
-
-        mTransaction = Transformations.switchMap(mTransactionMutableLiveData, transaction -> {
-            switch (transaction.getType()) {
-                case TYPE_EDIT:
-                    return mRepository.edit(transaction);
-                case TYPE_DELETE:
-                    return mRepository.delete(transaction.getIaerId());
             }
             return null;
         });
@@ -79,17 +68,6 @@ public class TransactionViewModel extends ViewModel {
 
     public LiveData<Resource<List<Transaction>>> getTransactionsResource() {
         return mTransactions;
-    }
-
-    public LiveData<Resource<Transaction>> getTransactionResource() {
-        return mTransaction;
-    }
-
-    public void deleteById(int id) {
-        Transaction transaction = new Transaction();
-        transaction.setType(TYPE_DELETE);
-        transaction.setIaerId(id);
-        mTransactionMutableLiveData.setValue(transaction);
     }
 
     public void edit(Transaction transaction) {

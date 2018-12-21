@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.arch.lifecycle.ViewModelProvider;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.DialogInterface;
+import android.support.annotation.Nullable;
 import android.support.v7.widget.AppCompatButton;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -17,9 +18,13 @@ import android.widget.TextView;
 import com.yjh.iaer.R;
 import com.yjh.iaer.base.BaseActivity;
 import com.yjh.iaer.constant.Constant;
+import com.yjh.iaer.network.Resource;
+import com.yjh.iaer.network.Status;
 import com.yjh.iaer.room.entity.Transaction;
 import com.yjh.iaer.util.AlertUtils;
 import com.yjh.iaer.viewmodel.TransactionViewModel;
+
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -63,15 +68,18 @@ public class TransactionDetailActivity extends BaseActivity {
 
         mViewModel = ViewModelProviders.of(
                 this, viewModelFactory).get(TransactionViewModel.class);
-        mViewModel.getTransactionResource().observe(this, transactionResource -> {
-            if (transactionResource == null || transactionResource.getData() == null) {
+
+        mViewModel.getTransactionsResource().observe(this, this::setListData);
+    }
+
+    private void setListData(@Nullable Resource<List<Transaction>> listResource) {
+        if (listResource.getData() != null ) {
+            if (listResource.getStatus() == Status.SUCCESS) {
                 finish();
-            } else {
-                mTransaction = transactionResource.getData();
-                refreshData();
-                finish();
+            } else if (listResource.getStatus() == Status.ERROR) {
+                progressBar.setVisibility(View.GONE);
             }
-        });
+        }
     }
 
     @OnClick(R.id.btn_delete)
