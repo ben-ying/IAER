@@ -173,7 +173,11 @@ public class TransactionAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
                 return mTransactions.size() == 0 ? 0 : mTransactions.size() + 1;
             }
         } else {
-            return mTransactions.size() == 0 ? 0 : mTransactions.size() + 1;
+            if (mShowHeader) {
+                return mTransactions.size() == 0 ? 0 : mTransactions.size() + 1;
+            } else {
+                return mTransactions.size();
+            }
         }
     }
 
