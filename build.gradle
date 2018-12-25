@@ -23,7 +23,7 @@ allprojects {
         google()
         jcenter()
         maven {url 'https://maven.google.com'}
-        // MPAndroidChart
+        // MPAndroidChart & MultiSelectSpinner
         maven { url "https://jitpack.io" }
     }
 }

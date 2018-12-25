@@ -2,6 +2,7 @@ package com.yjh.iaer.main.list;
 
 
 import android.arch.lifecycle.ViewModelProviders;
+import android.graphics.Point;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.widget.NestedScrollView;
@@ -10,6 +11,7 @@ import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.Display;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -18,6 +20,8 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
@@ -57,6 +61,11 @@ public class TransactionsFragment extends BaseFragment
     @BindView(R.id.scroll_view)
     NestedScrollView scrollView;
 
+    private static final int MENU_FILTER_DATE = 1;
+    private static final int MENU_FILTER_CATEGORY = 2;
+    private static final int MENU_FILTER_MONEY = 3;
+    private static final int MENU_FILTER_ALL = 4;
+
     private TransactionViewModel mTransactionViewModel;
     private TransactionAdapter mAdapter;
     private Disposable mDisposable;
@@ -68,9 +77,13 @@ public class TransactionsFragment extends BaseFragment
     private GridViewFilterAdapter mCategoryFilterAdapter;
     private ExpandableHeightGridView mGridViewCategory;
     private View mPopupView;
+    private int mMinMoney;
+    private int mMaxMoney;
     private String mFilterYears;
     private String mFilterMonths;
     private String mFilterCategories;
+    private Point mScreenSize;
+    private List<Category> mCategories;
 
     public static TransactionsFragment newInstance() {
         Bundle args = new Bundle();
@@ -90,14 +103,13 @@ public class TransactionsFragment extends BaseFragment
 
         initViewModel();
 
-        mPopupView = LayoutInflater.from(getActivity()).inflate(R.layout.popup_filter, null, false);
-        mGridViewCategory = mPopupView.findViewById(R.id.gv_category);
         mYearFilterAdapter = new GridViewFilterAdapter(getContext(),
                 GridViewFilterAdapter.TYPE_YEAR);
         mMonthFilterAdapter = new GridViewFilterAdapter(getContext(),
                 GridViewFilterAdapter.TYPE_MONTH);
-        mCategoryFilterAdapter = new GridViewFilterAdapter(getContext(),
-                GridViewFilterAdapter.TYPE_CATEGORY);
+        Display display = getActivity().getWindowManager().getDefaultDisplay();
+        mScreenSize = new Point();
+        display.getSize(mScreenSize);
     }
 
     @Override
@@ -116,7 +128,7 @@ public class TransactionsFragment extends BaseFragment
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
-        inflater.inflate(R.menu.transaction_list, menu);
+        inflater.inflate(R.menu.transactions_filter, menu);
     }
 
     @Override
@@ -136,10 +148,17 @@ public class TransactionsFragment extends BaseFragment
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.action_filter:
-//                sortDataByTime();
-                initPopWindow();
-
+            case R.id.action_filter_by_date:
+                initPopWindow(MENU_FILTER_DATE);
+                return true;
+            case R.id.action_filter_by_category:
+                initPopWindow(MENU_FILTER_CATEGORY);
+                return true;
+            case R.id.action_filter_by_money:
+                initPopWindow(MENU_FILTER_MONEY);
+                return true;
+            case R.id.action_filter_by_all:
+                initPopWindow(MENU_FILTER_ALL);
                 return true;
         }
         return super.onOptionsItemSelected(item);
@@ -191,7 +210,8 @@ public class TransactionsFragment extends BaseFragment
                 if (scrollY >= (v.getChildAt(0).getMeasuredHeight() - v.getMeasuredHeight())) {
                     if (!mIsLoading) {
                         if (mTransactionViewModel.hasNextUrl()) {
-                            loadTransactions(mFilterYears, mFilterMonths, mFilterCategories, true);
+                            loadTransactions(mFilterYears, mFilterMonths, mFilterCategories,
+                                    mMinMoney, mMaxMoney, true);
                         } else {
                             mIsLoading = false;
                             mAdapter.setType(TransactionAdapter.NO_FOOTER);
@@ -205,7 +225,7 @@ public class TransactionsFragment extends BaseFragment
         swipeRefreshLayout.setColorSchemeResources(R.color.google_blue,
                 R.color.google_green, R.color.google_red, R.color.google_yellow);
         swipeRefreshLayout.setOnRefreshListener(() -> {
-            loadTransactions(null, null, null, false);
+            loadTransactions(null, null, null, 0, 0, false);
         });
     }
 
@@ -213,7 +233,7 @@ public class TransactionsFragment extends BaseFragment
         mTransactionViewModel = ViewModelProviders.of(
                 this, viewModelFactory).get(TransactionViewModel.class);
         mTransactionViewModel.getTransactionsResource().observe(this, this::setListData);
-        loadTransactions(null, null, null, false);
+        loadTransactions(null, null, null, 0, 0, false);
 
         CategoryViewModel categoryViewModel = ViewModelProviders.of(
                 this, viewModelFactory).get(CategoryViewModel.class);
@@ -228,8 +248,11 @@ public class TransactionsFragment extends BaseFragment
 
     private void setCategoryList(@Nullable Resource<List<Category>> listResource) {
         if (listResource.getStatus() == Status.SUCCESS) {
-            mGridViewCategory.setAdapter(mCategoryFilterAdapter);
-            mCategoryFilterAdapter.setCategoryList(listResource.getData());
+            mCategories = listResource.getData();
+            if (mGridViewCategory != null && mCategoryFilterAdapter != null) {
+                mGridViewCategory.setAdapter(mCategoryFilterAdapter);
+                mCategoryFilterAdapter.setCategoryList(mCategories);
+            }
         }
     }
 
@@ -279,18 +302,70 @@ public class TransactionsFragment extends BaseFragment
         }
     }
 
-    private void initPopWindow() {
+    private void initPopWindow(int filterType) {
+        mPopupView = LayoutInflater.from(getActivity()).inflate(
+                R.layout.popup_filter, null, false);
+        mGridViewCategory = mPopupView.findViewById(R.id.gv_category);
+        TextView yearLabel = mPopupView.findViewById(R.id.tv_year);
+        TextView monthLabel = mPopupView.findViewById(R.id.tv_month);
+        TextView categoryLabel = mPopupView.findViewById(R.id.tv_category);
+        TextView moneyLabel = mPopupView.findViewById(R.id.tv_money);
+        LinearLayout moneyLayout = mPopupView.findViewById(R.id.ll_money);
+        EditText minMoneyEditText = mPopupView.findViewById(R.id.et_money_min);
+        EditText maxMoneyEditText = mPopupView.findViewById(R.id.et_money_max);
         ExpandableHeightGridView gridViewYear = mPopupView.findViewById(R.id.gv_year);
         ExpandableHeightGridView gridViewMonth = mPopupView.findViewById(R.id.gv_month);
         gridViewYear.setAdapter(mYearFilterAdapter);
         gridViewMonth.setAdapter(mMonthFilterAdapter);
+        mCategoryFilterAdapter = new GridViewFilterAdapter(getContext(),
+                GridViewFilterAdapter.TYPE_CATEGORY);
+        if (mCategories != null) {
+            mGridViewCategory.setAdapter(mCategoryFilterAdapter);
+            mCategoryFilterAdapter.setCategoryList(mCategories);
+        }
         gridViewYear.setExpanded(true);
         gridViewMonth.setExpanded(true);
         mGridViewCategory.setExpanded(true);
 
+        categoryLabel.setVisibility(View.VISIBLE);
+        mGridViewCategory.setVisibility(View.VISIBLE);
+        moneyLabel.setVisibility(View.VISIBLE);
+        moneyLayout.setVisibility(View.VISIBLE);
+        yearLabel.setVisibility(View.VISIBLE);
+        monthLabel.setVisibility(View.VISIBLE);
+        gridViewYear.setVisibility(View.VISIBLE);
+        gridViewMonth.setVisibility(View.VISIBLE);
+
+        switch (filterType) {
+            case MENU_FILTER_DATE:
+                categoryLabel.setVisibility(View.GONE);
+                mGridViewCategory.setVisibility(View.GONE);
+                moneyLabel.setVisibility(View.GONE);
+                moneyLayout.setVisibility(View.GONE);
+                break;
+            case MENU_FILTER_CATEGORY:
+                yearLabel.setVisibility(View.GONE);
+                monthLabel.setVisibility(View.GONE);
+                gridViewYear.setVisibility(View.GONE);
+                gridViewMonth.setVisibility(View.GONE);
+                moneyLabel.setVisibility(View.GONE);
+                moneyLayout.setVisibility(View.GONE);
+                break;
+            case MENU_FILTER_MONEY:
+                yearLabel.setVisibility(View.GONE);
+                monthLabel.setVisibility(View.GONE);
+                gridViewYear.setVisibility(View.GONE);
+                gridViewMonth.setVisibility(View.GONE);
+                categoryLabel.setVisibility(View.GONE);
+                mGridViewCategory.setVisibility(View.GONE);
+                break;
+            case MENU_FILTER_ALL:
+                break;
+        }
+
         final PopupWindow popupWindow = new PopupWindow(mPopupView,
-                ViewGroup.LayoutParams.WRAP_CONTENT,
-                ViewGroup.LayoutParams.WRAP_CONTENT,
+                (int) (mScreenSize.x * 0.8),
+                (int) (mScreenSize.y * 0.8),
                 true);
 
         popupWindow.setBackgroundDrawable(getContext().getDrawable(R.color.white));
@@ -305,9 +380,21 @@ public class TransactionsFragment extends BaseFragment
         AppCompatButton filterButton = mPopupView.findViewById(R.id.btn_filter);
         filterButton.setOnClickListener((View v) -> {
             popupWindow.dismiss();
+            int minMoney;
+            int maxMoney;
+            try {
+                minMoney = Integer.parseInt(minMoneyEditText.getText().toString());
+                maxMoney = Integer.parseInt(maxMoneyEditText.getText().toString());
+            } catch (Exception e) {
+                minMoney = 0;
+                maxMoney = 0;
+                e.printStackTrace();
+            }
             loadTransactions(mYearFilterAdapter.getFilters(),
                     mMonthFilterAdapter.getFilters(),
                     mCategoryFilterAdapter.getFilters(),
+                    minMoney,
+                    maxMoney,
                     false);
         });
 
@@ -315,7 +402,10 @@ public class TransactionsFragment extends BaseFragment
     }
 
     private void loadTransactions(@Nullable String years, @Nullable String months,
-                                  @Nullable String categories, boolean loadMore) {
+                                  @Nullable String categories,
+                                  int minMoney, int maxMoney, boolean loadMore) {
+        mMinMoney = minMoney;
+        mMaxMoney = maxMoney;
         mFilterYears = years;
         mFilterMonths = months;
         mFilterCategories = categories;
@@ -326,7 +416,7 @@ public class TransactionsFragment extends BaseFragment
                 swipeRefreshLayout.setRefreshing(true);
             }
             mTransactionViewModel.load(MyApplication.sUser.getUserId(),
-                    true, years, months, categories);
+                    true, years, months, categories, minMoney, maxMoney);
         }
         mIsLoading = true;
     }

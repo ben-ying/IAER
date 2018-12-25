@@ -36,14 +36,17 @@ public interface Webservice {
     String URL_FUNDS = "funds/";
     String URL_SETTING = "setting/";
 
-    @GET(URL_TRANSACTIONS) // years, months or categories is empty if select all.
+    @GET(URL_TRANSACTIONS)
+        // years, months or categories is empty if select all.
     LiveData<ApiResponse<CustomResponse<ListResponseResult<List<Transaction>>>>> getTransactions(
             @Query("token") String token,
             @Query("user_id") int userId,
             @Query("page") String page,
             @Query("years") String years,
             @Query("months") String months,
-            @Query("categories") String categories);
+            @Query("categories") String categories,
+            @Query("minMoney") int minMoney,
+            @Query("maxMoney") int maxMoney);
 
     @FormUrlEncoded
     @POST(URL_TRANSACTIONS)

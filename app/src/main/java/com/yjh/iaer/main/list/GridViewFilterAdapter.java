@@ -55,6 +55,9 @@ public class GridViewFilterAdapter extends BaseAdapter {
     }
 
     public void setCategoryList(List<Category> categoryList) {
+        if (categoryList == null) {
+            categoryList = new ArrayList<>();
+        }
         mCategories = categoryList;
         for (int i = 1; i < categoryList.size(); i++) {
             mList.add(categoryList.get(i).getName());

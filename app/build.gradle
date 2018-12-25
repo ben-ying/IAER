@@ -82,4 +82,7 @@ dependencies {
     implementation 'com.github.tbruyelle:rxpermissions:0.10.2'
 
     implementation 'org.apache.commons:commons-lang3:3.4'
+
+    // MultiSelectSpinner
+    implementation 'com.github.pratikbutani:MultiSelectSpinner:08d324c98'
 }

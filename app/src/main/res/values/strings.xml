@@ -104,10 +104,17 @@
     <string name="by_year">年份</string>
     <string name="by_month">月份</string>
     <string name="by_category">类别</string>
-    <string name="filter">过滤</string>
+    <string name="by_money">金额</string>
+    <string name="filter">筛选</string>
+    <string name="filter_by_date">按日期筛选</string>
+    <string name="filter_by_category">按类别筛选</string>
+    <string name="filter_by_money">按金额筛选</string>
+    <string name="filter_by_all">综合筛选</string>
     <string name="load_all">已全部加载完</string>
     <string name="income_all_title">已全部加载完</string>
     <string name="expenditure_all_title">已全部加载完</string>
+    <string name="min_money">最低金额</string>
+    <string name="max_money">最高金额</string>
 
     <!--app menu-->
     <string name="others">其它</string>

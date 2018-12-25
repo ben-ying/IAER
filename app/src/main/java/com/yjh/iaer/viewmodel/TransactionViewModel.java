@@ -40,7 +40,8 @@ public class TransactionViewModel extends ViewModel {
             switch (iaerId.type) {
                 case TYPE_LOAD:
                     return mRepository.loadTransactions(iaerId.userId,
-                            iaerId.fetchNetwork, iaerId.years, iaerId.months, iaerId.categories);
+                            iaerId.fetchNetwork, iaerId.years, iaerId.months,
+                            iaerId.categories, iaerId.minMoney, iaerId.maxMoney);
                 case TYPE_LOAD_MORE:
                     return mRepository.loadMoreTransactions(iaerId.userId, iaerId.fetchNetwork);
                 case TYPE_DELETE:
@@ -75,13 +76,16 @@ public class TransactionViewModel extends ViewModel {
     }
 
     public void load(int userId, boolean fetchNetwork,
-                     String years, String months, String categories) {
+                     String years, String months, String categories,
+                     int minMoney, int maxMoney) {
         mReId.type = TYPE_LOAD;
         mReId.userId = userId;
         mReId.fetchNetwork = fetchNetwork;
         mReId.years = years;
         mReId.months = months;
         mReId.categories = categories;
+        mReId.minMoney = minMoney;
+        mReId.maxMoney = maxMoney;
         mIaerIdLiveData.setValue(mReId);
     }
 
@@ -107,5 +111,7 @@ public class TransactionViewModel extends ViewModel {
         String years;
         String months;
         String categories;
+        int minMoney;
+        int maxMoney;
     }
 }
