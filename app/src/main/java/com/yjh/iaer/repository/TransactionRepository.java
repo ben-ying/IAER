@@ -150,8 +150,8 @@ public class TransactionRepository {
                 int minMoney = 0;
                 int maxMoney = 0;
                 try {
-                    minMoney = Integer.valueOf(uri.getQueryParameter("categories"));
-                    maxMoney = Integer.valueOf(uri.getQueryParameter("categories"));
+                    minMoney = Integer.valueOf(uri.getQueryParameter("min_money"));
+                    maxMoney = Integer.valueOf(uri.getQueryParameter("max_money"));
                 } catch (Exception e) {
                     e.printStackTrace();
                 }

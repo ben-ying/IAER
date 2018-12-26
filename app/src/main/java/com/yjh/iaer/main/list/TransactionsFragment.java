@@ -41,6 +41,7 @@ import com.yjh.iaer.viewmodel.CategoryViewModel;
 import com.yjh.iaer.viewmodel.SettingViewModel;
 import com.yjh.iaer.viewmodel.TransactionViewModel;
 
+import java.util.Calendar;
 import java.util.Comparator;
 import java.util.List;
 
@@ -317,6 +318,7 @@ public class TransactionsFragment extends BaseFragment
         ExpandableHeightGridView gridViewMonth = mPopupView.findViewById(R.id.gv_month);
         gridViewYear.setAdapter(mYearFilterAdapter);
         gridViewMonth.setAdapter(mMonthFilterAdapter);
+
         mCategoryFilterAdapter = new GridViewFilterAdapter(getContext(),
                 GridViewFilterAdapter.TYPE_CATEGORY);
         if (mCategories != null) {

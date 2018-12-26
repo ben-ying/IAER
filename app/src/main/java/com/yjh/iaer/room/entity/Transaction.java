@@ -9,6 +9,9 @@ import com.google.gson.Gson;
 import com.google.gson.annotations.SerializedName;
 
 import java.io.Serializable;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Locale;
 
 import static com.yjh.iaer.room.entity.Transaction.TABLE_NAME;
 
@@ -23,7 +26,8 @@ public class Transaction implements Serializable {
     public static final String FIELD_CATEGORY = "category";
     public static final String FIELD_REMARK = "remark";
     public static final String FIELD_CREATED = "created";
-    public static final String FIELD_STATUS = "status"; 
+    public static final String FIELD_CREATED_TIME = "created_time";
+    public static final String FIELD_STATUS = "status";
 
     @PrimaryKey
     @SerializedName(FIELD_IAER_ID)
@@ -47,6 +51,9 @@ public class Transaction implements Serializable {
     @SerializedName(FIELD_CREATED)
     @ColumnInfo(name = FIELD_CREATED)
     private String created;
+    @SerializedName(FIELD_CREATED_TIME)
+    @ColumnInfo(name = FIELD_CREATED_TIME)
+    private long createdTime;
     // 0 for latest, 
     // 1 for added but not uploaded, 
     // -1 for deleted but not uploaded
@@ -176,6 +183,12 @@ public class Transaction implements Serializable {
 
     public void setCreated(String created) {
         this.created = created;
+        try {
+            this.createdTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss",
+                    Locale.getDefault()).parse(created).getTime();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
     }
 
     public int getStatus() {
@@ -193,5 +206,15 @@ public class Transaction implements Serializable {
 
     public boolean isNegative() {
         return getMoneyInt() < 0;
+    }
+
+    public long getCreatedTime() {
+        return createdTime;
+    }
+
+    public void setCreatedTime(long createdTime) {
+        if (createdTime > 0) {
+            this.createdTime = createdTime;
+        }
     }
 }
