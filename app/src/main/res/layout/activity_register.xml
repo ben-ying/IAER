@@ -56,7 +56,7 @@
 
                     <EditText
                         android:id="@+id/et_username"
-                        style="@style/default_edit_text"
+                        style="@style/edit_text"
                         android:hint="@string/username"
                         android:inputType="textCapWords" />
                 </android.support.design.widget.TextInputLayout>
@@ -69,7 +69,7 @@
 
                     <EditText
                         android:id="@+id/et_email"
-                        style="@style/default_edit_text"
+                        style="@style/edit_text"
                         android:hint="@string/email"
                         android:inputType="textEmailAddress" />
                 </android.support.design.widget.TextInputLayout>
@@ -94,7 +94,7 @@
 
                     <EditText
                         android:id="@+id/et_confirm_password"
-                        style="@style/default_edit_text"
+                        style="@style/edit_text"
                         android:hint="@string/confirm_password"
                         android:imeOptions="actionDone"
                         android:inputType="textPassword" />

@@ -51,7 +51,7 @@
         <item name="android:windowSoftInputMode">adjustResize</item>
     </style>
 
-    <style name="default_edit_text">
+    <style name="edit_text">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:textColor">@color/black_text</item>
@@ -60,9 +60,13 @@
         <item name="android:maxLines">1</item>
     </style>
 
-    <style name="default_edit_text.detail">
+    <style name="edit_text.detail">
         <item name="android:textSize">18sp</item>
         <item name="android:layout_marginTop">@dimen/small_margin</item>
+    </style>
+
+    <style name="edit_text.number">
+        <item name="android:inputType">number</item>
     </style>
 
     <style name="grid_view_filter">

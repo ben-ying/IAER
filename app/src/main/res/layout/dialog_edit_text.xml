@@ -9,7 +9,7 @@
 
         <AutoCompleteTextView
             android:id="@+id/et_value"
-            style="@style/default_edit_text"
+            style="@style/edit_text"
             android:hint="@string/email"
             android:maxLines="1"
             android:gravity="bottom"

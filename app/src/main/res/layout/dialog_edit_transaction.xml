@@ -11,7 +11,7 @@
 
         <EditText
             android:id="@+id/et_from"
-            style="@style/default_edit_text"
+            style="@style/edit_text"
             android:enabled="false"
             android:hint="@string/transaction_from" />
     </android.support.design.widget.TextInputLayout>
@@ -22,7 +22,7 @@
 
         <EditText
             android:id="@+id/et_money"
-            style="@style/default_edit_text"
+            style="@style/edit_text"
             android:hint="@string/hint_money"
             android:inputType="number" />
     </android.support.design.widget.TextInputLayout>
@@ -33,7 +33,7 @@
 
         <EditText
             android:id="@+id/et_remark"
-            style="@style/default_edit_text"
+            style="@style/edit_text"
             android:hint="@string/hint_remark" />
     </android.support.design.widget.TextInputLayout>
 

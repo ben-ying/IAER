@@ -25,15 +25,15 @@
 
         <TextView
             android:id="@+id/tv_category"
-            style="@style/default_edit_text.detail" />
+            style="@style/edit_text.detail" />
 
         <TextView
             android:id="@+id/tv_money"
-            style="@style/default_edit_text.detail" />
+            style="@style/edit_text.detail" />
 
         <TextView
             android:id="@+id/tv_remark"
-            style="@style/default_edit_text.detail" />
+            style="@style/edit_text.detail" />
 
     </LinearLayout>
 
