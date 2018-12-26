@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
     <android.support.design.widget.TextInputLayout
-        style="@style/default_input_layout">
+        style="@style/input_layout">
 
         <AutoCompleteTextView
             android:id="@+id/et_value"

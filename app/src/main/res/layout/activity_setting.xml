@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true" >
+
+    <include layout="@layout/appbar" />
+
+    <LinearLayout
+        android:layout_below="@+id/appbar"
+        android:layout_margin="@dimen/activity_vertical_margin"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" >
+
+        <TextView
+            android:id="@+id/tv_statistics"
+            style="@style/setting_label"
+            android:text="@string/home_statistics_label"/>
+
+        <Switch
+            android:id="@+id/switch_current"
+            style="@style/home_setting_switch"
+            android:text="@string/show_current" />
+
+        <Switch
+            android:id="@+id/switch_this_month"
+            style="@style/home_setting_switch"
+            android:text="@string/show_this_month" />
+
+        <Switch
+            android:id="@+id/switch_this_year"
+            style="@style/home_setting_switch"
+            android:text="@string/show_this_year" />
+
+        <TextView
+            android:id="@+id/tv_fund"
+            style="@style/setting_label"
+            android:layout_marginTop="@dimen/activity_vertical_margin"
+            android:text="@string/fund_label"/>
+
+        <android.support.design.widget.TextInputLayout
+            android:id="@+id/monthly_fund_layout"
+            style="@style/input_layout.setting">
+
+            <EditText
+                android:id="@+id/et_monthly_fund"
+                style="@style/default_edit_text"
+                android:hint="@string/monthly_money" />
+        </android.support.design.widget.TextInputLayout>
+
+        <android.support.design.widget.TextInputLayout
+            android:id="@+id/yearly_fund_layout"
+            style="@style/input_layout.setting">
+
+            <EditText
+                android:id="@+id/et_yearly_fund"
+                style="@style/default_edit_text"
+                android:hint="@string/yearly_money" />
+        </android.support.design.widget.TextInputLayout>
+    </LinearLayout>
+
+    <include layout="@layout/progress" />
+</RelativeLayout>

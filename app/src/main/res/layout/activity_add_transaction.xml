@@ -27,7 +27,7 @@
             android:layout_height="wrap_content" />
 
         <android.support.design.widget.TextInputLayout
-            style="@style/default_input_layout"
+            style="@style/input_layout"
             android:layout_marginTop="@dimen/small_margin">
 
             <EditText
@@ -38,7 +38,7 @@
         </android.support.design.widget.TextInputLayout>
 
         <android.support.design.widget.TextInputLayout
-            style="@style/default_input_layout"
+            style="@style/input_layout"
             android:layout_marginTop="@dimen/small_margin">
 
             <EditText

@@ -11,9 +11,6 @@ import android.widget.TextView;
 
 import com.yjh.iaer.R;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -21,12 +18,11 @@ public class SettingAdapter extends RecyclerView.Adapter<
         SettingAdapter.SettingViewHolder> {
 
     private Context mContext;
-    private List<String> mList;
+    private String[] mList;
 
     SettingAdapter(Context context) {
         this.mContext = context;
-        this.mList = new ArrayList<>();
-        this.mList.add(context.getString(R.string.home_setting));
+        this.mList = context.getResources().getStringArray(R.array.setting_options);
     }
 
     @NonNull
@@ -39,11 +35,14 @@ public class SettingAdapter extends RecyclerView.Adapter<
 
     @Override
     public void onBindViewHolder(@NonNull SettingViewHolder holder, final int position) {
-        holder.nameTextView.setText(mList.get(position));
+        holder.nameTextView.setText(mList[position]);
         holder.item.setOnClickListener((View v) -> {
             switch (position) {
                 case 0:
-                    mContext.startActivity(new Intent(mContext, HomeSettingActivity.class));
+                    mContext.startActivity(new Intent(mContext, SettingActivity.class));
+                    break;
+                case 1:
+                    mContext.startActivity(new Intent(mContext, SettingActivity.class));
                     break;
             }
         });
@@ -51,7 +50,7 @@ public class SettingAdapter extends RecyclerView.Adapter<
 
     @Override
     public int getItemCount() {
-        return mList.size();
+        return mList.length;
     }
 
     class SettingViewHolder extends RecyclerView.ViewHolder {

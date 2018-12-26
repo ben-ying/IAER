@@ -117,5 +117,7 @@ public interface Webservice {
             @Field("token") String token,
             @Field("home_show_current") int homeShowCurrent,
             @Field("home_show_this_month") int homeShowThisMonth,
-            @Field("home_show_this_year") int homeShowThisYear);
+            @Field("home_show_this_year") int homeShowThisYear,
+            @Field("monthly_fund") int monthlyFund,
+            @Field("yearly_fund") int yearlyFund);
 }

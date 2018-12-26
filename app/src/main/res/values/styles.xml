@@ -35,10 +35,16 @@
         <item name="android:textSize">20sp</item>
     </style>
 
-    <style name="default_input_layout">
+    <style name="input_layout">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:textColorHint">@color/hint_disabled_black_text</item>
+    </style>
+
+    <style name="input_layout.setting">
+        <item name="android:layout_marginStart">@dimen/button_margin_vertical</item>
+        <item name="android:layout_marginEnd">@dimen/button_margin_vertical</item>
+        <item name="android:layout_marginTop">@dimen/small_margin</item>
     </style>
 
     <style name="MyDialogTheme" parent="@android:style/Theme.DeviceDefault.Light.Dialog.NoActionBar.MinWidth">
@@ -90,5 +96,12 @@
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:titleMarginTop">56dp</item>
+    </style>
+
+    <style name="setting_label">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textColor">@color/black_text</item>
+        <item name="android:textSize">@dimen/label_text_size</item>
     </style>
 </resources>

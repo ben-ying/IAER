@@ -20,6 +20,8 @@ public class Setting implements Serializable {
     public static final String FIELD_HOME_SHOW_CURRENT = "home_show_current";
     public static final String FIELD_HOME_SHOW_THIS_MONTH = "home_show_this_month";
     public static final String FIELD_HOME_SHOW_THIS_YEAR = "home_show_this_year";
+    public static final String FIELD_MONTHLY_FUND = "monthly_fund";
+    public static final String FIELD_YEARLY_FUND = "yearly_fund";
     public static final String FIELD_CREATED = "created";
     public static final String FIELD_MODIFIED = "modified";
 
@@ -39,6 +41,12 @@ public class Setting implements Serializable {
     @SerializedName(FIELD_HOME_SHOW_THIS_YEAR)
     @ColumnInfo(name = FIELD_HOME_SHOW_THIS_YEAR)
     private boolean homeShowThisYear;
+    @SerializedName(FIELD_MONTHLY_FUND)
+    @ColumnInfo(name = FIELD_MONTHLY_FUND)
+    private int monthlyFund;
+    @SerializedName(FIELD_YEARLY_FUND)
+    @ColumnInfo(name = FIELD_YEARLY_FUND)
+    private int yearlyFund;
     @SerializedName(FIELD_CREATED)
     @ColumnInfo(name = FIELD_CREATED)
     private String created;
@@ -84,6 +92,22 @@ public class Setting implements Serializable {
 
     public void setHomeShowThisYear(boolean homeShowThisYear) {
         this.homeShowThisYear = homeShowThisYear;
+    }
+
+    public int getMonthlyFund() {
+        return monthlyFund;
+    }
+
+    public void setMonthlyFund(int monthlyFund) {
+        this.monthlyFund = monthlyFund;
+    }
+
+    public int getYearlyFund() {
+        return yearlyFund;
+    }
+
+    public void setYearlyFund(int yearlyFund) {
+        this.yearlyFund = yearlyFund;
     }
 
     public String getCreated() {

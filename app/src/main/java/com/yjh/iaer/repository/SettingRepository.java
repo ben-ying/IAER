@@ -98,7 +98,9 @@ public class SettingRepository {
                 return mWebservice.updateSetting(token,
                         (setting.isHomeShowCurrent() ? 1 : 0),
                         (setting.isHomeShowThisMonth() ? 1 : 0),
-                        (setting.isHomeShowThisYear()) ? 1 : 0);
+                        (setting.isHomeShowThisYear() ? 1 : 0),
+                        setting.getMonthlyFund(),
+                        setting.getYearlyFund());
             }
 
             @Override

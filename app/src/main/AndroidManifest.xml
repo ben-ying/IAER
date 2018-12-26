@@ -31,7 +31,7 @@
         <activity android:name=".main.chart.ChartActivity" />
         <activity android:name=".nav.SwitchAccountActivity" />
         <activity android:name=".nav.SettingItemsActivity" />
-        <activity android:name=".nav.HomeSettingActivity" />
+        <activity android:name=".nav.SettingActivity" />
         <activity android:name=".login.RegisterActivity" />
         <activity android:name=".login.ResetPasswordActivity" />
 

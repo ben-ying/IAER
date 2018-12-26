@@ -76,11 +76,17 @@
     <string name="surplus">结余：%s</string>
     <string name="category">来自：%s</string>
     <string name="remark">备注：%s</string>
-    <string name="home_setting">首页设置</string>
-    <string name="statistics_label">显示统计</string>
+
+    <!--home-->
+    <string name="home_statistics_label">首页统计</string>
     <string name="show_current">显示当前</string>
     <string name="show_this_month">显示本月</string>
     <string name="show_this_year">显示今年</string>
+    <!--fund-->
+    <string name="fund_label">额度设置</string>
+    <string name="monthly_money">每月额度</string>
+    <string name="yearly_money">每年额度</string>
+
 
     <string name="list">列表</string>
     <string name="chart">统计</string>
