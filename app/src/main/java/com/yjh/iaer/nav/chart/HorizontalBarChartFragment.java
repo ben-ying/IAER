@@ -1,7 +1,6 @@
-package com.yjh.iaer.main.chart;
+package com.yjh.iaer.nav.chart;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -18,8 +17,6 @@ import com.github.mikephil.charting.highlight.Highlight;
 import com.github.mikephil.charting.interfaces.datasets.IBarDataSet;
 import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
 import com.yjh.iaer.R;
-import com.yjh.iaer.custom.MyMarkerView;
-import com.yjh.iaer.main.list.TransactionsFragment;
 import com.yjh.iaer.model.StatisticsDate;
 import com.yjh.iaer.room.entity.Category;
 

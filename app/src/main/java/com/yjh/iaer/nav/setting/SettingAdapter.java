@@ -1,4 +1,4 @@
-package com.yjh.iaer.nav;
+package com.yjh.iaer.nav.setting;
 
 import android.content.Context;
 import android.content.Intent;

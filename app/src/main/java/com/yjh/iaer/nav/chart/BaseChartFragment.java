@@ -1,4 +1,4 @@
-package com.yjh.iaer.main.chart;
+package com.yjh.iaer.nav.chart;
 
 import android.arch.lifecycle.ViewModelProvider;
 import android.arch.lifecycle.ViewModelProviders;
@@ -16,7 +16,6 @@ import com.yjh.iaer.model.StatisticsDate;
 import com.yjh.iaer.network.Resource;
 import com.yjh.iaer.network.Status;
 import com.yjh.iaer.room.entity.Category;
-import com.yjh.iaer.room.entity.Transaction;
 import com.yjh.iaer.util.CategoryComparator;
 import com.yjh.iaer.viewmodel.CategoryViewModel;
 

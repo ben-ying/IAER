@@ -158,6 +158,29 @@ public class TransactionAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
                 if (!mSetting.isHomeShowThisYear()) {
                     viewHolder.thisYearLayout.setVisibility(View.GONE);
                 }
+                if (mResult != null) {
+                    if (mSetting.getMonthlyFund() != 0) {
+                        float monthlyPercentage = (float) mResult.getThisMonthExpenditure() / mSetting.getMonthlyFund();
+                        if (monthlyPercentage >= 1) {
+                            viewHolder.thisMonthExpenditureTextView.setTextColor(mContext.getColor(R.color.google_red));
+                        } else if (monthlyPercentage >= 0.8) {
+                            viewHolder.thisMonthExpenditureTextView.setTextColor(mContext.getColor(R.color.google_yellow));
+                        } else {
+                            viewHolder.thisMonthExpenditureTextView.setTextColor(mContext.getColor(R.color.google_green));
+                        }
+                    }
+
+                    if (mSetting.getYearlyFund() != 0) {
+                        float yearlyPercentage = (float) mResult.getThisYearExpenditure() / mSetting.getYearlyFund();
+                        if (yearlyPercentage >= 1) {
+                            viewHolder.thisYearExpenditureTextView.setTextColor(mContext.getColor(R.color.google_red));
+                        } else if (yearlyPercentage >= 0.8) {
+                            viewHolder.thisYearExpenditureTextView.setTextColor(mContext.getColor(R.color.google_yellow));
+                        } else {
+                            viewHolder.thisYearExpenditureTextView.setTextColor(mContext.getColor(R.color.google_green));
+                        }
+                    }
+                }
             }
         } else {
             // todo

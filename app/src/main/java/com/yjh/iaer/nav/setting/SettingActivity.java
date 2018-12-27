@@ -1,4 +1,4 @@
-package com.yjh.iaer.nav;
+package com.yjh.iaer.nav.setting;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -115,6 +115,8 @@ public class SettingActivity extends BaseActivity
                 dialog.setCancelable(true);
                 dialog.show();
             }
+        } else {
+            super.onBackPressed();
         }
     }
 

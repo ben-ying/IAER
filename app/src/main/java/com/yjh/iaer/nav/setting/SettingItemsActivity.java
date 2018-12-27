@@ -1,4 +1,4 @@
-package com.yjh.iaer.nav;
+package com.yjh.iaer.nav.setting;
 
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;

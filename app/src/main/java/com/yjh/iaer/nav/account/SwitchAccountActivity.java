@@ -1,4 +1,4 @@
-package com.yjh.iaer.nav;
+package com.yjh.iaer.nav.account;
 
 import android.arch.lifecycle.ViewModelProvider;
 import android.arch.lifecycle.ViewModelProviders;
@@ -17,7 +17,6 @@ import com.yjh.iaer.login.LoginActivity;
 import com.yjh.iaer.main.MainActivity;
 import com.yjh.iaer.network.Status;
 import com.yjh.iaer.room.entity.User;
-import com.yjh.iaer.util.MD5Utils;
 import com.yjh.iaer.viewmodel.UserViewModel;
 
 import java.util.List;

@@ -1,4 +1,4 @@
-package com.yjh.iaer.main.chart;
+package com.yjh.iaer.nav.chart;
 
 import android.arch.lifecycle.ViewModelProvider;
 import android.arch.lifecycle.ViewModelProviders;

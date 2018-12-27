@@ -5,7 +5,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 
 import com.yjh.iaer.R;
-import com.yjh.iaer.main.chart.BaseChartFragment;
+import com.yjh.iaer.nav.chart.BaseChartFragment;
 
 import java.util.List;
 

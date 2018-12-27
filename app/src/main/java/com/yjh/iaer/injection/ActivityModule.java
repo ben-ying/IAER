@@ -4,12 +4,12 @@ import com.yjh.iaer.login.LoginActivity;
 import com.yjh.iaer.login.RegisterActivity;
 import com.yjh.iaer.login.ResetPasswordActivity;
 import com.yjh.iaer.main.MainActivity;
-import com.yjh.iaer.main.chart.ChartActivity;
+import com.yjh.iaer.nav.chart.ChartActivity;
 import com.yjh.iaer.main.list.AddTransactionActivity;
 import com.yjh.iaer.main.list.TransactionDetailActivity;
-import com.yjh.iaer.nav.SettingActivity;
-import com.yjh.iaer.nav.SettingItemsActivity;
-import com.yjh.iaer.nav.SwitchAccountActivity;
+import com.yjh.iaer.nav.setting.SettingActivity;
+import com.yjh.iaer.nav.setting.SettingItemsActivity;
+import com.yjh.iaer.nav.account.SwitchAccountActivity;
 
 import dagger.Module;
 import dagger.android.ContributesAndroidInjector;

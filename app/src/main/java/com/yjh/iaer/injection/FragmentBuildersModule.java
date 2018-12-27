@@ -1,7 +1,7 @@
 package com.yjh.iaer.injection;
 
-import com.yjh.iaer.main.chart.HorizontalBarChartFragment;
-import com.yjh.iaer.main.chart.PieChartFragment;
+import com.yjh.iaer.nav.chart.HorizontalBarChartFragment;
+import com.yjh.iaer.nav.chart.PieChartFragment;
 import com.yjh.iaer.main.list.TransactionsFragment;
 
 import dagger.Module;

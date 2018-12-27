@@ -28,10 +28,10 @@
             android:label="@string/app_name"/>
         <activity android:name=".main.list.AddTransactionActivity" />
         <activity android:name=".main.list.TransactionDetailActivity" />
-        <activity android:name=".main.chart.ChartActivity" />
-        <activity android:name=".nav.SwitchAccountActivity" />
-        <activity android:name=".nav.SettingItemsActivity" />
-        <activity android:name=".nav.SettingActivity" />
+        <activity android:name=".nav.chart.ChartActivity" />
+        <activity android:name=".nav.account.SwitchAccountActivity" />
+        <activity android:name=".nav.setting.SettingItemsActivity" />
+        <activity android:name=".nav.setting.SettingActivity" />
         <activity android:name=".login.RegisterActivity" />
         <activity android:name=".login.ResetPasswordActivity" />
 

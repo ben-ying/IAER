@@ -1,7 +1,6 @@
-package com.yjh.iaer.nav;
+package com.yjh.iaer.nav.account;
 
 import android.content.Context;
-import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,11 +13,6 @@ import com.bumptech.glide.signature.ObjectKey;
 import com.yjh.iaer.GlideApp;
 import com.yjh.iaer.MyApplication;
 import com.yjh.iaer.R;
-import com.yjh.iaer.constant.Constant;
-import com.yjh.iaer.login.LoginActivity;
-import com.yjh.iaer.main.MainActivity;
-import com.yjh.iaer.main.list.TransactionDetailActivity;
-import com.yjh.iaer.room.entity.Transaction;
 import com.yjh.iaer.room.entity.User;
 import com.yjh.iaer.util.AlertUtils;
 
