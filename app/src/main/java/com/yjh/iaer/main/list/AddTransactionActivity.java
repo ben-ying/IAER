@@ -1,8 +1,8 @@
 package com.yjh.iaer.main.list;
 
-import android.arch.lifecycle.ViewModelProvider;
-import android.arch.lifecycle.ViewModelProviders;
-import android.support.annotation.Nullable;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.lifecycle.ViewModelProviders;
+import androidx.annotation.Nullable;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -13,10 +13,9 @@ import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.Spinner;
 
-import com.jakewharton.rxbinding2.widget.RxTextView;
+import com.jakewharton.rxbinding3.widget.RxTextView;
 import com.yjh.iaer.R;
 import com.yjh.iaer.base.BaseActivity;
-import com.yjh.iaer.constant.Constant;
 import com.yjh.iaer.network.Resource;
 import com.yjh.iaer.network.Status;
 import com.yjh.iaer.room.entity.Category;

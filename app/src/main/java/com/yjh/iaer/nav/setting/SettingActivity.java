@@ -1,15 +1,12 @@
 package com.yjh.iaer.nav.setting;
 
-import android.app.Activity;
 import android.app.AlertDialog;
-import android.arch.lifecycle.ViewModelProvider;
-import android.arch.lifecycle.ViewModelProviders;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.lifecycle.ViewModelProviders;
 import android.content.DialogInterface;
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
-import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -18,7 +15,6 @@ import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.Switch;
-import android.widget.TextView;
 
 import com.yjh.iaer.MyApplication;
 import com.yjh.iaer.R;
@@ -26,7 +22,6 @@ import com.yjh.iaer.base.BaseActivity;
 import com.yjh.iaer.network.Resource;
 import com.yjh.iaer.network.Status;
 import com.yjh.iaer.room.entity.Setting;
-import com.yjh.iaer.util.AlertUtils;
 import com.yjh.iaer.viewmodel.SettingViewModel;
 
 import javax.inject.Inject;

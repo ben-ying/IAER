@@ -1,14 +1,13 @@
 package com.yjh.iaer.login;
 
-import android.Manifest;
 import android.app.AlertDialog;
-import android.arch.lifecycle.ViewModelProvider;
-import android.arch.lifecycle.ViewModelProviders;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.lifecycle.ViewModelProviders;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.support.v4.app.ActivityCompat;
-import android.support.v7.widget.AppCompatButton;
+import androidx.core.app.ActivityCompat;
+import androidx.appcompat.widget.AppCompatButton;
 import android.text.InputType;
 import android.util.Log;
 import android.util.Patterns;
@@ -19,9 +18,9 @@ import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
-import com.tbruyelle.rxpermissions2.RxPermissions;
 import com.yjh.iaer.MyApplication;
 import com.yjh.iaer.R;
 import com.yjh.iaer.base.BaseActivity;
@@ -30,7 +29,6 @@ import com.yjh.iaer.main.MainActivity;
 import com.yjh.iaer.network.Status;
 import com.yjh.iaer.room.entity.User;
 import com.yjh.iaer.util.AlertUtils;
-import com.yjh.iaer.util.MD5Utils;
 import com.yjh.iaer.util.SystemUtils;
 import com.yjh.iaer.viewmodel.UserViewModel;
 
@@ -41,7 +39,6 @@ import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.OnClick;
-import io.reactivex.disposables.Disposable;
 
 public class LoginActivity extends BaseActivity {
 
@@ -55,6 +52,8 @@ public class LoginActivity extends BaseActivity {
     AppCompatButton loginButton;
     @BindView(R.id.progress_bar)
     ProgressBar progressBar;
+    @BindView(R.id.rl_login)
+    RelativeLayout loginRelativeLayout;
 
     private String mUsername;
     private String mPassword;
@@ -75,6 +74,7 @@ public class LoginActivity extends BaseActivity {
         mPassword = getIntent().getStringExtra(Constant.PASSWORD);
         mViewModel = ViewModelProviders.of(
                 this, viewModelFactory).get(UserViewModel.class);
+        loginRelativeLayout.setVisibility(View.GONE);
         mViewModel.loadAllUsers().observe(this, listResource -> {
             if (listResource != null && listResource.getData() != null
                     && listResource.getData().size() > 0) {
@@ -86,7 +86,7 @@ public class LoginActivity extends BaseActivity {
                         Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                         startActivity(intent);
                         finish();
-                        break;
+                        return;
                     }
                 }
 
@@ -104,6 +104,10 @@ public class LoginActivity extends BaseActivity {
                     passwordEditText.requestFocus();
                     SystemUtils.showKeyboard(LoginActivity.this, passwordEditText);
                 });
+            }
+
+            if (listResource == null || listResource.getStatus() != Status.LOADING) {
+                loginRelativeLayout.setVisibility(View.VISIBLE);
             }
         });
     }

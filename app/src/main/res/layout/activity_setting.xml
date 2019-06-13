@@ -40,7 +40,7 @@
             android:layout_marginTop="@dimen/activity_vertical_margin"
             android:text="@string/fund_label"/>
 
-        <android.support.design.widget.TextInputLayout
+        <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/monthly_fund_layout"
             style="@style/input_layout.setting">
 
@@ -48,9 +48,9 @@
                 android:id="@+id/et_monthly_fund"
                 style="@style/edit_text.number"
                 android:hint="@string/monthly_money" />
-        </android.support.design.widget.TextInputLayout>
+        </com.google.android.material.textfield.TextInputLayout>
 
-        <android.support.design.widget.TextInputLayout
+        <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/yearly_fund_layout"
             style="@style/input_layout.setting">
 
@@ -58,7 +58,7 @@
                 android:id="@+id/et_yearly_fund"
                 style="@style/edit_text.number"
                 android:hint="@string/yearly_money" />
-        </android.support.design.widget.TextInputLayout>
+        </com.google.android.material.textfield.TextInputLayout>
     </LinearLayout>
 
     <include layout="@layout/progress" />

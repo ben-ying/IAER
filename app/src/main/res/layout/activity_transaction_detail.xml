@@ -37,7 +37,7 @@
 
     </LinearLayout>
 
-    <android.support.v7.widget.AppCompatButton
+    <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/btn_delete"
         style="@style/default_bottom_button"
         android:layout_marginStart="@dimen/button_margin_vertical"

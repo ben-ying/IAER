@@ -1,11 +1,11 @@
 package com.yjh.iaer.nav.account;
 
-import android.arch.lifecycle.ViewModelProvider;
-import android.arch.lifecycle.ViewModelProviders;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.lifecycle.ViewModelProviders;
 import android.content.Intent;
-import android.support.design.widget.FloatingActionButton;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import android.view.View;
 import android.widget.ProgressBar;
 
@@ -19,6 +19,7 @@ import com.yjh.iaer.network.Status;
 import com.yjh.iaer.room.entity.User;
 import com.yjh.iaer.viewmodel.UserViewModel;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -64,7 +65,12 @@ public class SwitchAccountActivity extends BaseActivity
             if (listResource != null && listResource.getData() != null
                     && listResource.getData().size() > 0) {
                 progressBar.setVisibility(View.GONE);
-                mUsers = listResource.getData();
+                mUsers = new ArrayList<>();
+                for (User user : listResource.getData()) {
+                    if (user.isInHistory()) {
+                        mUsers.add(user);
+                    }
+                }
                 mAccountAdapter = new AccountAdapter(this, mUsers, this);
                 recyclerView.setAdapter(mAccountAdapter);
             }
@@ -94,7 +100,7 @@ public class SwitchAccountActivity extends BaseActivity
 
     @Override
     public void deleteUser(User user) {
-        mViewModel.deleteUserHistory(user);
+        mViewModel.deleteUserHistory(user.getUserId());
         mUsers.remove(user);
         mAccountAdapter.setUsers(mUsers);
     }

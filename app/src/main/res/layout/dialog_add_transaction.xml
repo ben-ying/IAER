@@ -4,7 +4,7 @@
     android:padding="@dimen/text_padding"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
-    <android.support.design.widget.TextInputLayout
+    <com.google.android.material.textfield.TextInputLayout
         style="@style/input_layout">
 
         <EditText
@@ -16,9 +16,9 @@
             android:inputType="text"
             android:gravity="bottom"
             android:imeOptions="actionNext" />
-    </android.support.design.widget.TextInputLayout>
+    </com.google.android.material.textfield.TextInputLayout>
 
-    <android.support.design.widget.TextInputLayout
+    <com.google.android.material.textfield.TextInputLayout
         style="@style/input_layout">
 
         <EditText
@@ -30,9 +30,9 @@
             android:maxLines="1"
             android:inputType="number"
             android:imeOptions="actionNext" />
-    </android.support.design.widget.TextInputLayout>
+    </com.google.android.material.textfield.TextInputLayout>
 
-    <android.support.design.widget.TextInputLayout
+    <com.google.android.material.textfield.TextInputLayout
         style="@style/input_layout">
 
         <AutoCompleteTextView
@@ -44,5 +44,5 @@
             android:inputType="text"
             android:maxLines="1"
             android:imeOptions="actionDone" />
-    </android.support.design.widget.TextInputLayout>
+    </com.google.android.material.textfield.TextInputLayout>
 </LinearLayout>

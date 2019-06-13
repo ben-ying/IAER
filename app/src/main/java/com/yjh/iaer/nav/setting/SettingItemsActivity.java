@@ -1,7 +1,7 @@
 package com.yjh.iaer.nav.setting;
 
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.yjh.iaer.R;
 import com.yjh.iaer.base.BaseActivity;

@@ -1,7 +1,7 @@
 package com.yjh.iaer.network;
 
 
-import android.arch.lifecycle.LiveData;
+import androidx.lifecycle.LiveData;
 
 import com.yjh.iaer.model.CustomResponse;
 import com.yjh.iaer.model.ListResponseResult;
@@ -14,7 +14,6 @@ import com.yjh.iaer.room.entity.User;
 
 import java.util.List;
 
-import io.reactivex.Observable;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;

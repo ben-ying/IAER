@@ -1,16 +1,16 @@
 package com.yjh.iaer.room.dao;
 
-import android.arch.lifecycle.LiveData;
-import android.arch.persistence.room.Dao;
-import android.arch.persistence.room.Delete;
-import android.arch.persistence.room.Insert;
-import android.arch.persistence.room.Query;
+import androidx.lifecycle.LiveData;
+import androidx.room.Dao;
+import androidx.room.Delete;
+import androidx.room.Insert;
+import androidx.room.Query;
 
 import com.yjh.iaer.room.entity.User;
 
 import java.util.List;
 
-import static android.arch.persistence.room.OnConflictStrategy.REPLACE;
+import static androidx.room.OnConflictStrategy.REPLACE;
 
 @Dao
 public interface UserDao {
@@ -22,6 +22,14 @@ public interface UserDao {
 
     @Query("DELETE FROM " + User.TABLE_NAME)
     void deleteAll();
+
+    @Query("UPDATE " + User.TABLE_NAME + " SET " + User.FIELD_IS_LOGIN + " = 0" +
+            " WHERE " + User.FIELD_USER_ID + " = :userId")
+    void logout(int userId);
+
+    @Query("UPDATE " + User.TABLE_NAME + " SET " + User.FIELD_IS_IN_HISTORY + " = 0" +
+            " WHERE " + User.FIELD_USER_ID + " = :userId")
+    void clearHistory(int userId);
 
     @Query("SELECT * FROM " + User.TABLE_NAME + " WHERE "
             + User.FIELD_IS_LOGIN + " = 1 LIMIT 1")

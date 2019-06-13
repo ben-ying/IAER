@@ -1,9 +1,9 @@
 package com.yjh.iaer.repository;
 
 
-import android.arch.lifecycle.LiveData;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
+import androidx.lifecycle.LiveData;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import com.yjh.iaer.MyApplication;
 import com.yjh.iaer.model.CustomResponse;
@@ -12,8 +12,6 @@ import com.yjh.iaer.network.NetworkBoundResource;
 import com.yjh.iaer.network.Resource;
 import com.yjh.iaer.network.Webservice;
 import com.yjh.iaer.room.dao.UserDao;
-import com.yjh.iaer.room.entity.Category;
-import com.yjh.iaer.room.entity.Fund;
 import com.yjh.iaer.room.entity.User;
 import com.yjh.iaer.util.MD5Utils;
 import com.yjh.iaer.util.RateLimiter;
@@ -140,7 +138,7 @@ public class UserRepository {
             @Override
             protected LiveData<User> loadFromDb() {
                 LiveData<User> userLiveData = mUserDao.getCurrentUser();
-                deleteUserHistory(MyApplication.sUser);
+                logout(MyApplication.sUser.getUserId());
                 MyApplication.sUser = null;
                 return userLiveData;
             }
@@ -201,9 +199,15 @@ public class UserRepository {
         }.getAsLiveData();
     }
 
-    public void deleteUserHistory(User user) {
+    public void logout(int userId) {
         new Thread(() -> {
-            mUserDao.delete(user);
+            mUserDao.logout(userId);
+        }).start();
+    }
+
+    public void deleteUserHistory(int UserId) {
+        new Thread(() -> {
+            mUserDao.clearHistory(UserId);
         }).start();
     }
 
@@ -246,8 +250,10 @@ public class UserRepository {
 
     private void saveUser(User user) {
         user.setLogin(true);
+        user.setInHistory(true);
         if (MyApplication.sUser != null) {
             MyApplication.sUser.setLogin(false);
+            MyApplication.sUser.setInHistory(true);
             mUserDao.save(MyApplication.sUser);
         }
         MyApplication.sUser = user;

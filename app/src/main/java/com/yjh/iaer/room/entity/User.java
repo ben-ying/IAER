@@ -1,8 +1,8 @@
 package com.yjh.iaer.room.entity;
 
-import android.arch.persistence.room.ColumnInfo;
-import android.arch.persistence.room.Entity;
-import android.arch.persistence.room.PrimaryKey;
+import androidx.room.ColumnInfo;
+import androidx.room.Entity;
+import androidx.room.PrimaryKey;
 
 import com.google.gson.annotations.SerializedName;
 
@@ -28,6 +28,7 @@ public class User implements Serializable {
     public static final String FIELD_HIGHLIGHTED = "highlighted";
     public static final String FIELD_TOKEN = "token";
     public static final String FIELD_IS_LOGIN = "is_login";
+    public static final String FIELD_IS_IN_HISTORY = "is_in_history";
     public static final String FIELD_MODIFIED = "modified";
     public static final String FIELD_CREATED = "created";
 
@@ -77,6 +78,9 @@ public class User implements Serializable {
     @SerializedName(FIELD_IS_LOGIN)
     @ColumnInfo(name = FIELD_IS_LOGIN)
     boolean isLogin;
+    @SerializedName(FIELD_IS_IN_HISTORY)
+    @ColumnInfo(name = FIELD_IS_IN_HISTORY)
+    boolean isInHistory;
     @SerializedName(FIELD_MODIFIED)
     @ColumnInfo(name = FIELD_MODIFIED)
     String modified;
@@ -202,6 +206,14 @@ public class User implements Serializable {
 
     public void setLogin(boolean login) {
         isLogin = login;
+    }
+
+    public boolean isInHistory() {
+        return isInHistory;
+    }
+
+    public void setInHistory(boolean inHistory) {
+        isInHistory = inHistory;
     }
 
     public String getModified() {

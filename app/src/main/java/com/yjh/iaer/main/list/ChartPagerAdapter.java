@@ -1,8 +1,8 @@
 package com.yjh.iaer.main.list;
 
 import android.content.Context;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentStatePagerAdapter;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentStatePagerAdapter;
 
 import com.yjh.iaer.R;
 import com.yjh.iaer.nav.chart.BaseChartFragment;

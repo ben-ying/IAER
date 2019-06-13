@@ -1,9 +1,8 @@
 package com.yjh.iaer.injection;
 
-import android.arch.lifecycle.ViewModel;
-import android.arch.lifecycle.ViewModelProvider;
+import androidx.lifecycle.ViewModel;
+import androidx.lifecycle.ViewModelProvider;
 
-import com.yjh.iaer.room.entity.User;
 import com.yjh.iaer.viewmodel.CategoryViewModel;
 import com.yjh.iaer.viewmodel.FundViewModel;
 import com.yjh.iaer.viewmodel.SettingViewModel;

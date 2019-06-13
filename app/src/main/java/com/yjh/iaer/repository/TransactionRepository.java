@@ -1,10 +1,10 @@
 package com.yjh.iaer.repository;
 
 
-import android.arch.lifecycle.LiveData;
+import androidx.lifecycle.LiveData;
 import android.net.Uri;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import com.yjh.iaer.MyApplication;
 import com.yjh.iaer.model.CustomResponse;

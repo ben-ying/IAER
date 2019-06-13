@@ -86,7 +86,7 @@
         </RelativeLayout>
     </ScrollView>
 
-    <android.support.v7.widget.AppCompatButton
+    <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/btn_filter"
         style="@style/default_bottom_button"
         android:layout_marginBottom="0dp"

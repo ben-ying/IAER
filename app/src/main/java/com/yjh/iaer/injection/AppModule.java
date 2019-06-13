@@ -1,7 +1,7 @@
 package com.yjh.iaer.injection;
 
 import android.app.Application;
-import android.arch.persistence.room.Room;
+import androidx.room.Room;
 
 import com.yjh.iaer.network.Webservice;
 import com.yjh.iaer.room.dao.CategoryDao;
