@@ -239,7 +239,7 @@ public class TransactionsFragment extends BaseFragment
     }
 
     private void setSetting(@Nullable Resource<Setting> listResource) {
-        if (listResource.getStatus() == Status.SUCCESS) {
+        if (listResource.getStatus() == Status.SUCCESS && listResource.getData() != null) {
             mAdapter.setSetting(listResource.getData());
         }
     }
