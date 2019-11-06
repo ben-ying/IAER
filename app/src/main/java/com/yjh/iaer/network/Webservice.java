@@ -52,6 +52,7 @@ public interface Webservice {
     LiveData<ApiResponse<CustomResponse<Transaction>>> addTransaction(
             @Field("category") String category,
             @Field("money") String money,
+            @Field("date") String date,
             @Field("remark") String remark,
             @Field("token") String token);
 

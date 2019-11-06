@@ -174,6 +174,7 @@ public class TransactionRepository {
 
     public LiveData<Resource<Transaction>> addTransaction(final String category,
                                                                 final String money,
+                                                                final String date,
                                                                 final String remark) {
         return new NetworkBoundResource<Transaction, CustomResponse<Transaction>>() {
 
@@ -202,7 +203,8 @@ public class TransactionRepository {
             @Nullable
             @Override
             protected LiveData<ApiResponse<CustomResponse<Transaction>>> createCall() {
-                return mWebservice.addTransaction(category, money, remark, MyApplication.sUser.getToken());
+                return mWebservice.addTransaction(category, money, date,
+                        remark, MyApplication.sUser.getToken());
             }
 
             @Override

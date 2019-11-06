@@ -128,7 +128,7 @@ public class TransactionDetailActivity extends BaseActivity {
                 String.format(getString(R.string.money_expenditure), -mTransaction.getMoneyInt()));
         remarkTextView.setText(String.format(
                 getString(R.string.remark), mTransaction.getRemark()));
-        dateTextView.setText(mTransaction.getCreatedDate());
+        dateTextView.setText(mTransaction.getDate());
     }
 
     private void onEditClick() {

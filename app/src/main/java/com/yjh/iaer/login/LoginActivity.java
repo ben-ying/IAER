@@ -168,6 +168,10 @@ public class LoginActivity extends BaseActivity {
                     progressBar.setVisibility(View.GONE);
                     if (userResource.getStatus() == Status.SUCCESS && userResource.getData() != null) {
                         Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                        if (getIntent().getBooleanExtra(Constant.MULTI_USER, false)) {
+                            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK
+                                    | Intent.FLAG_ACTIVITY_NEW_TASK);
+                        }
                         startActivity(intent);
                         finish();
                     }

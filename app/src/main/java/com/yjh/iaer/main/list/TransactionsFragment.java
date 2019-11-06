@@ -230,7 +230,7 @@ public class TransactionsFragment extends BaseFragment
     private void initViewModel() {
         mTransactionViewModel = ViewModelProviders.of(
                 this, viewModelFactory).get(TransactionViewModel.class);
-        mTransactionViewModel.getTransactionsResource().observe(this, this::setListData);
+        mTransactionViewModel.getTransactionsResource().observe(getViewLifecycleOwner(), this::setListData);
         loadTransactions(null, null, null, 0, 0, false);
 
         CategoryViewModel categoryViewModel = ViewModelProviders.of(

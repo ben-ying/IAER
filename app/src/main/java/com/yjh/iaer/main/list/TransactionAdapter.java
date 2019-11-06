@@ -17,6 +17,8 @@ import com.yjh.iaer.room.entity.Transaction;
 import com.yjh.iaer.util.AlertUtils;
 
 import java.text.DecimalFormat;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import butterknife.BindView;
@@ -52,14 +54,26 @@ public class TransactionAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         this.mContext = context;
         this.mDisplayType = transactions.size() < PAGE_SIZE ? NO_FOOTER : HAS_FOOTER;
         this.mTransactions = transactions;
+        sortList();
         this.mInterface = transactionInterface;
         this.mFormat = new DecimalFormat("###,###,###");
     }
 
     public void setData(List<Transaction> transactions) {
         this.mTransactions = transactions;
+        sortList();
         this.mDisplayType = transactions.size() < PAGE_SIZE ? NO_FOOTER : HAS_FOOTER;
         notifyDataSetChanged();
+    }
+
+    private void sortList() {
+        Collections.sort(mTransactions,  (Transaction obj1, Transaction obj2) -> {
+            if (obj1.getDateValue() == obj2.getDateValue()) {
+                return obj1.getIaerId() > obj2.getIaerId() ? -1 : 1;
+            } else {
+                return obj1.getDateValue() > obj2.getDateValue() ? -1 : 1;
+            }
+        });
     }
 
     public void setType(int type) {
@@ -116,7 +130,7 @@ public class TransactionAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
             TransactionViewHolder viewHolder = (TransactionViewHolder) holder;
             Transaction transaction = mTransactions.get(mShowHeader ? (position - 1) : position);
             viewHolder.fromTextView.setText(transaction.getCategory());
-            viewHolder.dateTextView.setText(transaction.getCreatedDate());
+            viewHolder.dateTextView.setText(transaction.getDate());
             viewHolder.moneyTextView.setText(String.format(
                     mContext.getString(R.string.transaction_yuan),
                     transaction.getMoneyInt(), transaction.getRemark()));

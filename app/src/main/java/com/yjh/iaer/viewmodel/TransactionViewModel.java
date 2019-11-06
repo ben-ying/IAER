@@ -61,10 +61,11 @@ public class TransactionViewModel extends ViewModel {
 
     public LiveData<Resource<Transaction>> addTransactionResource(final String category,
                                                                   final String money,
+                                                                  final String date,
                                                                   final String remark,
                                                                   boolean expenditure) {
         return mRepository.addTransaction(
-                category, expenditure ? "-" + money : money, remark);
+                category, expenditure ? "-" + money : money, date, remark);
     }
 
     public LiveData<Resource<List<Transaction>>> getTransactionsResource() {

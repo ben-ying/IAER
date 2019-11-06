@@ -3,15 +3,19 @@ package com.yjh.iaer.main.list;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.annotation.Nullable;
+
+import android.app.DatePickerDialog;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.Spinner;
+import android.widget.TextView;
 
 import com.jakewharton.rxbinding3.widget.RxTextView;
 import com.yjh.iaer.R;
@@ -23,8 +27,11 @@ import com.yjh.iaer.room.entity.Transaction;
 import com.yjh.iaer.viewmodel.CategoryViewModel;
 import com.yjh.iaer.viewmodel.TransactionViewModel;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
+import java.util.Locale;
 
 import javax.inject.Inject;
 
@@ -39,10 +46,16 @@ public class AddTransactionActivity extends BaseActivity {
     Spinner typeSpinner;
     @BindView(R.id.et_money)
     EditText moneyEditText;
+    @BindView(R.id.tv_date)
+    TextView dateTextView;
     @BindView(R.id.et_remark)
     EditText remarkEditText;
     @BindView(R.id.progress_bar)
     ProgressBar progressBar;
+
+    private final SimpleDateFormat mDateFormat =
+            new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+    final Calendar mCalendar = Calendar.getInstance();
 
     private boolean mCanSave;
     private TransactionViewModel mTransactionViewModel;
@@ -63,6 +76,8 @@ public class AddTransactionActivity extends BaseActivity {
 
         categorySpinner.setEnabled(false);
         typeSpinner.setEnabled(false);
+        dateTextView.setText(mDateFormat.format(Calendar.getInstance().getTime()));
+        dateTextView.setOnClickListener((view) -> showDatePicker());
 
         mCompositeDisposable = new CompositeDisposable();
         mCompositeDisposable.add(RxTextView
@@ -113,6 +128,7 @@ public class AddTransactionActivity extends BaseActivity {
                         typeSpinner.getSelectedItem().toString();
                 mTransactionViewModel.addTransactionResource(category,
                         moneyEditText.getText().toString(),
+                        dateTextView.getText().toString(),
                         remarkEditText.getText().toString(),
                         typeSpinner.getSelectedItemPosition() == 0).observe(
                                 AddTransactionActivity.this, this::setTransactionList);
@@ -206,5 +222,22 @@ public class AddTransactionActivity extends BaseActivity {
                 invalidateOptionsMenu();
             }
         }
+    }
+
+    private void showDatePicker() {
+        DatePickerDialog datePickerDialog = new DatePickerDialog(this,
+                (DatePicker view, int year, int month, int dayOfMonth) -> {
+                    mCalendar.set(Calendar.YEAR, year);
+                    mCalendar.set(Calendar.MONTH, month);
+                    mCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+                    dateTextView.setText(mDateFormat.format(mCalendar.getTime()));
+        }, mCalendar.get(Calendar.YEAR),
+                mCalendar.get(Calendar.MONTH),
+                mCalendar.get(Calendar.DAY_OF_MONTH));
+        Calendar c = Calendar.getInstance();
+        datePickerDialog.getDatePicker().setMaxDate(c.getTimeInMillis());
+        c.add(Calendar.MONTH, -1);
+        datePickerDialog.getDatePicker().setMinDate(c.getTimeInMillis());
+        datePickerDialog.show();
     }
 }

@@ -24,9 +24,10 @@ public class Transaction implements Serializable {
     public static final String FIELD_TYPE = "money_type";
     public static final String FIELD_MONEY = "money";
     public static final String FIELD_CATEGORY = "category";
+    public static final String FIELD_DATE = "date";
     public static final String FIELD_REMARK = "remark";
     public static final String FIELD_CREATED = "created";
-    public static final String FIELD_CREATED_TIME = "created_time";
+    public static final String FIELD_DATE_VALUE = "date_value";
     public static final String FIELD_STATUS = "status";
 
     @PrimaryKey
@@ -45,15 +46,18 @@ public class Transaction implements Serializable {
     @SerializedName(FIELD_CATEGORY)
     @ColumnInfo(name = FIELD_CATEGORY)
     private String category;
+    @SerializedName(FIELD_DATE)
+    @ColumnInfo(name = FIELD_DATE)
+    private String date;
     @SerializedName(FIELD_REMARK)
     @ColumnInfo(name = FIELD_REMARK)
     private String remark;
     @SerializedName(FIELD_CREATED)
     @ColumnInfo(name = FIELD_CREATED)
     private String created;
-    @SerializedName(FIELD_CREATED_TIME)
-    @ColumnInfo(name = FIELD_CREATED_TIME)
-    private long createdTime;
+    @SerializedName(FIELD_DATE_VALUE)
+    @ColumnInfo(name = FIELD_DATE_VALUE)
+    private long dateValue;
     // 0 for latest, 
     // 1 for added but not uploaded, 
     // -1 for deleted but not uploaded
@@ -169,6 +173,24 @@ public class Transaction implements Serializable {
         this.category = category;
     }
 
+    public String getDate() {
+        if (date == null || date.isEmpty()) {
+            return getCreatedDate();
+        } else {
+            return date;
+        }
+    }
+
+    public void setDate(String date) {
+        this.date = date;
+        try {
+            this.dateValue = new SimpleDateFormat("yyyy-MM-dd",
+                    Locale.getDefault()).parse(date).getTime();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+    }
+
     public String getRemark() {
         return remark;
     }
@@ -183,12 +205,6 @@ public class Transaction implements Serializable {
 
     public void setCreated(String created) {
         this.created = created;
-        try {
-            this.createdTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss",
-                    Locale.getDefault()).parse(created).getTime();
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
     }
 
     public int getStatus() {
@@ -208,13 +224,13 @@ public class Transaction implements Serializable {
         return getMoneyInt() < 0;
     }
 
-    public long getCreatedTime() {
-        return createdTime;
+    public long getDateValue() {
+        return dateValue;
     }
 
-    public void setCreatedTime(long createdTime) {
-        if (createdTime > 0) {
-            this.createdTime = createdTime;
+    public void setDateValue(long dateValue) {
+        if (dateValue > 0) {
+            this.dateValue = dateValue;
         }
     }
 }
