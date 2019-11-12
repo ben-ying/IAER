@@ -82,7 +82,7 @@ public abstract class BaseChartFragment extends BaseFragment {
 
     public void setChartDate(int year, int month) {
         mCategoryViewModel.loadStatisticsCategories(MyApplication.sUser.getToken(), year, month)
-                .observe(this, this::setCategoryList);
+                .observe(getViewLifecycleOwner(), this::setCategoryList);
 
         if (year == 0 && month == 0) {
             mDateString = "";
@@ -104,7 +104,7 @@ public abstract class BaseChartFragment extends BaseFragment {
 
     public void summary(int type) {
         mCategoryViewModel.loadDateCategories(MyApplication.sUser.getToken(), type)
-                .observe(this, this::setSummaryList);
+                .observe(getViewLifecycleOwner(), this::setSummaryList);
     }
 
     public void setSummaryData(List<StatisticsDate> list) {
