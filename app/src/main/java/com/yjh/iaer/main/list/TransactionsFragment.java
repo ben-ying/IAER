@@ -235,7 +235,7 @@ public class TransactionsFragment extends BaseFragment
 
         CategoryViewModel categoryViewModel = ViewModelProviders.of(
                 this, viewModelFactory).get(CategoryViewModel.class);
-        categoryViewModel.loadAllCategories().observe(this, this::setCategoryList);
+        categoryViewModel.loadAllCategories().observe(getViewLifecycleOwner(), this::setCategoryList);
     }
 
     private void setSetting(@Nullable Resource<Setting> listResource) {
@@ -279,7 +279,7 @@ public class TransactionsFragment extends BaseFragment
                         this, viewModelFactory).get(SettingViewModel.class);
                 settingViewModel.loadUserSetting(MyApplication.sUser.getToken(),
                         MyApplication.sUser.getUserId(), true)
-                        .observe(this, this::setSetting);
+                        .observe(getViewLifecycleOwner(), this::setSetting);
 
 //                if (mFilterYears == null && mFilterMonths == null && mFilterCategories == null) {
 //                    mAdapter.setShowHeader(false);
