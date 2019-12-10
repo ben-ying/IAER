@@ -2,9 +2,15 @@ package com.yjh.iaer.nav.chart;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.text.InputType;
+import android.text.Spannable;
+import android.text.SpannableString;
+import android.text.style.ForegroundColorSpan;
+import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
@@ -37,6 +43,8 @@ import com.yjh.iaer.room.entity.Transaction;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -64,6 +72,7 @@ public class HorizontalBarChartFragment extends BaseChartFragment {
 
     private int mSummaryType;
     private int mMinMoney = 500;
+    private String mLabelText;
 
     public static HorizontalBarChartFragment newInstance(int i) {
 
@@ -284,7 +293,7 @@ public class HorizontalBarChartFragment extends BaseChartFragment {
     @Override
     public void displayTopList(String month, String year, String category) {
         super.displayTopList(month, year, category);
-        ChartActivity  chartActivity = (ChartActivity) getActivity();
+        ChartActivity chartActivity = (ChartActivity) getActivity();
         if (chartActivity != null && !chartActivity.isFinishing() && !chartActivity.isDestroyed()) {
             mCategoryViewModel.loadTopList(
                     MyApplication.sUser.getUserId(), year, month, category, mMinMoney)
@@ -293,57 +302,89 @@ public class HorizontalBarChartFragment extends BaseChartFragment {
     }
 
     private void setTopListAdapter(List<Transaction> list) {
-        if (list.size() > 0) {
-            String labelText;
-
-            if (selectedYear == 0 && selectedMonth == 0) {
-                labelText =  String.format(getString(R.string.all_money_gte), mMinMoney);
-            } else if (selectedMonth == 0) {
-                labelText = String.format(getString(R.string.year_money_gte),
-                        selectedYear, mMinMoney);
-            } else {
-                labelText = String.format(
-                        getString(R.string.month_money_gte),
-                        selectedYear, selectedMonth, mMinMoney);
-            }
-
-            listLabel.setText(labelText);
+        if (selectedYear == 0 && selectedMonth == 0) {
+            mLabelText = String.format(getString(R.string.all_money_gte), mMinMoney);
+        } else if (selectedMonth == 0) {
+            mLabelText = String.format(getString(R.string.year_money_gte),
+                    selectedYear, mMinMoney);
+        } else {
+            mLabelText = String.format(
+                    getString(R.string.month_money_gte),
+                    selectedYear, selectedMonth, mMinMoney);
         }
 
+        setMinMoneyColor();
         TransactionAdapter mAdapter = new TransactionAdapter(getActivity(), list);
         recyclerView.setAdapter(mAdapter);
     }
 
     @OnClick(R.id.tv_list_label)
     void showMoneyDialog(View v) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-        builder.setTitle(R.string.select_money);
+        LinearLayout container = new LinearLayout(getContext());
+        container.setOrientation(LinearLayout.VERTICAL);
         final EditText input = new EditText(getContext());
         input.setText(String.valueOf(mMinMoney));
         LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
         lp.setMargins((int) getResources().getDimension(R.dimen.activity_horizontal_margin),
-                (int) getResources().getDimension(R.dimen.activity_horizontal_margin), 0, 0);
-        input.setLayoutParams(lp);
+                0, (int) getResources().getDimension(R.dimen.activity_horizontal_margin), 0);
         input.setInputType(InputType.TYPE_CLASS_NUMBER);
-        builder.setView(input);
+        container.addView(input, lp);
 
-        builder.setNegativeButton(R.string.cancel, (dialogInterface, i) -> {
-                    dialogInterface.dismiss();
-                })
-                .setPositiveButton(R.string.confirm,
-                        (DialogInterface dialogInterface, int which) -> {
-                            if (Integer.valueOf(input.getText().toString()) < 100) {
-                                input.setError(getText(R.string.select_money_error_message));
-                            } else {
-                                mMinMoney = Integer.valueOf(input.getText().toString());
-                                displayTopList(String.valueOf(selectedMonth),
-                                        String.valueOf(selectedYear), selectedCategory);
-                            }
-                        })
+        final AlertDialog dialog = new AlertDialog.Builder(getContext())
+                .setView(container)
+                .setTitle(R.string.select_money)
+                .setPositiveButton(android.R.string.ok, null)
+                .setNegativeButton(android.R.string.cancel, null)
                 .create();
-        builder.setCancelable(true);
-        builder.show();
+
+        dialog.setOnShowListener((DialogInterface dialogInterface) -> {
+            Button button = dialog.getButton(AlertDialog.BUTTON_POSITIVE);
+            button.setOnClickListener((View view) -> {
+                if (Integer.valueOf(input.getText().toString()) < 100) {
+                    input.setError(getText(R.string.select_money_error_message));
+                } else {
+                    String text1 = getLabelMinMoney();
+                    String text2 = input.getText().toString();
+                    mMinMoney = Integer.valueOf(input.getText().toString());
+                    StringBuilder b = new StringBuilder(mLabelText);
+                    b.replace(mLabelText.lastIndexOf(text1),
+                            mLabelText.lastIndexOf(text1) + text1.length(), text2);
+                    mLabelText = b.toString();
+                    Log.d("mLabelText", "mLabelText: " + mLabelText);
+//                    mLabelText = mLabelText.replaceAll(
+//                            "[" + getLabelMinMoney() + "]$", input.getText().toString());
+                    setMinMoneyColor();
+                    displayTopList(String.valueOf(selectedMonth),
+                            String.valueOf(selectedYear), selectedCategory);
+                    dialog.dismiss();
+                }
+            });
+        });
+
+        dialog.setCancelable(true);
+        dialog.show();
     }
 
+    private String getLabelMinMoney() {
+        Pattern p = Pattern.compile("(\\d+)");
+        Matcher m = p.matcher(mLabelText);
+        String minMoney = "";
+
+        // get last number.
+        while (m.find()) {
+            minMoney = m.group(0);
+        }
+
+        return minMoney;
+    }
+
+    private void setMinMoneyColor() {
+        Spannable spannable = new SpannableString(mLabelText);
+        spannable.setSpan(new ForegroundColorSpan(Color.RED),
+                mLabelText.length() - getLabelMinMoney().length(),
+                mLabelText.length(),
+                Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        listLabel.setText(spannable, TextView.BufferType.SPANNABLE);
+    }
 }

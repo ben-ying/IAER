@@ -56,7 +56,8 @@ public interface Webservice {
             @Query("months") String months,
             @Query("categories") String categories,
             @Query("top_list_size") int topListSize,
-            @Query("min_money") int minMoney);
+            @Query("min_money") int minMoney,
+            @Query("page_size") int pageSize);
 
     @FormUrlEncoded
     @POST(URL_TRANSACTIONS)

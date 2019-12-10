@@ -24,7 +24,7 @@ import javax.inject.Singleton;
 
 @Singleton
 public class CategoryRepository {
-    public static final int TOP_LIST_SIZE = 200;
+    public static final int TOP_LIST_SIZE = 500;
 
     private final Webservice mWebservice;
     private final CategoryDao mDao;
@@ -197,7 +197,7 @@ public class CategoryRepository {
             protected LiveData<ApiResponse<
                     CustomResponse<ListResponseResult<List<Transaction>>>>> createCall() {
                 return mWebservice.getTopList(MyApplication.sUser.getToken(),
-                        userId, years, months, categories, TOP_LIST_SIZE, minMoney);
+                        userId, years, months, categories, TOP_LIST_SIZE, minMoney, TOP_LIST_SIZE);
             }
 
             @Override
