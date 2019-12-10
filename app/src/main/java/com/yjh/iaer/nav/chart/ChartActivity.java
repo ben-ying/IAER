@@ -32,7 +32,6 @@ import butterknife.BindView;
 public class ChartActivity extends BaseActivity {
 
     public static final String CHART_TYPE_KEY = "chart_type_key";
-    public static final int CHART_PAGE_SIZE = 8;
 
     @BindView(R.id.view_pager)
     ViewPager viewPager;

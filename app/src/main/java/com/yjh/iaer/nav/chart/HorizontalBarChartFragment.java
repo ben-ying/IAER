@@ -8,6 +8,8 @@ import android.text.InputType;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.style.ForegroundColorSpan;
+import android.text.style.RelativeSizeSpan;
+import android.text.style.UnderlineSpan;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -70,6 +72,8 @@ public class HorizontalBarChartFragment extends BaseChartFragment {
     @BindView(R.id.tv_list_label)
     TextView listLabel;
 
+    private static final int CHART_PAGE_SIZE = 8;
+
     private int mSummaryType;
     private int mMinMoney = 500;
     private String mLabelText;
@@ -131,13 +135,12 @@ public class HorizontalBarChartFragment extends BaseChartFragment {
     public void setData(List<Category> categories) {
         super.setData(categories);
 
-        initLoadingView(false);
-
         if (categories.size() > 0) {
             List<Integer> moneyList = new ArrayList<>();
             int listSize = categories.size();
-            if (listSize < ChartActivity.CHART_PAGE_SIZE) {
-                for (int i = 0; i < ChartActivity.CHART_PAGE_SIZE - listSize; i++) {
+            // 1 for income item.
+            if (listSize < CHART_PAGE_SIZE + 1) {
+                for (int i = 0; i < CHART_PAGE_SIZE + 1 - listSize; i++) {
                     categories.add(0, new Category("", 0));
                 }
             }
@@ -148,7 +151,7 @@ public class HorizontalBarChartFragment extends BaseChartFragment {
             chart.invalidate();
             chart.animateY(ANIMATION_MILLIS);
             // if data is empty set this, when has data chart always not shown
-            chart.setVisibleXRange(ChartActivity.CHART_PAGE_SIZE, ChartActivity.CHART_PAGE_SIZE);
+            chart.setVisibleXRange(CHART_PAGE_SIZE, CHART_PAGE_SIZE);
             chart.moveViewTo(0, 0, YAxis.AxisDependency.LEFT);
             XAxis xAxis = chart.getXAxis();
             xAxis.setTextSize(7);
@@ -192,11 +195,13 @@ public class HorizontalBarChartFragment extends BaseChartFragment {
         for (int money : moneyList) {
             BarEntry barEntry = new BarEntry(i, Math.abs(money));
             barEntry.setData("");
-            entries.add(barEntry);
+//            entries.add(barEntry);
             if (money > 0) {
                 colors.add(getActivity().getColor(R.color.google_red));
                 income += money;
             } else {
+                // only show expenditure items.
+                entries.add(barEntry);
                 colors.add(getActivity().getColor(R.color.google_green));
                 expenditure -= money;
             }
@@ -245,8 +250,8 @@ public class HorizontalBarChartFragment extends BaseChartFragment {
 
         List<Integer> moneyList = new ArrayList<>();
         int listSize = list.size();
-        if (listSize < ChartActivity.CHART_PAGE_SIZE) {
-            for (int i = 0; i < ChartActivity.CHART_PAGE_SIZE - listSize; i++) {
+        if (listSize < CHART_PAGE_SIZE) {
+            for (int i = 0; i < CHART_PAGE_SIZE - listSize; i++) {
                 list.add(0, new StatisticsDate(0, 0, 0));
             }
         }
@@ -257,7 +262,7 @@ public class HorizontalBarChartFragment extends BaseChartFragment {
         chart.invalidate();
         chart.animateY(ANIMATION_MILLIS);
         // if data is empty set this, when has data chart always not shown
-        chart.setVisibleXRange(ChartActivity.CHART_PAGE_SIZE, ChartActivity.CHART_PAGE_SIZE);
+        chart.setVisibleXRange(CHART_PAGE_SIZE, CHART_PAGE_SIZE);
         chart.moveViewTo(0, 0, YAxis.AxisDependency.LEFT);
         XAxis xAxis = chart.getXAxis();
         xAxis.setTextSize(7);
@@ -284,6 +289,7 @@ public class HorizontalBarChartFragment extends BaseChartFragment {
 
     private void setTopList(@Nullable Resource<List<Transaction>> listResource) {
         if (listResource.getStatus() == Status.SUCCESS) {
+            initLoadingView(false);
             setTopListAdapter(listResource.getData());
         } else if (listResource.getStatus() == Status.ERROR) {
             initLoadingView(false);
@@ -295,6 +301,7 @@ public class HorizontalBarChartFragment extends BaseChartFragment {
         super.displayTopList(month, year, category);
         ChartActivity chartActivity = (ChartActivity) getActivity();
         if (chartActivity != null && !chartActivity.isFinishing() && !chartActivity.isDestroyed()) {
+            initLoadingView(true);
             mCategoryViewModel.loadTopList(
                     MyApplication.sUser.getUserId(), year, month, category, mMinMoney)
                     .observe(getViewLifecycleOwner(), this::setTopList);
@@ -381,10 +388,15 @@ public class HorizontalBarChartFragment extends BaseChartFragment {
 
     private void setMinMoneyColor() {
         Spannable spannable = new SpannableString(mLabelText);
-        spannable.setSpan(new ForegroundColorSpan(Color.RED),
-                mLabelText.length() - getLabelMinMoney().length(),
-                mLabelText.length(),
-                Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        int start = mLabelText.length() - getLabelMinMoney().length();
+        int end = mLabelText.length();
+        spannable.setSpan(new ForegroundColorSpan(getResources().getColor(R.color.google_green)),
+                start, end, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        spannable.setSpan(new UnderlineSpan(), start, end, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        spannable.setSpan(new UnderlineSpan(), start, end, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        spannable.setSpan(new RelativeSizeSpan(1.2f), start, end, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+
         listLabel.setText(spannable, TextView.BufferType.SPANNABLE);
+
     }
 }
