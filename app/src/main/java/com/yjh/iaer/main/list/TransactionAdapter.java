@@ -49,6 +49,7 @@ public class TransactionAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         void delete(int id);
     }
 
+    // for transaction list
     TransactionAdapter(Context context, List<Transaction> transactions,
                        TransactionInterface transactionInterface) {
         this.mContext = context;
@@ -56,6 +57,14 @@ public class TransactionAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         this.mTransactions = transactions;
         sortList();
         this.mInterface = transactionInterface;
+        this.mFormat = new DecimalFormat("###,###,###");
+    }
+
+    // for top list
+    public TransactionAdapter(Context context, List<Transaction> transactions) {
+        this.mContext = context;
+        this.mDisplayType = NO_FOOTER;
+        this.mTransactions = transactions;
         this.mFormat = new DecimalFormat("###,###,###");
     }
 
@@ -266,18 +275,24 @@ public class TransactionAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
 
         @OnClick(R.id.content_layout)
         void intent2DetailView(View v) {
-            Intent intent = new Intent(mContext, TransactionDetailActivity.class);
-            intent.putExtra(Constant.EXTRA_TRANSACTION, (Transaction) v.getTag());
-            mContext.startActivity(intent);
+            if (mInterface != null) {
+                Intent intent = new Intent(mContext, TransactionDetailActivity.class);
+                intent.putExtra(Constant.EXTRA_TRANSACTION, (Transaction) v.getTag());
+                mContext.startActivity(intent);
+            }
         }
 
         @OnLongClick(R.id.content_layout)
         boolean showDeleteDialog(View view) {
-            AlertUtils.showConfirmDialog(mContext, R.string.delete_transaction_alert,
-                    (dialogInterface, i) -> {
-                        mInterface.delete(((Transaction) view.getTag()).getIaerId());
-                    });
-            return true;
+            if (mInterface != null) {
+                AlertUtils.showConfirmDialog(mContext, R.string.delete_transaction_alert,
+                        (dialogInterface, i) -> {
+                            mInterface.delete(((Transaction) view.getTag()).getIaerId());
+                        });
+                return true;
+            }
+
+            return false;
         }
     }
 }

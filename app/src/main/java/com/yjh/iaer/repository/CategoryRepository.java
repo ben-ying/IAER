@@ -5,6 +5,7 @@ import androidx.lifecycle.LiveData;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.yjh.iaer.MyApplication;
 import com.yjh.iaer.model.CustomResponse;
 import com.yjh.iaer.model.ListResponseResult;
 import com.yjh.iaer.model.StatisticsDate;
@@ -14,6 +15,7 @@ import com.yjh.iaer.network.Resource;
 import com.yjh.iaer.network.Webservice;
 import com.yjh.iaer.room.dao.CategoryDao;
 import com.yjh.iaer.room.entity.Category;
+import com.yjh.iaer.room.entity.Transaction;
 
 import java.util.List;
 
@@ -22,6 +24,8 @@ import javax.inject.Singleton;
 
 @Singleton
 public class CategoryRepository {
+    public static final int TOP_LIST_SIZE = 200;
+
     private final Webservice mWebservice;
     private final CategoryDao mDao;
 
@@ -150,6 +154,55 @@ public class CategoryRepository {
             @Override
             protected CustomResponse<ListResponseResult<List<StatisticsDate>>> processResponse(
                     ApiResponse<CustomResponse<ListResponseResult<List<StatisticsDate>>>> response) {
+                return response.getBody();
+            }
+
+            @Override
+            protected void onFetchFailed(String errorMessage) {
+                super.onFetchFailed(errorMessage);
+            }
+        }.getAsLiveData();
+    }
+
+    public LiveData<Resource<List<Transaction>>> loadTopList(
+            final int userId, final String years,
+            final String months, final String categories,
+            final int minMoney) {
+        return new NetworkBoundResource<List<Transaction>,
+                CustomResponse<ListResponseResult<List<Transaction>>>>() {
+            @Override
+            protected void saveCallResult(
+                    @NonNull CustomResponse<ListResponseResult<List<Transaction>>> item) {
+            }
+
+            @Override
+            protected void notifyData(ApiResponse<CustomResponse<
+                    ListResponseResult<List<Transaction>>>> response) {
+                setValue(response.getBody().getResult().getResults());
+            }
+
+            @Override
+            protected boolean shouldFetch(@Nullable List<Transaction> data) {
+                return true;
+            }
+
+            @NonNull
+            @Override
+            protected LiveData<List<Transaction>> loadFromDb() {
+                return mDao.loadEmptyTransactions();
+            }
+
+            @Nullable
+            @Override
+            protected LiveData<ApiResponse<
+                    CustomResponse<ListResponseResult<List<Transaction>>>>> createCall() {
+                return mWebservice.getTopList(MyApplication.sUser.getToken(),
+                        userId, years, months, categories, TOP_LIST_SIZE, minMoney);
+            }
+
+            @Override
+            protected CustomResponse<ListResponseResult<List<Transaction>>> processResponse(
+                    ApiResponse<CustomResponse<ListResponseResult<List<Transaction>>>> response) {
                 return response.getBody();
             }
 

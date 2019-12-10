@@ -226,4 +226,29 @@ public class ChartActivity extends BaseActivity {
     private BaseChartFragment getCurrentFragment() {
         return mChartPagerAdapter.getItem(viewPager.getCurrentItem());
     }
+
+    public String getMonth() {
+        if (viewPager.getCurrentItem() == 0) {
+            return String.valueOf(Calendar.getInstance().get(Calendar.MONTH) - mMonthSelection + 1);
+        } else {
+            return "";
+        }
+    }
+
+    public String getYear() {
+        if (viewPager.getCurrentItem() == 0) {
+            int currentYear = Calendar.getInstance().get(Calendar.YEAR);
+            int currentMonth = Calendar.getInstance().get(Calendar.MONTH);
+            boolean thisYear = currentMonth - mMonthSelection >= 0;
+            return thisYear ? String.valueOf(currentYear) : String.valueOf(currentYear - 1);
+        } else if (viewPager.getCurrentItem() == 1) {
+            return String.valueOf(Calendar.getInstance().get(Calendar.YEAR) - mYearSelection);
+        } else {
+            return "";
+        }
+    }
+
+    public String getCategory() {
+        return "";
+    }
 }

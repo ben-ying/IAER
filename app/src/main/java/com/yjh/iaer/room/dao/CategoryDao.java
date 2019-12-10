@@ -7,6 +7,7 @@ import androidx.room.Query;
 
 import com.yjh.iaer.model.StatisticsDate;
 import com.yjh.iaer.room.entity.Category;
+import com.yjh.iaer.room.entity.Transaction;
 
 import java.util.List;
 
@@ -31,7 +32,10 @@ public interface CategoryDao {
     LiveData<List<Category>> loadEmptyCategories();
 
     @Query("SELECT * FROM " + Category.TABLE_NAME +
-            " WHERE " + Category.FIELD_SEQUENCE + " = -1" +
-            " ORDER BY " + Category.FIELD_SEQUENCE)
+            " WHERE " + Category.FIELD_SEQUENCE + " = -1")
     LiveData<List<StatisticsDate>> loadEmptyDateCategories();
+
+    @Query("SELECT * FROM " + Transaction.TABLE_NAME +
+            " WHERE " + Transaction.FIELD_USER_ID + " = -1")
+    LiveData<List<Transaction>> loadEmptyTransactions();
 }

@@ -3,74 +3,100 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <include layout="@layout/not_data_view" />
-
-    <com.github.mikephil.charting.charts.HorizontalBarChart
-        android:id="@+id/horizontal_bar_chart"
-        android:paddingStart="@dimen/text_padding"
-        android:paddingEnd="@dimen/text_padding"
-        android:visibility="invisible"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/bar_chart_size" />
-
-    <RelativeLayout
-        android:id="@+id/description_layout"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/horizontal_bar_chart">
-
-        <TextView
-            android:id="@+id/tv_income"
-            android:visibility="invisible"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/legend_margin_left"
-            android:drawablePadding="@dimen/legend_padding"
-            android:drawableStart="@drawable/square_red"
-            android:textColor="@color/black_text"
-            android:textSize="@dimen/legend_text_size" />
-
-        <TextView
-            android:id="@+id/tv_expenditure"
-            android:visibility="invisible"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/tv_income"
-            android:layout_marginStart="@dimen/legend_margin_left"
-            android:drawablePadding="@dimen/legend_padding"
-            android:drawableStart="@drawable/square_green"
-            android:textColor="@color/black_text"
-            android:textSize="@dimen/legend_text_size" />
-
-        <TextView
-            android:id="@+id/tv_total"
-            android:visibility="invisible"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/tv_expenditure"
-            android:layout_marginStart="@dimen/legend_margin_left"
-            android:drawablePadding="@dimen/legend_padding"
-            android:drawableStart="@drawable/square_primary"
-            android:textColor="@color/black_text"
-            android:textSize="@dimen/legend_text_size" />
-    </RelativeLayout>
-
     <ProgressBar
         android:id="@+id/progress_bar"
-        android:layout_centerHorizontal="true"
-        android:layout_above="@+id/empty_view"
-        android:visibility="gone"
-        android:layout_gravity="center"
         android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/empty_view"
+        android:layout_centerHorizontal="true"
+        android:layout_gravity="center"
+        android:visibility="gone"></ProgressBar>
+
+    <ScrollView
+        android:layout_width="match_parent"
         android:layout_height="wrap_content">
-    </ProgressBar>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <RelativeLayout
+                android:id="@+id/description_layout"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/horizontal_bar_chart">
+
+                <TextView
+                    android:id="@+id/tv_income"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/legend_margin_left"
+                    android:drawableStart="@drawable/square_red"
+                    android:drawablePadding="@dimen/legend_padding"
+                    android:textColor="@color/black_text"
+                    android:textSize="@dimen/legend_text_size"
+                    android:visibility="invisible" />
+
+                <TextView
+                    android:id="@+id/tv_expenditure"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/tv_income"
+                    android:layout_marginStart="@dimen/legend_margin_left"
+                    android:drawableStart="@drawable/square_green"
+                    android:drawablePadding="@dimen/legend_padding"
+                    android:textColor="@color/black_text"
+                    android:textSize="@dimen/legend_text_size"
+                    android:visibility="invisible" />
+
+                <TextView
+                    android:id="@+id/tv_total"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/tv_expenditure"
+                    android:layout_marginStart="@dimen/legend_margin_left"
+                    android:drawableStart="@drawable/square_primary"
+                    android:drawablePadding="@dimen/legend_padding"
+                    android:textColor="@color/black_text"
+                    android:textSize="@dimen/legend_text_size"
+                    android:visibility="invisible" />
+            </RelativeLayout>
+
+            <TextView
+                android:id="@+id/tv_list_label"
+                android:layout_marginTop="@dimen/button_margin_vertical"
+                android:paddingLeft="@dimen/activity_horizontal_margin"
+                android:paddingRight="@dimen/activity_horizontal_margin"
+                android:textSize="@dimen/label_text_size"
+                android:textColor="@color/black"
+                android:layout_below="@+id/description_layout"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recycler_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/tv_list_label"
+                android:background="@android:color/transparent" />
+
+            <com.github.mikephil.charting.charts.HorizontalBarChart
+                android:id="@+id/horizontal_bar_chart"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/bar_chart_size"
+                android:paddingStart="@dimen/text_padding"
+                android:paddingEnd="@dimen/text_padding"
+                android:visibility="invisible" />
+        </RelativeLayout>
+    </ScrollView>
 
     <View
         android:id="@+id/empty_view"
-        android:layout_centerInParent="true"
-        android:visibility="invisible"
-        android:layout_gravity="center"
         android:layout_width="80dp"
-        android:layout_height="80dp">
-    </View>
+        android:layout_height="80dp"
+        android:layout_centerInParent="true"
+        android:layout_gravity="center"
+        android:visibility="invisible"></View>
+
+    <include layout="@layout/not_data_view" />
 </RelativeLayout>

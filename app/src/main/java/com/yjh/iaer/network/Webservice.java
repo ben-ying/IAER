@@ -47,6 +47,17 @@ public interface Webservice {
             @Query("min_money") int minMoney,
             @Query("max_money") int maxMoney);
 
+    @GET(URL_TRANSACTIONS)
+        // years, months or categories is empty if select all.
+    LiveData<ApiResponse<CustomResponse<ListResponseResult<List<Transaction>>>>> getTopList(
+            @Query("token") String token,
+            @Query("user_id") int userId,
+            @Query("years") String years,
+            @Query("months") String months,
+            @Query("categories") String categories,
+            @Query("top_list_size") int topListSize,
+            @Query("min_money") int minMoney);
+
     @FormUrlEncoded
     @POST(URL_TRANSACTIONS)
     LiveData<ApiResponse<CustomResponse<Transaction>>> addTransaction(

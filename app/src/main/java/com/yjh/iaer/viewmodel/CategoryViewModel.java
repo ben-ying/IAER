@@ -7,6 +7,7 @@ import com.yjh.iaer.model.StatisticsDate;
 import com.yjh.iaer.network.Resource;
 import com.yjh.iaer.repository.CategoryRepository;
 import com.yjh.iaer.room.entity.Category;
+import com.yjh.iaer.room.entity.Transaction;
 
 import java.util.List;
 
@@ -30,5 +31,13 @@ public class CategoryViewModel extends ViewModel {
 
     public LiveData<Resource<List<StatisticsDate>>> loadDateCategories(String token, int type) {
         return mRepository.loadDateCategories(token, type);
+    }
+
+    public LiveData<Resource<List<Transaction>>> loadTopList(final int userId,
+                                                             final String years,
+                                                             final String months,
+                                                             final String categories,
+                                                             final int minMoney) {
+        return mRepository.loadTopList(userId, years, months, categories, minMoney);
     }
 }

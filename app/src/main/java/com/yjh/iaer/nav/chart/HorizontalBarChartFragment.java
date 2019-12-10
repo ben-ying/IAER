@@ -1,9 +1,18 @@
 package com.yjh.iaer.nav.chart;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
+import android.text.InputType;
 import android.view.View;
+import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+
+import androidx.annotation.Nullable;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.github.mikephil.charting.charts.HorizontalBarChart;
 import com.github.mikephil.charting.components.Legend;
@@ -16,15 +25,21 @@ import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.highlight.Highlight;
 import com.github.mikephil.charting.interfaces.datasets.IBarDataSet;
 import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
+import com.yjh.iaer.MyApplication;
 import com.yjh.iaer.R;
+import com.yjh.iaer.main.list.TransactionAdapter;
 import com.yjh.iaer.model.StatisticsDate;
+import com.yjh.iaer.network.Resource;
+import com.yjh.iaer.network.Status;
 import com.yjh.iaer.room.entity.Category;
+import com.yjh.iaer.room.entity.Transaction;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
+import butterknife.OnClick;
 
 public class HorizontalBarChartFragment extends BaseChartFragment {
 
@@ -42,8 +57,13 @@ public class HorizontalBarChartFragment extends BaseChartFragment {
     ProgressBar progressBar;
     @BindView(R.id.empty_view)
     View emptyView;
+    @BindView(R.id.recycler_view)
+    RecyclerView recyclerView;
+    @BindView(R.id.tv_list_label)
+    TextView listLabel;
 
     private int mSummaryType;
+    private int mMinMoney = 500;
 
     public static HorizontalBarChartFragment newInstance(int i) {
 
@@ -62,6 +82,10 @@ public class HorizontalBarChartFragment extends BaseChartFragment {
 
     @Override
     public void initView() {
+        LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
+        recyclerView.setLayoutManager(layoutManager);
+        recyclerView.setHasFixedSize(false);
+        recyclerView.setNestedScrollingEnabled(false);
         chart.getDescription().setEnabled(false);
 //        MyMarkerView mv = new MyMarkerView(
 //                getActivity().getApplicationContext(), R.layout.custom_marker_view);
@@ -248,4 +272,78 @@ public class HorizontalBarChartFragment extends BaseChartFragment {
         );
         chart.setDoubleTapToZoomEnabled(false);
     }
+
+    private void setTopList(@Nullable Resource<List<Transaction>> listResource) {
+        if (listResource.getStatus() == Status.SUCCESS) {
+            setTopListAdapter(listResource.getData());
+        } else if (listResource.getStatus() == Status.ERROR) {
+            initLoadingView(false);
+        }
+    }
+
+    @Override
+    public void displayTopList(String month, String year, String category) {
+        super.displayTopList(month, year, category);
+        ChartActivity  chartActivity = (ChartActivity) getActivity();
+        if (chartActivity != null && !chartActivity.isFinishing() && !chartActivity.isDestroyed()) {
+            mCategoryViewModel.loadTopList(
+                    MyApplication.sUser.getUserId(), year, month, category, mMinMoney)
+                    .observe(getViewLifecycleOwner(), this::setTopList);
+        }
+    }
+
+    private void setTopListAdapter(List<Transaction> list) {
+        if (list.size() > 0) {
+            String labelText;
+
+            if (selectedYear == 0 && selectedMonth == 0) {
+                labelText =  String.format(getString(R.string.all_money_gte), mMinMoney);
+            } else if (selectedMonth == 0) {
+                labelText = String.format(getString(R.string.year_money_gte),
+                        selectedYear, mMinMoney);
+            } else {
+                labelText = String.format(
+                        getString(R.string.month_money_gte),
+                        selectedYear, selectedMonth, mMinMoney);
+            }
+
+            listLabel.setText(labelText);
+        }
+
+        TransactionAdapter mAdapter = new TransactionAdapter(getActivity(), list);
+        recyclerView.setAdapter(mAdapter);
+    }
+
+    @OnClick(R.id.tv_list_label)
+    void showMoneyDialog(View v) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        builder.setTitle(R.string.select_money);
+        final EditText input = new EditText(getContext());
+        input.setText(String.valueOf(mMinMoney));
+        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+        lp.setMargins((int) getResources().getDimension(R.dimen.activity_horizontal_margin),
+                (int) getResources().getDimension(R.dimen.activity_horizontal_margin), 0, 0);
+        input.setLayoutParams(lp);
+        input.setInputType(InputType.TYPE_CLASS_NUMBER);
+        builder.setView(input);
+
+        builder.setNegativeButton(R.string.cancel, (dialogInterface, i) -> {
+                    dialogInterface.dismiss();
+                })
+                .setPositiveButton(R.string.confirm,
+                        (DialogInterface dialogInterface, int which) -> {
+                            if (Integer.valueOf(input.getText().toString()) < 100) {
+                                input.setError(getText(R.string.select_money_error_message));
+                            } else {
+                                mMinMoney = Integer.valueOf(input.getText().toString());
+                                displayTopList(String.valueOf(selectedMonth),
+                                        String.valueOf(selectedYear), selectedCategory);
+                            }
+                        })
+                .create();
+        builder.setCancelable(true);
+        builder.show();
+    }
+
 }

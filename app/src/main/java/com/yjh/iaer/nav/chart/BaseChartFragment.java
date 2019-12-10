@@ -38,6 +38,10 @@ public abstract class BaseChartFragment extends BaseFragment {
 
     private String mDateString = "";
 
+    public int selectedMonth = 0;
+    public int selectedYear = 0;
+    public String selectedCategory = "";
+
     CategoryViewModel mCategoryViewModel;
 
     @Inject
@@ -86,25 +90,36 @@ public abstract class BaseChartFragment extends BaseFragment {
 
         if (year == 0 && month == 0) {
             mDateString = "";
+            selectedMonth = 0;
+            selectedYear = 0;
         } else if (month == 0) {
             mDateString = String.format(getString(R.string.chart_year), year);
+            selectedMonth = 0;
+            selectedYear = year;
         } else {
+            selectedMonth = month;
+            selectedYear = year;
             mDateString = String.format(getString(R.string.chart_month), year, month);
         }
     }
 
-    public String getDateString() {
+    String getDateString() {
         return mDateString;
     }
 
     public void setData(List<Category> categories) {
         noDataTextView.setVisibility(categories.size() > 0 ? View.GONE : View.VISIBLE);
         noDataTextView.setText(noDataHint);
+        displayTopList(String.valueOf(selectedMonth), String.valueOf(selectedYear), selectedCategory);
     }
 
     public void summary(int type) {
         mCategoryViewModel.loadDateCategories(MyApplication.sUser.getToken(), type)
                 .observe(getViewLifecycleOwner(), this::setSummaryList);
+    }
+
+    public void displayTopList(String month, String year, String category) {
+
     }
 
     public void setSummaryData(List<StatisticsDate> list) {

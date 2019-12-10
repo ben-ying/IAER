@@ -31,7 +31,7 @@ public class GridViewFilterAdapter extends BaseAdapter {
     public GridViewFilterAdapter(Context context, int type) {
         this.mList = new ArrayList<>();
         this.mStatus = new ArrayList<>();
-        this.mList.add(context.getString(R.string.all));
+        this.mList.add(context.getString(R.string.select_all));
         this.mStatus.add(true);
 
         switch (type) {
