@@ -335,7 +335,7 @@ public class HorizontalBarChartFragment extends BaseChartFragment {
             for (Transaction transaction : list) {
                 total += transaction.getMoneyAbsInt();
             }
-            mLabelText += String.format(getString(R.string.percentage_of_current), (int) total / );
+//            mLabelText += String.format(getString(R.string.percentage_of_current), (int) total / );
         }
 
         setMinMoneyColor();

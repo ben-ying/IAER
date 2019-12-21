@@ -180,8 +180,13 @@ public class TransactionRepository {
 
             @Override
             protected void saveCallResult(@NonNull CustomResponse<Transaction> item) {
-                mTransactionDao.save(item.getResult());
-                mAddedTransactionId = item.getResult().getIaerId();
+                Transaction transaction = item.getResult();
+                mTransactionDao.save(transaction);
+                if (mResult != null && mResult.getResults() != null) {
+                    mResult.getResults().add(transaction);
+                    mResult.resetValues(true, transaction.getMoneyInt(),
+                            transaction.isThisMonth(), transaction.isThisYear());
+                }
             }
 
             @Override
@@ -225,7 +230,18 @@ public class TransactionRepository {
 
             @Override
             protected void saveCallResult(@NonNull CustomResponse<Transaction> item) {
-                mTransactionDao.delete(item.getResult());
+                Transaction transaction = item.getResult();
+                mTransactionDao.delete(transaction);
+                if (mResult != null && mResult.getResults() != null) {
+                    for (Transaction result : mResult.getResults()) {
+                        if (result.getIaerId() == transaction.getIaerId()) {
+                            mResult.getResults().remove(result);
+                            mResult.resetValues(false, transaction.getMoneyInt(),
+                                    transaction.isThisMonth(), transaction.isThisYear());
+                            break;
+                        }
+                    }
+                }
             }
 
             @Override

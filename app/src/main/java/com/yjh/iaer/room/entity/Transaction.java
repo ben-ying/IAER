@@ -11,6 +11,7 @@ import com.google.gson.annotations.SerializedName;
 import java.io.Serializable;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Locale;
 
 import static com.yjh.iaer.room.entity.Transaction.TABLE_NAME;
@@ -232,5 +233,33 @@ public class Transaction implements Serializable {
         if (dateValue > 0) {
             this.dateValue = dateValue;
         }
+    }
+
+    public boolean isThisYear() {
+        try {
+            int year = Integer.valueOf(date.split("-")[0]);
+            Calendar calendar = Calendar.getInstance();
+            if (year == calendar.get(Calendar.YEAR)) {
+                return true;
+            }
+        } catch (NullPointerException e) {
+            e.printStackTrace();
+        }
+
+        return false;
+    }
+
+    public boolean isThisMonth() {
+        try {
+            int month = Integer.valueOf(date.split("-")[1]);
+            Calendar calendar = Calendar.getInstance();
+            if (month == calendar.get(Calendar.MONTH) + 1) {
+                return true;
+            }
+        } catch (NullPointerException e) {
+            e.printStackTrace();
+        }
+
+        return false;
     }
 }

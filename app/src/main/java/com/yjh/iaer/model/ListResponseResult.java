@@ -107,4 +107,51 @@ public class ListResponseResult<T> {
     public void setResults(T results) {
         this.results = results;
     }
+
+    public void resetValues(boolean added, int money, boolean thisMonth, boolean thisYear) {
+        int adsMoney = Math.abs(money);
+        if (added) {
+            count++;
+            if (thisMonth) {
+                if (money > 0) {
+                    thisMonthIncome += adsMoney;
+                } else {
+                    thisMonthExpenditure += adsMoney;
+                }
+            }
+            if (thisYear) {
+                if (money > 0) {
+                    thisYearIncome += adsMoney;
+                } else {
+                    thisYearExpenditure += adsMoney;
+                }
+            }
+            if (money > 0) {
+                currentIncome += adsMoney;
+            } else {
+                currentExpenditure += adsMoney;
+            }
+        } else {
+            count--;
+            if (thisMonth) {
+                if (money > 0) {
+                    thisMonthIncome -= adsMoney;
+                } else {
+                    thisMonthExpenditure -= adsMoney;
+                }
+            }
+            if (thisYear) {
+                if (money > 0) {
+                    thisYearIncome -= adsMoney;
+                } else {
+                    thisYearExpenditure -= adsMoney;
+                }
+            }
+            if (money > 0) {
+                currentIncome -= adsMoney;
+            } else {
+                currentExpenditure -= adsMoney;
+            }
+        }
+    }
 }
