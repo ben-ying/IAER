@@ -9,6 +9,7 @@ import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.RelativeSizeSpan;
+import android.text.style.StyleSpan;
 import android.text.style.UnderlineSpan;
 import android.util.Log;
 import android.view.View;
@@ -30,6 +31,7 @@ import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
 import com.github.mikephil.charting.data.Entry;
+import com.github.mikephil.charting.data.PieEntry;
 import com.github.mikephil.charting.highlight.Highlight;
 import com.github.mikephil.charting.interfaces.datasets.IBarDataSet;
 import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
@@ -72,11 +74,14 @@ public class HorizontalBarChartFragment extends BaseChartFragment {
     @BindView(R.id.tv_list_label)
     TextView listLabel;
 
+    private static final String TAG = "HorizontalBarChartFragment";
     private static final int CHART_PAGE_SIZE = 8;
 
     private int mSummaryType;
     private int mMinMoney = 500;
     private String mLabelText;
+    private int mIncome;
+    private int mExpenditure;
 
     public static HorizontalBarChartFragment newInstance(int i) {
 
@@ -111,15 +116,20 @@ public class HorizontalBarChartFragment extends BaseChartFragment {
         chart.setOnChartValueSelectedListener(new OnChartValueSelectedListener() {
             @Override
             public void onValueSelected(Entry e, Highlight h) {
-//                TransactionsFragment transactionsFragment = new TransactionsFragment();
-//                getActivity().getSupportFragmentManager().beginTransaction()
-//                        .replace(R.id.Layout_container, transactionsFragment)
-//                        .addToBackStack(null)
-//                        .commit();
+                final String label = chart.getXAxis().getValueFormatter()
+                        .getFormattedValue(e.getX(), chart.getXAxis());
+                selectedCategory = label;
+                Log.e(TAG, "onValueSelected category: " + label);
+                displayTopList(String.valueOf(selectedMonth),
+                        String.valueOf(selectedYear), selectedCategory);
             }
 
             @Override
             public void onNothingSelected() {
+                Log.e(TAG, "onNothingSelected");
+                selectedCategory = "";
+                displayTopList(String.valueOf(selectedMonth),
+                        String.valueOf(selectedYear), selectedCategory);
             }
         });
     }
@@ -188,8 +198,8 @@ public class HorizontalBarChartFragment extends BaseChartFragment {
         ArrayList<IBarDataSet> sets = new ArrayList<>();
         ArrayList<BarEntry> entries = new ArrayList<>();
         List<Integer> colors = new ArrayList<>();
-        int income = 0;
-        int expenditure = 0;
+        mIncome = 0;
+        mExpenditure = 0;
 
         int i = 0;
         for (int money : moneyList) {
@@ -198,26 +208,26 @@ public class HorizontalBarChartFragment extends BaseChartFragment {
 //            entries.add(barEntry);
             if (money > 0) {
                 colors.add(getActivity().getColor(R.color.google_red));
-                income += money;
+                mIncome += money;
             } else {
                 // only show expenditure items.
                 entries.add(barEntry);
                 colors.add(getActivity().getColor(R.color.google_green));
-                expenditure -= money;
+                mExpenditure -= money;
             }
             i++;
         }
 
         BarDataSet ds = new BarDataSet(entries, getDateString() +
                 String.format(getString(R.string.summary),
-                        format.format(income), format.format(expenditure),
-                        format.format(income - expenditure)));
+                        format.format(mIncome), format.format(mExpenditure),
+                        format.format(mIncome - mExpenditure)));
         incomeTextView.setText(String.format(
-                getString(R.string.income), format.format(income)));
+                getString(R.string.income), format.format(mIncome)));
         expenditureTextView.setText(String.format(
-                getString(R.string.expenditure), format.format(expenditure)));
+                getString(R.string.expenditure), format.format(mExpenditure)));
         totalTextView.setText(String.format(
-                getString(R.string.surplus), format.format(income - expenditure)));
+                getString(R.string.surplus), format.format(mIncome - mExpenditure)));
         ds.setColors(colors);
         sets.add(ds);
         Legend legend = chart.getLegend();
@@ -310,14 +320,22 @@ public class HorizontalBarChartFragment extends BaseChartFragment {
 
     private void setTopListAdapter(List<Transaction> list) {
         if (selectedYear == 0 && selectedMonth == 0) {
-            mLabelText = String.format(getString(R.string.all_money_gte), mMinMoney);
+            mLabelText = String.format(getString(R.string.all_money_gte), selectedCategory, mMinMoney);
         } else if (selectedMonth == 0) {
             mLabelText = String.format(getString(R.string.year_money_gte),
-                    selectedYear, mMinMoney);
+                    selectedYear, selectedCategory, mMinMoney);
         } else {
             mLabelText = String.format(
                     getString(R.string.month_money_gte),
-                    selectedYear, selectedMonth, mMinMoney);
+                    selectedYear, selectedMonth, selectedCategory, mMinMoney);
+        }
+
+        if (list.size() > 0) {
+            int total = 0;
+            for (Transaction transaction : list) {
+                total += transaction.getMoneyAbsInt();
+            }
+            mLabelText += String.format(getString(R.string.percentage_of_current), (int) total / );
         }
 
         setMinMoneyColor();
@@ -351,16 +369,14 @@ public class HorizontalBarChartFragment extends BaseChartFragment {
                 if (Integer.valueOf(input.getText().toString()) < 100) {
                     input.setError(getText(R.string.select_money_error_message));
                 } else {
-                    String text1 = getLabelMinMoney();
-                    String text2 = input.getText().toString();
+                    String minMoney = getLabelMinMoney();
+                    String inputText = input.getText().toString();
                     mMinMoney = Integer.valueOf(input.getText().toString());
-                    StringBuilder b = new StringBuilder(mLabelText);
-                    b.replace(mLabelText.lastIndexOf(text1),
-                            mLabelText.lastIndexOf(text1) + text1.length(), text2);
-                    mLabelText = b.toString();
+                    StringBuilder builder = new StringBuilder(mLabelText);
+                    builder.replace(mLabelText.lastIndexOf(minMoney),
+                            mLabelText.lastIndexOf(minMoney) + minMoney.length(), inputText);
+                    mLabelText = builder.toString();
                     Log.d("mLabelText", "mLabelText: " + mLabelText);
-//                    mLabelText = mLabelText.replaceAll(
-//                            "[" + getLabelMinMoney() + "]$", input.getText().toString());
                     setMinMoneyColor();
                     displayTopList(String.valueOf(selectedMonth),
                             String.valueOf(selectedYear), selectedCategory);
@@ -388,15 +404,26 @@ public class HorizontalBarChartFragment extends BaseChartFragment {
 
     private void setMinMoneyColor() {
         Spannable spannable = new SpannableString(mLabelText);
-        int start = mLabelText.length() - getLabelMinMoney().length();
-        int end = mLabelText.length();
+        int minMoneyStart = mLabelText.length() - getLabelMinMoney().length();
+        int minMoneyEnd = mLabelText.length();
+        int categoryStart = mLabelText.indexOf(selectedCategory);
+        int categoryEnd = categoryStart + selectedCategory.length();
         spannable.setSpan(new ForegroundColorSpan(getResources().getColor(R.color.google_green)),
-                start, end, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-        spannable.setSpan(new UnderlineSpan(), start, end, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-        spannable.setSpan(new UnderlineSpan(), start, end, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-        spannable.setSpan(new RelativeSizeSpan(1.2f), start, end, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                minMoneyStart, minMoneyEnd, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        spannable.setSpan(new StyleSpan(android.graphics.Typeface.BOLD),
+                minMoneyStart, minMoneyEnd, 0);
+        spannable.setSpan(new UnderlineSpan(),
+                minMoneyStart, minMoneyEnd, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        spannable.setSpan(new RelativeSizeSpan(1.2f),
+                minMoneyStart, minMoneyEnd, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+
+        spannable.setSpan(new ForegroundColorSpan(getResources().getColor(R.color.google_red)),
+                categoryStart, categoryEnd, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        spannable.setSpan(new StyleSpan(android.graphics.Typeface.BOLD),
+                categoryStart, categoryEnd, 0);
+        spannable.setSpan(new RelativeSizeSpan(1.2f),
+                categoryStart, categoryEnd, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
 
         listLabel.setText(spannable, TextView.BufferType.SPANNABLE);
-
     }
 }

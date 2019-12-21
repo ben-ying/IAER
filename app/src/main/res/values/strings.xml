@@ -124,11 +124,12 @@
     <string name="max_money">最高金额</string>
     <string name="modifies_not_saved">修改还未保存，是否保存完再离开?</string>
     <string name="all">全部</string>
-    <string name="all_money_gte">所有支出金额大于%d</string>
-    <string name="month_money_gte">%1$d年%2$d月支出金额大于%3$d</string>
-    <string name="year_money_gte">%1$d年支出金额大于%2$d</string>
+    <string name="all_money_gte">所有%1$s支出金额大于%2$d</string>
+    <string name="month_money_gte">%1$d年%2$d月%3$s支出金额大于%4$d</string>
+    <string name="year_money_gte">%1$d年%2$s支出金额大于%3$d</string>
     <string name="select_money">选择金额</string>
     <string name="select_money_error_message">金额必须大于100</string>
+    <string name="percentage_of_current">, 占当前类型的%s</string>
 
     <!--app menu-->
     <string name="others">其它</string>
