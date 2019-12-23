@@ -8,6 +8,10 @@
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
     <!--<uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />-->
     <!--<uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />-->
+    <uses-permission android:name="android.permission.REQUEST_DELETE_PACKAGES" />
+    <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
     <application
         android:usesCleartextTraffic="true"
@@ -33,9 +37,20 @@
         <activity android:name=".nav.account.SwitchAccountActivity" />
         <activity android:name=".nav.setting.SettingItemsActivity" />
         <activity android:name=".nav.setting.SettingActivity" />
+        <activity android:name=".nav.about.AboutActivity" />
         <activity android:name=".login.RegisterActivity" />
         <activity android:name=".login.ResetPasswordActivity" />
 
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="com.yjh.iaer.fileprovider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/provider_paths" >
+            </meta-data>
+        </provider>
     </application>
 
 </manifest>

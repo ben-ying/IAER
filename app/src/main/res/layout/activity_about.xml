@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true">
+
+    <include layout="@layout/appbar" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/appbar"
+        android:layout_margin="@dimen/activity_vertical_margin" >
+
+        <TextView
+            android:id="@+id/tv_app_version"
+            style="@style/about_label"
+            android:text="@string/app_version" />
+
+        <TextView
+            android:id="@+id/tv_latest_version"
+            style="@style/about_label"
+            android:layout_below="@+id/tv_app_version"
+            android:layout_marginTop="@dimen/small_margin"
+            android:text="@string/latest_version" />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btn_update"
+            style="@style/default_bottom_button"
+            android:layout_alignParentBottom="true"
+            android:text="@string/update_button" />
+    </RelativeLayout>
+
+    <include layout="@layout/progress" />
+
+</RelativeLayout>

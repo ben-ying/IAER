@@ -4,6 +4,7 @@ import android.app.Application;
 import androidx.room.Room;
 
 import com.yjh.iaer.network.Webservice;
+import com.yjh.iaer.room.dao.AboutDao;
 import com.yjh.iaer.room.dao.CategoryDao;
 import com.yjh.iaer.room.dao.FundDao;
 import com.yjh.iaer.room.dao.SettingDao;
@@ -85,5 +86,11 @@ class AppModule {
     @Provides
     SettingDao provideSettingDao(MyDatabase db) {
         return db.settingDao();
+    }
+
+    @Singleton
+    @Provides
+    AboutDao provideAboutDao(MyDatabase db) {
+        return db.aboutDao();
     }
 }

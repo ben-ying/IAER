@@ -4,6 +4,7 @@ import com.yjh.iaer.login.LoginActivity;
 import com.yjh.iaer.login.RegisterActivity;
 import com.yjh.iaer.login.ResetPasswordActivity;
 import com.yjh.iaer.main.MainActivity;
+import com.yjh.iaer.nav.about.AboutActivity;
 import com.yjh.iaer.nav.chart.ChartActivity;
 import com.yjh.iaer.main.list.AddTransactionActivity;
 import com.yjh.iaer.main.list.TransactionDetailActivity;
@@ -35,5 +36,7 @@ public abstract class ActivityModule {
     @ContributesAndroidInjector(modules = FragmentBuildersModule.class)
     abstract SettingItemsActivity contributeSettingItemsActivity();
     @ContributesAndroidInjector(modules = FragmentBuildersModule.class)
-    abstract SettingActivity contributeHomeSettingActivity();
+    abstract SettingActivity contributeSettingActivity();
+    @ContributesAndroidInjector(modules = FragmentBuildersModule.class)
+    abstract AboutActivity contributeAboutActivity();
 }

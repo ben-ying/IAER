@@ -23,6 +23,7 @@ import com.yjh.iaer.MyApplication;
 import com.yjh.iaer.R;
 import com.yjh.iaer.base.BaseActivity;
 import com.yjh.iaer.login.LoginActivity;
+import com.yjh.iaer.nav.about.AboutActivity;
 import com.yjh.iaer.nav.chart.ChartActivity;
 import com.yjh.iaer.main.list.AddTransactionActivity;
 import com.yjh.iaer.main.list.TransactionsFragment;
@@ -146,6 +147,10 @@ public class MainActivity extends BaseActivity
                     break;
                 case R.id.nav_setting:
                     intent = new Intent(MainActivity.this, SettingActivity.class);
+                    startActivity(intent);
+                    break;
+                case R.id.nav_about:
+                    intent = new Intent(MainActivity.this, AboutActivity.class);
                     startActivity(intent);
                     break;
 //                case R.id.nav_share:

@@ -6,6 +6,7 @@ import androidx.lifecycle.LiveData;
 import com.yjh.iaer.model.CustomResponse;
 import com.yjh.iaer.model.ListResponseResult;
 import com.yjh.iaer.model.StatisticsDate;
+import com.yjh.iaer.room.entity.About;
 import com.yjh.iaer.room.entity.Category;
 import com.yjh.iaer.room.entity.Fund;
 import com.yjh.iaer.room.entity.Setting;
@@ -34,6 +35,7 @@ public interface Webservice {
     String URL_STATISTICS_DATES = "statistics/date/";
     String URL_FUNDS = "funds/";
     String URL_SETTING = "setting/";
+    String URL_ABOUT = "about/";
 
     @GET(URL_TRANSACTIONS)
         // years, months or categories is empty if select all.
@@ -132,4 +134,7 @@ public interface Webservice {
             @Field("home_show_this_year") int homeShowThisYear,
             @Field("monthly_fund") int monthlyFund,
             @Field("yearly_fund") int yearlyFund);
+
+    @GET(URL_ABOUT)
+    LiveData<ApiResponse<CustomResponse<About>>> getAbout();
 }

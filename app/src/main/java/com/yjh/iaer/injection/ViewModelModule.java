@@ -3,6 +3,7 @@ package com.yjh.iaer.injection;
 import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
 
+import com.yjh.iaer.viewmodel.AboutViewModel;
 import com.yjh.iaer.viewmodel.CategoryViewModel;
 import com.yjh.iaer.viewmodel.FundViewModel;
 import com.yjh.iaer.viewmodel.SettingViewModel;
@@ -39,6 +40,11 @@ abstract class ViewModelModule {
     @IntoMap
     @ViewModelKey(SettingViewModel.class)
     abstract ViewModel bindSettingViewModel(SettingViewModel settingViewModel);
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(AboutViewModel.class)
+    abstract ViewModel bindAboutViewModel(AboutViewModel aboutViewModel);
 
     @Binds
     abstract ViewModelProvider.Factory bindViewModelFactory(ViewModelFactory factory);

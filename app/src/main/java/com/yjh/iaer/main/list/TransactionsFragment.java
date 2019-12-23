@@ -32,9 +32,11 @@ import com.yjh.iaer.base.BaseFragment;
 import com.yjh.iaer.custom.ExpandableHeightGridView;
 import com.yjh.iaer.network.Resource;
 import com.yjh.iaer.network.Status;
+import com.yjh.iaer.room.entity.About;
 import com.yjh.iaer.room.entity.Category;
 import com.yjh.iaer.room.entity.Setting;
 import com.yjh.iaer.room.entity.Transaction;
+import com.yjh.iaer.viewmodel.AboutViewModel;
 import com.yjh.iaer.viewmodel.CategoryViewModel;
 import com.yjh.iaer.viewmodel.SettingViewModel;
 import com.yjh.iaer.viewmodel.TransactionViewModel;
@@ -236,11 +238,21 @@ public class TransactionsFragment extends BaseFragment
         CategoryViewModel categoryViewModel = ViewModelProviders.of(
                 this, viewModelFactory).get(CategoryViewModel.class);
         categoryViewModel.loadAllCategories().observe(getViewLifecycleOwner(), this::setCategoryList);
+
+        AboutViewModel aboutViewModel =
+                ViewModelProviders.of(this, viewModelFactory).get(AboutViewModel.class);
+        aboutViewModel.loadAbout().observe(getViewLifecycleOwner(), this::setAbout);
     }
 
     private void setSetting(@Nullable Resource<Setting> listResource) {
         if (listResource.getStatus() == Status.SUCCESS && listResource.getData() != null) {
             mAdapter.setSetting(listResource.getData());
+        }
+    }
+
+    private void setAbout(@Nullable Resource<About> listResource) {
+        if (listResource.getStatus() == Status.SUCCESS && listResource.getData() != null) {
+            Log.d("setAbout", "setAbout: " + listResource.getData().getApkUrl());
         }
     }
 
