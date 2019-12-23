@@ -17,7 +17,7 @@ import com.yjh.iaer.room.entity.Transaction;
 import com.yjh.iaer.room.entity.User;
 
 @Database(entities = {Transaction.class, User.class, Category.class, Fund.class, Setting.class, About.class},
-        version = 1, exportSchema = false)
+        version = 2, exportSchema = false)
 public abstract class MyDatabase extends RoomDatabase {
     public abstract TransactionDao transactionDao();
     public abstract UserDao userDao();

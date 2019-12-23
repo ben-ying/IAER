@@ -15,6 +15,7 @@ import static com.yjh.iaer.room.entity.About.TABLE_NAME;
 public class About implements Serializable {
     public static final String TABLE_NAME = "about_entity";
     public static final String FIELD_ABOUT_ID = "about_id";
+    public static final String FIELD_NAME = "name";
     public static final String FIELD_VERSION_NAME = "version_name";
     public static final String FIELD_VERSION_CODE = "version_code";
     public static final String FIELD_APK_URL = "apk_url";
@@ -29,6 +30,9 @@ public class About implements Serializable {
     @SerializedName(FIELD_VERSION_NAME)
     @ColumnInfo(name = FIELD_VERSION_NAME)
     private String versionName;
+    @SerializedName(FIELD_NAME)
+    @ColumnInfo(name = FIELD_NAME)
+    private String name;
     @SerializedName(FIELD_VERSION_CODE)
     @ColumnInfo(name = FIELD_VERSION_CODE)
     private int versionCode;
@@ -51,6 +55,14 @@ public class About implements Serializable {
 
     public void setAboutId(int aboutId) {
         this.aboutId = aboutId;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getVersionName() {
