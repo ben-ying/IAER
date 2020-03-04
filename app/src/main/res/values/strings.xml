@@ -142,6 +142,8 @@
     <string name="latest_version_prompt">目前已经是最新版本了。</string>
     <string name="download_notification_description">正在下载收支&#8230;</string>
     <string name="delete_user_history_alert">点击确定将永久删除此账号记录，是否确定删除？</string>
+    <string name="latest_version_found">有新版本(%s)可以更新</string>
+    <string name="update">更新</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>

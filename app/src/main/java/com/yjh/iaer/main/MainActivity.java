@@ -53,7 +53,7 @@ public class MainActivity extends BaseActivity
 
     private Runnable mPendingRunnable;
     private Handler mHandler = new Handler();
-    private UserViewModel mViewModel;
+    private UserViewModel mUserViewModel;
     private boolean mIsLogout;
 
     @Inject
@@ -102,7 +102,7 @@ public class MainActivity extends BaseActivity
         navigationView.setNavigationItemSelectedListener(this);
         setFragment(TransactionsFragment.newInstance());
 
-        mViewModel = ViewModelProviders.of(
+        mUserViewModel = ViewModelProviders.of(
                 this, viewModelFactory).get(UserViewModel.class);
     }
 
@@ -185,7 +185,7 @@ public class MainActivity extends BaseActivity
     }
 
     public void logout() {
-        mViewModel.logout().observe(this, userResource -> {
+        mUserViewModel.logout().observe(this, userResource -> {
             if (userResource.getStatus() == Status.SUCCESS && !mIsLogout) {
                 mIsLogout = true;
                 Intent intent = new Intent(this, LoginActivity.class);

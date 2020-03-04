@@ -35,7 +35,7 @@ public class TransactionRepository {
     private final Webservice mWebservice;
     private final TransactionDao mTransactionDao;
     private final RateLimiter<String> mRepoListRateLimit
-            = new RateLimiter<>(2, TimeUnit.SECONDS);
+            = new RateLimiter<>(1, TimeUnit.MINUTES);
 
     private int mAddedTransactionId = INVALID_ID;
     // fix request result sequence bug.

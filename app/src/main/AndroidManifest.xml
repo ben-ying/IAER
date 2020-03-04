@@ -41,6 +41,8 @@
         <activity android:name=".login.RegisterActivity" />
         <activity android:name=".login.ResetPasswordActivity" />
 
+        <service android:name=".service.DownloadAppService" />
+
         <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="com.yjh.iaer.fileprovider"

@@ -2,6 +2,9 @@ package com.yjh.iaer.main.list;
 
 
 import androidx.lifecycle.ViewModelProviders;
+
+import android.app.AlertDialog;
+import android.content.Intent;
 import android.graphics.Point;
 import android.os.Bundle;
 import androidx.annotation.Nullable;
@@ -26,6 +29,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.yjh.iaer.BuildConfig;
 import com.yjh.iaer.MyApplication;
 import com.yjh.iaer.R;
 import com.yjh.iaer.base.BaseFragment;
@@ -36,6 +40,8 @@ import com.yjh.iaer.room.entity.About;
 import com.yjh.iaer.room.entity.Category;
 import com.yjh.iaer.room.entity.Setting;
 import com.yjh.iaer.room.entity.Transaction;
+import com.yjh.iaer.service.DownloadAppService;
+import com.yjh.iaer.util.SharedPrefsUtils;
 import com.yjh.iaer.viewmodel.AboutViewModel;
 import com.yjh.iaer.viewmodel.CategoryViewModel;
 import com.yjh.iaer.viewmodel.SettingViewModel;
@@ -61,12 +67,15 @@ public class TransactionsFragment extends BaseFragment
     @BindView(R.id.scroll_view)
     NestedScrollView scrollView;
 
+    private static final String TAG = "TransactionsFragment";
+
     private static final int MENU_FILTER_DATE = 1;
     private static final int MENU_FILTER_CATEGORY = 2;
     private static final int MENU_FILTER_MONEY = 3;
     private static final int MENU_FILTER_ALL = 4;
 
     private TransactionViewModel mTransactionViewModel;
+    private AboutViewModel mAboutViewModel;
     private TransactionAdapter mAdapter;
     private Disposable mDisposable;
     private boolean mReverseSorting;
@@ -84,6 +93,7 @@ public class TransactionsFragment extends BaseFragment
     private String mFilterCategories;
     private Point mScreenSize;
     private List<Category> mCategories;
+    private Intent mDownloadIntent;
 
     public static TransactionsFragment newInstance() {
         Bundle args = new Bundle();
@@ -237,22 +247,13 @@ public class TransactionsFragment extends BaseFragment
 
         CategoryViewModel categoryViewModel = ViewModelProviders.of(
                 this, viewModelFactory).get(CategoryViewModel.class);
-        categoryViewModel.loadAllCategories().observe(getViewLifecycleOwner(), this::setCategoryList);
-
-        AboutViewModel aboutViewModel =
-                ViewModelProviders.of(this, viewModelFactory).get(AboutViewModel.class);
-        aboutViewModel.loadAbout().observe(getViewLifecycleOwner(), this::setAbout);
+        categoryViewModel.loadAllCategories().observe(
+                getViewLifecycleOwner(), this::setCategoryList);
     }
 
     private void setSetting(@Nullable Resource<Setting> listResource) {
         if (listResource.getStatus() == Status.SUCCESS && listResource.getData() != null) {
             mAdapter.setSetting(listResource.getData());
-        }
-    }
-
-    private void setAbout(@Nullable Resource<About> listResource) {
-        if (listResource.getStatus() == Status.SUCCESS && listResource.getData() != null) {
-            Log.d("setAbout", "setAbout: " + listResource.getData().getApkUrl());
         }
     }
 
@@ -298,6 +299,42 @@ public class TransactionsFragment extends BaseFragment
 //                } else {
 //                    mAdapter.setShowHeader(true);
 //                }
+
+                mAboutViewModel = ViewModelProviders.of(
+                        this, viewModelFactory).get(AboutViewModel.class);
+
+                mAboutViewModel.loadAbout().observe(getViewLifecycleOwner(), aboutResource->{
+                    About about = aboutResource.getData();
+                    if (aboutResource.getStatus() == Status.SUCCESS && about != null) {
+                        Log.d(TAG, "About: " + about.getApkUrl());
+                        long updateMilliseconds = SharedPrefsUtils.getLongPreference(getContext(),
+                                BuildConfig.VERSION_NAME, 0);
+                        // greater or equal to 10 days will show dialog.
+                        long expiredDays = (System.currentTimeMillis() - updateMilliseconds) / (1000 * 60 * 60 * 24);
+                        Log.d(TAG, "expired days: " + expiredDays);
+                        if (expiredDays > 10) {
+                            SharedPrefsUtils.setLongPreference(
+                                    getContext(),
+                                    BuildConfig.VERSION_NAME,
+                                    System.currentTimeMillis());
+                            final AlertDialog dialog = new AlertDialog.Builder(getContext())
+                                    .setTitle(String.format(getString(
+                                            R.string.latest_version_found), about.getVersionName()))
+                                    .setMessage(about.getComment())
+                                    .setPositiveButton(android.R.string.ok, ((dialogInterface, which) -> {
+                                        if (getContext() != null) {
+                                            mDownloadIntent = new Intent(getContext(), DownloadAppService.class);
+                                            mDownloadIntent.putExtra(DownloadAppService.ABOUT, about);
+                                            getContext().startService(mDownloadIntent);
+                                        }
+                                    }))
+                                    .setNegativeButton(android.R.string.cancel, null)
+                                    .create();
+                            dialog.setCancelable(false);
+                            dialog.show();
+                        }
+                    }
+                });
             }
         }
     }
@@ -430,5 +467,10 @@ public class TransactionsFragment extends BaseFragment
                     true, years, months, categories, minMoney, maxMoney);
         }
         mIsLoading = true;
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
     }
 }

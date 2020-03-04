@@ -1,6 +1,8 @@
 package com.yjh.iaer.repository;
 
 
+import android.util.Log;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.lifecycle.LiveData;
@@ -12,15 +14,21 @@ import com.yjh.iaer.network.Resource;
 import com.yjh.iaer.network.Webservice;
 import com.yjh.iaer.room.dao.AboutDao;
 import com.yjh.iaer.room.entity.About;
+import com.yjh.iaer.util.RateLimiter;
+
+import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
 @Singleton
 public class AboutRepository {
+    private static final String TAG = "AboutRepository";
+
     private final Webservice mWebservice;
     private final AboutDao mDao;
-
+    private final RateLimiter<String> mRepoListRateLimit
+            = new RateLimiter<>(2, TimeUnit.MINUTES);
     @Inject
     AboutRepository(Webservice webservice, AboutDao aboutDao) {
         this.mWebservice = webservice;
@@ -38,7 +46,11 @@ public class AboutRepository {
 
             @Override
             protected boolean shouldFetch(@Nullable About data) {
-                return true;
+                boolean shouldFetch = (data == null ||
+                        mRepoListRateLimit.shouldFetch("About"));
+                Log.d(TAG, "data: " + data + ", shouldFetch: " +
+                        mRepoListRateLimit.shouldFetch("About"));
+                return shouldFetch;
             }
 
             @NonNull

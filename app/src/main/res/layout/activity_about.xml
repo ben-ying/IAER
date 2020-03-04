@@ -24,6 +24,14 @@
             android:layout_marginTop="@dimen/small_margin"
             android:text="@string/latest_version" />
 
+        <TextView
+            android:id="@+id/tv_update_message"
+            style="@style/about_label"
+            android:layout_below="@+id/tv_latest_version"
+            android:layout_marginTop="@dimen/fab_margin"
+            android:textSize="16sp"
+            android:textColor="@color/google_red"/>
+
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/btn_update"
             style="@style/default_bottom_button"
