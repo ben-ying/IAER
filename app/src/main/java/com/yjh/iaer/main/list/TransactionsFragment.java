@@ -307,31 +307,36 @@ public class TransactionsFragment extends BaseFragment
                     About about = aboutResource.getData();
                     if (aboutResource.getStatus() == Status.SUCCESS && about != null) {
                         Log.d(TAG, "About: " + about.getApkUrl());
-                        long updateMilliseconds = SharedPrefsUtils.getLongPreference(getContext(),
-                                BuildConfig.VERSION_NAME, 0);
-                        // greater or equal to 10 days will show dialog.
-                        long expiredDays = (System.currentTimeMillis() - updateMilliseconds) / (1000 * 60 * 60 * 24);
-                        Log.d(TAG, "expired days: " + expiredDays);
-                        if (expiredDays > 10) {
-                            SharedPrefsUtils.setLongPreference(
-                                    getContext(),
-                                    BuildConfig.VERSION_NAME,
-                                    System.currentTimeMillis());
-                            final AlertDialog dialog = new AlertDialog.Builder(getContext())
-                                    .setTitle(String.format(getString(
-                                            R.string.latest_version_found), about.getVersionName()))
-                                    .setMessage(about.getComment())
-                                    .setPositiveButton(android.R.string.ok, ((dialogInterface, which) -> {
-                                        if (getContext() != null) {
-                                            mDownloadIntent = new Intent(getContext(), DownloadAppService.class);
-                                            mDownloadIntent.putExtra(DownloadAppService.ABOUT, about);
-                                            getContext().startService(mDownloadIntent);
-                                        }
-                                    }))
-                                    .setNegativeButton(android.R.string.cancel, null)
-                                    .create();
-                            dialog.setCancelable(false);
-                            dialog.show();
+                        if (about.getVersionCode() > BuildConfig.VERSION_CODE) {
+                            long updateMilliseconds = SharedPrefsUtils.getLongPreference(getContext(),
+                                    BuildConfig.VERSION_NAME, 0);
+                            // greater or equal to 10 days will show dialog.
+                            long expiredDays = (System.currentTimeMillis() - updateMilliseconds)
+                                    / (1000 * 60 * 60 * 24);
+                            Log.d(TAG, "expired days: " + expiredDays);
+                            if (expiredDays > 10) {
+                                SharedPrefsUtils.setLongPreference(
+                                        getContext(),
+                                        BuildConfig.VERSION_NAME,
+                                        System.currentTimeMillis());
+                                final AlertDialog dialog = new AlertDialog.Builder(getContext())
+                                        .setTitle(String.format(getString(
+                                                R.string.latest_version_found), about.getVersionName()))
+                                        .setMessage(about.getComment())
+                                        .setPositiveButton(android.R.string.ok, ((dialogInterface, which) -> {
+                                            if (getContext() != null) {
+                                                mDownloadIntent = new Intent(
+                                                        getContext(), DownloadAppService.class);
+                                                mDownloadIntent.putExtra(
+                                                        DownloadAppService.ABOUT, about);
+                                                getContext().startService(mDownloadIntent);
+                                            }
+                                        }))
+                                        .setNegativeButton(android.R.string.cancel, null)
+                                        .create();
+                                dialog.setCancelable(false);
+                                dialog.show();
+                            }
                         }
                     }
                 });
