@@ -28,7 +28,7 @@ public class AboutRepository {
     private final Webservice mWebservice;
     private final AboutDao mDao;
     private final RateLimiter<String> mRepoListRateLimit
-            = new RateLimiter<>(2, TimeUnit.MINUTES);
+            = new RateLimiter<>(30, TimeUnit.MINUTES);
     @Inject
     AboutRepository(Webservice webservice, AboutDao aboutDao) {
         this.mWebservice = webservice;

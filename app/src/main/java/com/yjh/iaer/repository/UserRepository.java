@@ -27,7 +27,7 @@ public class UserRepository {
     private final Webservice mWebservice;
     private final UserDao mUserDao;
     private final RateLimiter<String> mRepoListRateLimit
-            = new RateLimiter<>(2, TimeUnit.SECONDS);
+            = new RateLimiter<>(20, TimeUnit.SECONDS);
 
     @Inject
     UserRepository(Webservice webservice, UserDao userDao) {

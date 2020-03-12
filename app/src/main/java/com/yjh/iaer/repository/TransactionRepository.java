@@ -79,7 +79,8 @@ public class TransactionRepository {
             @Override
             protected boolean shouldFetch(@Nullable List<Transaction> data) {
                 return fetchNetwork && (data == null || data.isEmpty()
-                        || mRepoListRateLimit.shouldFetch(MyApplication.sUser.getToken()));
+                        || mRepoListRateLimit.shouldFetch(MyApplication.sUser.getToken()
+                        + years + months + categories + minMoney + maxMoney + categories));
             }
 
             @NonNull
