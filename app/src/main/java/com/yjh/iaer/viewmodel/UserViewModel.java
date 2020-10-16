@@ -40,6 +40,10 @@ public class UserViewModel extends ViewModel {
         return mRepository.sendVerifyCode(email);
     }
 
+    public LiveData<Resource<User>> resetPassword(String verifyCode, String email, String password) {
+        return mRepository.resetPassword(verifyCode, email, password);
+    }
+
     public void deleteUserHistory(int userId) {
         mRepository.deleteUserHistory(userId);
     }

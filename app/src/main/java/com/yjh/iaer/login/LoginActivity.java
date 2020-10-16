@@ -72,6 +72,8 @@ public class LoginActivity extends BaseActivity {
     public void initView() {
         mUsername = getIntent().getStringExtra(Constant.USERNAME);
         mPassword = getIntent().getStringExtra(Constant.PASSWORD);
+        usernameEditText.setText(mUsername);
+        passwordEditText.setText(mPassword);
         mViewModel = ViewModelProviders.of(
                 this, viewModelFactory).get(UserViewModel.class);
         loginRelativeLayout.setVisibility(View.GONE);

@@ -100,7 +100,7 @@ public class AccountAdapter extends RecyclerView.Adapter<
         @OnLongClick(R.id.item_account)
         boolean showDeleteDialog(View v) {
             final User user = (User) v.getTag();
-            if (!user.getToken().equals(MyApplication.sUser.getToken())) {
+            if (user.getToken() == null || !user.getToken().equals(MyApplication.sUser.getToken())) {
                 AlertUtils.showConfirmDialog(mContext, R.string.delete_user_history_alert,
                         (dialogInterface, i) -> {
                             mInterface.deleteUser(user);

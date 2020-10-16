@@ -30,6 +30,7 @@ public interface Webservice {
     String URL_TRANSACTIONS = "iaers/";
     String URL_USER_LOGIN = "user/login/";
     String URL_SEND_VERIFY_CODE = "user/send_verify_code/";
+    String URL_RESET_PASSWORD = "user/reset_password/";
     String URL_CATEGORIES = "categories/";
     String URL_STATISTICS_CATEGORIES = "statistics/category/";
     String URL_STATISTICS_DATES = "statistics/date/";
@@ -105,6 +106,12 @@ public interface Webservice {
     @FormUrlEncoded
     @POST(URL_SEND_VERIFY_CODE)
     LiveData<ApiResponse<CustomResponse<User>>> sendVerifyCode(@Field("email") String email);
+
+    @FormUrlEncoded
+    @POST(URL_RESET_PASSWORD)
+    LiveData<ApiResponse<CustomResponse<User>>> resetPassword(@Field("verify_code") String verifyCode,
+                                                              @Field("email") String email,
+                                                              @Field("password") String password);
 
     @GET(URL_CATEGORIES)
     LiveData<ApiResponse<CustomResponse<ListResponseResult<List<Category>>>>> getCategories();

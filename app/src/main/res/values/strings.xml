@@ -40,6 +40,7 @@
     <string name="sent_verify_code_message">验证码已发送到你的邮箱，请查收</string>
     <string name="countdown_resend_message">%d秒后重新发送</string>
     <string name="empty_verify_code">验证码不能为空</string>
+    <string name="reset_password_success">密码修改成功</string>
 
 
     <string name="action_settings">设置</string>

@@ -248,6 +248,44 @@ public class UserRepository {
         }.getAsLiveData();
     }
 
+    public LiveData<Resource<User>> resetPassword(String verifyCode, String email, String password) {
+        return new NetworkBoundResource<User, CustomResponse<User>>() {
+
+            @Override
+            protected void saveCallResult(@NonNull CustomResponse<User> item) {
+            }
+
+            @Override
+            protected boolean shouldFetch(@Nullable User data) {
+                return true;
+            }
+
+            @NonNull
+            @Override
+            protected LiveData<User> loadFromDb() {
+                return mUserDao.getUserByEmail(email);
+            }
+
+            @Nullable
+            @Override
+            protected LiveData<ApiResponse<CustomResponse<User>>> createCall() {
+                return mWebservice.resetPassword(verifyCode, email,
+                        MD5Utils.getMD5ofStr(password).toLowerCase());
+            }
+
+            @Override
+            protected CustomResponse<User> processResponse(
+                    ApiResponse<CustomResponse<User>> response) {
+                return response.getBody();
+            }
+
+            @Override
+            protected void onFetchFailed(String errorMessage) {
+                super.onFetchFailed(errorMessage);
+            }
+        }.getAsLiveData();
+    }
+
     private void saveUser(User user) {
         user.setLogin(true);
         user.setInHistory(true);
