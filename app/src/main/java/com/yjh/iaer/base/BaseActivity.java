@@ -20,7 +20,9 @@ import dagger.android.DispatchingAndroidInjector;
 import dagger.android.support.HasSupportFragmentInjector;
 
 public abstract class BaseActivity extends AppCompatActivity
-        implements LifecycleRegistryOwner, HasSupportFragmentInjector {
+        implements HasSupportFragmentInjector {
+
+    private LifecycleRegistry mLifecycleRegistry;
 
     @Inject
     DispatchingAndroidInjector<Fragment> dispatchingAndroidInjector;
@@ -51,10 +53,12 @@ public abstract class BaseActivity extends AppCompatActivity
 
     @Override
     public LifecycleRegistry getLifecycle() {
+        if (mLifecycleRegistry == null) {
+            mLifecycleRegistry = new LifecycleRegistry(this);
+        }
         return mLifecycleRegistry;
     }
 
-    private final LifecycleRegistry mLifecycleRegistry = new LifecycleRegistry(this);
     @BindView(R.id.toolbar)
     public Toolbar toolbar;
 

@@ -26,7 +26,7 @@ public abstract class BaseFragment extends Fragment
     @Inject
     public ViewModelProvider.Factory viewModelFactory;
 
-    private LifecycleRegistry mLifecycleRegistry = new LifecycleRegistry(this);
+    private LifecycleRegistry mLifecycleRegistry;
     private Unbinder mUnBinder;
 
     @Nullable
@@ -42,6 +42,9 @@ public abstract class BaseFragment extends Fragment
 
     @Override
     public LifecycleRegistry getLifecycle() {
+        if (mLifecycleRegistry == null) {
+            mLifecycleRegistry = new LifecycleRegistry(this);
+        }
         return mLifecycleRegistry;
     }
 
