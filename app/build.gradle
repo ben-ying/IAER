@@ -1,4 +1,5 @@
 apply plugin: 'com.android.application'
+apply plugin: "androidx.navigation.safeargs"
 
 android {
     compileSdkVersion 29
@@ -111,6 +112,6 @@ dependencies {
     implementation "androidx.navigation:navigation-dynamic-features-fragment:$nav_version"
     // Testing Navigation
     androidTestImplementation "androidx.navigation:navigation-testing:$nav_version"
-//     // Jetpack Compose Integration
-//    implementation "androidx.navigation:navigation-compose:1.0.0-alpha02"
+     // Jetpack Compose Integration
+    implementation "androidx.navigation:navigation-compose:1.0.0-alpha02"
 }
