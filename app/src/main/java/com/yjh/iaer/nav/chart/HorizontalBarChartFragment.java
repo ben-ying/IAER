@@ -65,7 +65,7 @@ public class HorizontalBarChartFragment extends BaseChartFragment {
     TextView totalTextView;
     @BindView(R.id.description_layout)
     View descriptionLayout;
-    @BindView(R.id.progress_bar)
+    @BindView(R.id.progress_bar)getStatisticsCategories
     ProgressBar progressBar;
     @BindView(R.id.empty_view)
     View emptyView;

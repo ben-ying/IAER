@@ -1,7 +1,6 @@
 package com.yjh.iaer.main;
 
 import androidx.lifecycle.ViewModelProvider;
-import androidx.lifecycle.ViewModelProviders;
 import android.content.Intent;
 import android.os.Handler;
 import androidx.annotation.NonNull;
@@ -16,9 +15,6 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.bumptech.glide.signature.ObjectKey;
-import com.yjh.iaer.GlideApp;
 import com.yjh.iaer.MyApplication;
 import com.yjh.iaer.R;
 import com.yjh.iaer.base.BaseActivity;
@@ -71,19 +67,6 @@ public class MainActivity extends BaseActivity
         ImageView profileImageView = navigationView.getHeaderView(0).findViewById(R.id.img_profile);
         nameTextView.setText(WordUtils.capitalizeFully(MyApplication.sUser.getUsername()));
         emailTextView.setText(MyApplication.sUser.getEmail());
-        int placeholder = R.mipmap.ic_launcher;
-        GlideApp.with(this)
-                .asBitmap()
-                .load(MyApplication.sUser.getProfile())
-                .placeholder(placeholder)
-                .error(placeholder)
-                .fallback(placeholder)
-                .thumbnail(0.1f)
-                .diskCacheStrategy(DiskCacheStrategy.ALL)
-                .circleCrop()
-                .signature(new ObjectKey(getResources().getInteger(R.integer.glide_version)))
-                .into(profileImageView);
-
         MainActivity.this.setTitle(Utils.capWords(MyApplication.sUser.getUsername()));
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer,
                 toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close) {
@@ -102,8 +85,7 @@ public class MainActivity extends BaseActivity
         navigationView.setNavigationItemSelectedListener(this);
         setFragment(TransactionsFragment.newInstance());
 
-        mUserViewModel = ViewModelProviders.of(
-                this, viewModelFactory).get(UserViewModel.class);
+        mUserViewModel = new ViewModelProvider(this, viewModelFactory).get(UserViewModel.class);
     }
 
     @Override

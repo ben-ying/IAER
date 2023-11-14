@@ -2,12 +2,12 @@ apply plugin: 'com.android.application'
 apply plugin: "androidx.navigation.safeargs"
 
 android {
-    compileSdkVersion 29
-    buildToolsVersion '29.0.3'
+    compileSdkVersion 33
+    buildToolsVersion '30.0.2'
     defaultConfig {
         applicationId "com.yjh.iaer"
         minSdkVersion 24
-        targetSdkVersion 29
+        targetSdkVersion 33
         versionCode 7
         versionName "1.6"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
@@ -23,7 +23,9 @@ android {
         targetCompatibility JavaVersion.VERSION_1_8
     }
     packagingOptions {
-        exclude 'META-INF/proguard/coroutines.pro'
+        resources {
+            excludes += ['META-INF/proguard/coroutines.pro']
+        }
     }
 }
 
@@ -32,10 +34,10 @@ dependencies {
     androidTestImplementation('androidx.test.espresso:espresso-core:3.1.0', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
-    implementation 'androidx.appcompat:appcompat:1.2.0'
+    implementation 'androidx.appcompat:appcompat:1.6.1'
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
-    implementation 'com.google.android.material:material:1.2.1'
-    def constraint_version = "2.0.4"
+    implementation 'com.google.android.material:material:1.10.0'
+    def constraint_version = "2.1.4"
     implementation "androidx.constraintlayout:constraintlayout:$constraint_version"
     implementation "androidx.constraintlayout:constraintlayout:$constraint_version"
     testImplementation 'junit:junit:4.12'
@@ -43,13 +45,13 @@ dependencies {
     // Architecture Components
 
     // LifeCycles, LiveData, ViewModel
-    def lifecycle_version = "2.3.0-beta01"
+    def lifecycle_version = "2.6.2"
     implementation "androidx.lifecycle:lifecycle-runtime:$lifecycle_version"
-    implementation "androidx.lifecycle:lifecycle-extensions:2.2.0"
+    implementation "androidx.lifecycle:lifecycle-extensions:2.6.2"
     implementation "androidx.lifecycle:lifecycle-common-java8:$lifecycle_version"
 
     // Room
-    def room_version = "2.2.5"
+    def room_version = "2.6.0"
     implementation "androidx.room:room-runtime:$room_version"
     annotationProcessor "androidx.room:room-compiler:$room_version"
 
@@ -61,7 +63,7 @@ dependencies {
     implementation 'io.reactivex.rxjava2:rxandroid:2.1.0'
 
     // dagger2
-    def dagger_version = "2.19"
+    def dagger_version = "2.28.3"
     implementation "com.google.dagger:dagger:$dagger_version"
     implementation "com.google.dagger:dagger-android:$dagger_version"
     implementation "com.google.dagger:dagger-android-support:$dagger_version"
@@ -105,7 +107,7 @@ dependencies {
     implementation 'com.github.pratikbutani:MultiSelectSpinner:08d324c98'
 
     // Navigation
-    def nav_version = "2.3.1"
+    def nav_version = "2.7.5"
     implementation "androidx.navigation:navigation-fragment:$nav_version"
     implementation "androidx.navigation:navigation-ui:$nav_version"
     // Feature module Support
@@ -113,5 +115,5 @@ dependencies {
     // Testing Navigation
     androidTestImplementation "androidx.navigation:navigation-testing:$nav_version"
      // Jetpack Compose Integration
-    implementation "androidx.navigation:navigation-compose:1.0.0-alpha02"
+    implementation "androidx.navigation:navigation-compose:2.7.5"
 }

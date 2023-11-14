@@ -3,14 +3,15 @@
 buildscript {
 
     repositories {
-        jcenter()
+        mavenCentral()
         maven {
             url 'https://maven.google.com'
         }
         google()
+//        maven { url 'https://maven.aliyun.com/repository/google' }
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:4.1.1'
+        classpath 'com.android.tools.build:gradle:4.2.2'
         def nav_version = "2.3.1"
         classpath "androidx.navigation:navigation-safe-args-gradle-plugin:$nav_version"
 
@@ -22,10 +23,11 @@ buildscript {
 allprojects {
     repositories {
         google()
-        jcenter()
+        mavenCentral()
         maven {url 'https://maven.google.com'}
         // MPAndroidChart & MultiSelectSpinner
         maven { url "https://jitpack.io" }
+//        maven { url 'https://maven.aliyun.com/repository/google' }
     }
 }
 
