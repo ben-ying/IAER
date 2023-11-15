@@ -2,7 +2,6 @@ package com.yjh.iaer.main.list;
 
 import android.app.AlertDialog;
 import androidx.lifecycle.ViewModelProvider;
-import androidx.lifecycle.ViewModelProviders;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.AppCompatButton;
 import android.view.LayoutInflater;
@@ -64,7 +63,7 @@ public class TransactionDetailActivity extends BaseActivity {
                 .getSerializableExtra(Constant.EXTRA_TRANSACTION);
         refreshData();
 
-        mViewModel = ViewModelProviders.of(
+        mViewModel = new ViewModelProvider(
                 this, viewModelFactory).get(TransactionViewModel.class);
 
         mViewModel.getTransactionsResource().observe(this, this::setListData);

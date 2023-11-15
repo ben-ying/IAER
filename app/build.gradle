@@ -2,7 +2,7 @@ apply plugin: 'com.android.application'
 apply plugin: "androidx.navigation.safeargs"
 
 android {
-    compileSdkVersion 33
+    compileSdkVersion 34
     buildToolsVersion '30.0.2'
     defaultConfig {
         applicationId "com.yjh.iaer"
@@ -34,9 +34,10 @@ dependencies {
     androidTestImplementation('androidx.test.espresso:espresso-core:3.1.0', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
-    implementation 'androidx.appcompat:appcompat:1.6.1'
+    implementation 'androidx.appcompat:appcompat:1.4.1'
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
-    implementation 'com.google.android.material:material:1.10.0'
+    // Null extracted folder for artifact: ResolvedArtifact(componentIdentifier=androidx.activity:activity:1.8.0, variantName=null, artifactFile=C:\Users\ying_j3\.gradle\caches\modules-2\files-2.1\androidx.activity\activity\1.8.0\4266e2118d565daa20212d1726e11f41e1a4d0ca\activity-1.8.0.aar, extractedFolder=null, dependencyType=ANDROID, isWrappedModule=false, buildMapping={__current_build__=C:\Users\ying_j3\Repos\IAER}, mavenCoordinatesCache=com.android.build.gradle.intlerna.ide.dependencies.MavenCoordinatesCacheBuildService$Inject@60ebed8f)
+    implementation 'com.google.android.material:material:1.6.0'
     def constraint_version = "2.1.4"
     implementation "androidx.constraintlayout:constraintlayout:$constraint_version"
     implementation "androidx.constraintlayout:constraintlayout:$constraint_version"
@@ -47,7 +48,7 @@ dependencies {
     // LifeCycles, LiveData, ViewModel
     def lifecycle_version = "2.6.2"
     implementation "androidx.lifecycle:lifecycle-runtime:$lifecycle_version"
-    implementation "androidx.lifecycle:lifecycle-extensions:2.6.2"
+//    implementation "androidx.lifecycle:lifecycle-extensions:2.6.2"
     implementation "androidx.lifecycle:lifecycle-common-java8:$lifecycle_version"
 
     // Room
@@ -63,7 +64,7 @@ dependencies {
     implementation 'io.reactivex.rxjava2:rxandroid:2.1.0'
 
     // dagger2
-    def dagger_version = "2.28.3"
+    def dagger_version = "2.23.2"
     implementation "com.google.dagger:dagger:$dagger_version"
     implementation "com.google.dagger:dagger-android:$dagger_version"
     implementation "com.google.dagger:dagger-android-support:$dagger_version"
@@ -104,7 +105,7 @@ dependencies {
     implementation 'org.apache.commons:commons-lang3:3.4'
 
     // MultiSelectSpinner
-    implementation 'com.github.pratikbutani:MultiSelectSpinner:08d324c98'
+//    implementation 'com.github.pratikbutani:MultiSelectSpinner:08d324c98'
 
     // Navigation
     def nav_version = "2.7.5"
@@ -115,5 +116,5 @@ dependencies {
     // Testing Navigation
     androidTestImplementation "androidx.navigation:navigation-testing:$nav_version"
      // Jetpack Compose Integration
-    implementation "androidx.navigation:navigation-compose:2.7.5"
+//    implementation "androidx.navigation:navigation-compose:2.7.5"
 }

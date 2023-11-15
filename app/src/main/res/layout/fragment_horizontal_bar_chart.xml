@@ -68,7 +68,7 @@
                 android:paddingLeft="@dimen/activity_horizontal_margin"
                 android:paddingRight="@dimen/activity_horizontal_margin"
                 android:textSize="@dimen/label_text_size"
-                android:textColor="@color/black"
+                android:textColor="@color/black_text"
                 android:layout_below="@+id/description_layout"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />

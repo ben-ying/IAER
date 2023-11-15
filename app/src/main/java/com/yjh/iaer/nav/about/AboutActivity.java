@@ -6,7 +6,6 @@ import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 import androidx.lifecycle.ViewModelProvider;
-import androidx.lifecycle.ViewModelProviders;
 
 import com.yjh.iaer.BuildConfig;
 import com.yjh.iaer.R;
@@ -54,7 +53,7 @@ public class AboutActivity extends BaseActivity {
         appVersionTextView.setText(String.format(getString(R.string.app_version),
                 BuildConfig.VERSION_NAME, BuildConfig.VERSION_CODE));
         AboutViewModel aboutViewModel =
-                ViewModelProviders.of(this, viewModelFactory).get(AboutViewModel.class);
+                new ViewModelProvider(this, viewModelFactory).get(AboutViewModel.class);
         aboutViewModel.loadAbout().observe(this, this::setAbout);
     }
 

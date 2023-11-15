@@ -2,7 +2,6 @@ package com.yjh.iaer.nav.setting;
 
 import android.app.AlertDialog;
 import androidx.lifecycle.ViewModelProvider;
-import androidx.lifecycle.ViewModelProviders;
 import android.content.DialogInterface;
 import androidx.annotation.Nullable;
 import android.text.Editable;
@@ -62,7 +61,7 @@ public class SettingActivity extends BaseActivity
     public void initView() {
         getSupportActionBar().setTitle(R.string.setting);
 
-        mViewModel = ViewModelProviders.of(
+        mViewModel = new ViewModelProvider(
                 this, viewModelFactory).get(SettingViewModel.class);
         mViewModel.loadUserSetting(MyApplication.sUser.getToken(),
                 MyApplication.sUser.getUserId(), false)

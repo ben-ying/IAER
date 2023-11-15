@@ -1,7 +1,6 @@
 package com.yjh.iaer.main.list;
 
 import androidx.lifecycle.ViewModelProvider;
-import androidx.lifecycle.ViewModelProviders;
 import androidx.annotation.Nullable;
 
 import android.app.DatePickerDialog;
@@ -91,9 +90,9 @@ public class AddTransactionActivity extends BaseActivity {
                     checkCanSave();
                 }));
 
-        mTransactionViewModel = ViewModelProviders.of(
+        mTransactionViewModel = new ViewModelProvider(
                 this, viewModelFactory).get(TransactionViewModel.class);
-        CategoryViewModel categoryViewModel = ViewModelProviders.of(
+        CategoryViewModel categoryViewModel = new ViewModelProvider(
                 this, viewModelFactory).get(CategoryViewModel.class);
         categoryViewModel.loadAllCategories().observe(this, this::setCategoryList);
     }

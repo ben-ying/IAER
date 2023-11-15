@@ -11,7 +11,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.lifecycle.ViewModelProvider;
-import androidx.lifecycle.ViewModelProviders;
 
 import com.yjh.iaer.R;
 import com.yjh.iaer.base.BaseActivity;
@@ -90,7 +89,7 @@ public class ResetPasswordActivity extends BaseActivity {
     @Override
     @SuppressWarnings("ConstantConditions")
     public void initView() {
-        mViewModel = ViewModelProviders.of(
+        mViewModel = new ViewModelProvider(
                 this, viewModelFactory).get(UserViewModel.class);
         mIsResetPassword = getIntent().getBooleanExtra(RESET_PASSWORD, false);
         mEmail = getIntent().getStringExtra(Constant.EMAIL);

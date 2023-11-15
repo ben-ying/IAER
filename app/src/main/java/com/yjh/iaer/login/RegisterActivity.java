@@ -1,7 +1,6 @@
 package com.yjh.iaer.login;
 
 import androidx.lifecycle.ViewModelProvider;
-import androidx.lifecycle.ViewModelProviders;
 import android.content.Intent;
 import android.util.Patterns;
 import android.view.View;
@@ -52,7 +51,7 @@ public class RegisterActivity extends BaseActivity {
 
     @Override
     public void initView() {
-        mViewModel = ViewModelProviders.of(
+        mViewModel = new ViewModelProvider(
                 this, viewModelFactory).get(UserViewModel.class);
     }
 

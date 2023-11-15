@@ -1,14 +1,12 @@
 package com.yjh.iaer.main.list;
 
-
-import androidx.lifecycle.ViewModelProviders;
-
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.graphics.Point;
 import android.os.Bundle;
 import androidx.annotation.Nullable;
 import androidx.core.widget.NestedScrollView;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import androidx.appcompat.widget.AppCompatButton;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -240,12 +238,12 @@ public class TransactionsFragment extends BaseFragment
     }
 
     private void initViewModel() {
-        mTransactionViewModel = ViewModelProviders.of(
+        mTransactionViewModel = new ViewModelProvider(
                 this, viewModelFactory).get(TransactionViewModel.class);
         mTransactionViewModel.getTransactionsResource().observe(getViewLifecycleOwner(), this::setListData);
         loadTransactions(null, null, null, 0, 0, false);
 
-        CategoryViewModel categoryViewModel = ViewModelProviders.of(
+        CategoryViewModel categoryViewModel = new ViewModelProvider(
                 this, viewModelFactory).get(CategoryViewModel.class);
         categoryViewModel.loadAllCategories().observe(
                 getViewLifecycleOwner(), this::setCategoryList);
@@ -288,7 +286,7 @@ public class TransactionsFragment extends BaseFragment
                     }
                 }
 
-                SettingViewModel settingViewModel = ViewModelProviders.of(
+                SettingViewModel settingViewModel = new ViewModelProvider(
                         this, viewModelFactory).get(SettingViewModel.class);
                 settingViewModel.loadUserSetting(MyApplication.sUser.getToken(),
                         MyApplication.sUser.getUserId(), true)
@@ -300,7 +298,7 @@ public class TransactionsFragment extends BaseFragment
 //                    mAdapter.setShowHeader(true);
 //                }
 
-                mAboutViewModel = ViewModelProviders.of(
+                mAboutViewModel = new ViewModelProvider(
                         this, viewModelFactory).get(AboutViewModel.class);
 
                 mAboutViewModel.loadAbout().observe(getViewLifecycleOwner(), aboutResource->{

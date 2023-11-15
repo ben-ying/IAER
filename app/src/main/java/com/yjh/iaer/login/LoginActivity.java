@@ -2,11 +2,9 @@ package com.yjh.iaer.login;
 
 import android.app.AlertDialog;
 import androidx.lifecycle.ViewModelProvider;
-import androidx.lifecycle.ViewModelProviders;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import androidx.core.app.ActivityCompat;
 import androidx.appcompat.widget.AppCompatButton;
 import android.text.InputType;
 import android.util.Log;
@@ -74,7 +72,7 @@ public class LoginActivity extends BaseActivity {
         mPassword = getIntent().getStringExtra(Constant.PASSWORD);
         usernameEditText.setText(mUsername);
         passwordEditText.setText(mPassword);
-        mViewModel = ViewModelProviders.of(
+        mViewModel = new ViewModelProvider(
                 this, viewModelFactory).get(UserViewModel.class);
         loginRelativeLayout.setVisibility(View.GONE);
         mViewModel.loadAllUsers().observe(this, listResource -> {

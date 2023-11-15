@@ -1,7 +1,6 @@
 package com.yjh.iaer.nav.chart;
 
 import androidx.lifecycle.ViewModelProvider;
-import androidx.lifecycle.ViewModelProviders;
 import android.os.Bundle;
 import androidx.annotation.Nullable;
 import android.view.LayoutInflater;
@@ -50,7 +49,7 @@ public abstract class BaseChartFragment extends BaseFragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        mCategoryViewModel = ViewModelProviders.of(
+        mCategoryViewModel = new ViewModelProvider(
                 this, viewModelFactory).get(CategoryViewModel.class);
         return super.onCreateView(inflater, container, savedInstanceState);
     }

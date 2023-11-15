@@ -1,7 +1,6 @@
 package com.yjh.iaer.nav.account;
 
 import androidx.lifecycle.ViewModelProvider;
-import androidx.lifecycle.ViewModelProviders;
 import android.content.Intent;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -59,7 +58,7 @@ public class SwitchAccountActivity extends BaseActivity
         recyclerView.setNestedScrollingEnabled(false);
 
 
-        mViewModel = ViewModelProviders.of(
+        mViewModel = new ViewModelProvider(
                 this, viewModelFactory).get(UserViewModel.class);
         mViewModel.loadAllUsers().observe(this, listResource -> {
             if (listResource != null && listResource.getData() != null

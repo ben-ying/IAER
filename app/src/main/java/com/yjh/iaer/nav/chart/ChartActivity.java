@@ -1,7 +1,6 @@
 package com.yjh.iaer.nav.chart;
 
 import androidx.lifecycle.ViewModelProvider;
-import androidx.lifecycle.ViewModelProviders;
 import androidx.annotation.Nullable;
 import com.google.android.material.tabs.TabLayout;
 import androidx.viewpager.widget.ViewPager;
@@ -72,7 +71,7 @@ public class ChartActivity extends BaseActivity {
         tabLayout.setupWithViewPager(viewPager);
         tabLayout.setVisibility(View.VISIBLE);
 
-        mFundViewModel = ViewModelProviders.of(
+        mFundViewModel = new ViewModelProvider(
                 this, viewModelFactory).get(FundViewModel.class);
         mFundViewModel.loadAllFunds().observe(this, this::setFundList);
 
