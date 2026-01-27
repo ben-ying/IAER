@@ -142,7 +142,7 @@ public class TransactionAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
             viewHolder.dateTextView.setText(transaction.getDate());
             viewHolder.moneyTextView.setText(String.format(
                     mContext.getString(R.string.transaction_yuan),
-                    transaction.getMoneyInt(), transaction.getRemark()));
+                    transaction.getMoney(), transaction.getRemark()));
             viewHolder.rootView.setTag(transaction);
         } else if (holder instanceof HeaderViewHolder) {
             HeaderViewHolder viewHolder = (HeaderViewHolder) holder;

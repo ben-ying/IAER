@@ -34,7 +34,7 @@
                 android:id="@+id/et_money"
                 style="@style/edit_text"
                 android:hint="@string/hint_money"
-                android:inputType="number" />
+                android:inputType="numberDecimal" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout

@@ -67,7 +67,7 @@ public class Transaction implements Serializable {
     private int status;
 
     public int getMoneyInt() {
-        return Integer.valueOf(money);
+        return (int) Float.parseFloat(money);
     }
 
     public int getMoneyAbsInt() {
