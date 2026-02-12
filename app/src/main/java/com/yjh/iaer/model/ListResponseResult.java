@@ -6,17 +6,17 @@ public class ListResponseResult<T> {
     @SerializedName("count")
     private int count;
     @SerializedName("current_income")
-    private int currentIncome;
+    private String currentIncome;
     @SerializedName("current_expenditure")
-    private int currentExpenditure;
+    private String currentExpenditure;
     @SerializedName("this_month_income")
-    private int thisMonthIncome;
+    private String thisMonthIncome;
     @SerializedName("this_month_expenditure")
-    private int thisMonthExpenditure;
+    private String thisMonthExpenditure;
     @SerializedName("this_year_income")
-    private int thisYearIncome;
+    private String thisYearIncome;
     @SerializedName("this_year_expenditure")
-    private int thisYearExpenditure;
+    private String thisYearExpenditure;
     @SerializedName("next")
     private String next;
     @SerializedName("previous")
@@ -41,50 +41,58 @@ public class ListResponseResult<T> {
     }
 
     public int getCurrentIncome() {
-        return currentIncome;
+        return getMoneyInt(currentIncome);
     }
 
-    public void setCurrentIncome(int currentIncome) {
+    public void setCurrentIncome(String currentIncome) {
         this.currentIncome = currentIncome;
     }
 
     public int getCurrentExpenditure() {
-        return currentExpenditure;
+        return getMoneyInt(currentExpenditure);
     }
 
-    public void setCurrentExpenditure(int currentExpenditure) {
+    public void setCurrentExpenditure(String currentExpenditure) {
         this.currentExpenditure = currentExpenditure;
     }
 
     public int getThisMonthIncome() {
-        return thisMonthIncome;
+        return getMoneyInt(thisMonthIncome);
     }
 
-    public void setThisMonthIncome(int thisMonthIncome) {
+    private int getMoneyInt(String money) {
+        try {
+            return (int) Math.round(Double.parseDouble(money));
+        } catch (NumberFormatException e) {
+            return 0;
+        }
+    }
+
+    public void setThisMonthIncome(String thisMonthIncome) {
         this.thisMonthIncome = thisMonthIncome;
     }
 
     public int getThisMonthExpenditure() {
-        return thisMonthExpenditure;
+        return getMoneyInt(thisMonthExpenditure);
     }
 
-    public void setThisMonthExpenditure(int thisMonthExpenditure) {
+    public void setThisMonthExpenditure(String thisMonthExpenditure) {
         this.thisMonthExpenditure = thisMonthExpenditure;
     }
 
     public int getThisYearIncome() {
-        return thisYearIncome;
+        return getMoneyInt(thisYearIncome);
     }
 
-    public void setThisYearIncome(int thisYearIncome) {
+    public void setThisYearIncome(String thisYearIncome) {
         this.thisYearIncome = thisYearIncome;
     }
 
     public int getThisYearExpenditure() {
-        return thisYearExpenditure;
+        return getMoneyInt(thisYearExpenditure);
     }
 
-    public void setThisYearExpenditure(int thisYearExpenditure) {
+    public void setThisYearExpenditure(String thisYearExpenditure) {
         this.thisYearExpenditure = thisYearExpenditure;
     }
 
@@ -114,43 +122,43 @@ public class ListResponseResult<T> {
             count++;
             if (thisMonth) {
                 if (money > 0) {
-                    thisMonthIncome += adsMoney;
+                    thisMonthIncome = String.valueOf(getMoneyInt(thisMonthIncome) + adsMoney);
                 } else {
-                    thisMonthExpenditure += adsMoney;
+                    thisMonthExpenditure = String.valueOf(getMoneyInt(thisMonthExpenditure) + adsMoney);
                 }
             }
             if (thisYear) {
                 if (money > 0) {
-                    thisYearIncome += adsMoney;
+                    thisYearIncome = String.valueOf(getMoneyInt(thisYearIncome) + adsMoney);
                 } else {
-                    thisYearExpenditure += adsMoney;
+                    thisYearExpenditure = String.valueOf(getMoneyInt(thisYearExpenditure) + adsMoney);
                 }
             }
             if (money > 0) {
-                currentIncome += adsMoney;
+                currentIncome = String.valueOf(getMoneyInt(currentIncome) + adsMoney);
             } else {
-                currentExpenditure += adsMoney;
+                currentExpenditure = String.valueOf(getMoneyInt(currentExpenditure) + adsMoney);
             }
         } else {
             count--;
             if (thisMonth) {
                 if (money > 0) {
-                    thisMonthIncome -= adsMoney;
+                    thisMonthIncome = String.valueOf(getMoneyInt(thisMonthIncome) - adsMoney);
                 } else {
-                    thisMonthExpenditure -= adsMoney;
+                    thisMonthExpenditure = String.valueOf(getMoneyInt(thisMonthExpenditure) - adsMoney);
                 }
             }
             if (thisYear) {
                 if (money > 0) {
-                    thisYearIncome -= adsMoney;
+                    thisYearIncome = String.valueOf(getMoneyInt(thisYearIncome) - adsMoney);
                 } else {
-                    thisYearExpenditure -= adsMoney;
+                    thisYearExpenditure = String.valueOf(getMoneyInt(thisYearExpenditure) - adsMoney);
                 }
             }
             if (money > 0) {
-                currentIncome -= adsMoney;
+                currentIncome = String.valueOf(getMoneyInt(currentIncome) - adsMoney);
             } else {
-                currentExpenditure -= adsMoney;
+                currentExpenditure = String.valueOf(getMoneyInt(currentExpenditure) - adsMoney);
             }
         }
     }

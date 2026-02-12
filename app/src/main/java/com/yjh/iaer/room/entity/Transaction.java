@@ -67,11 +67,29 @@ public class Transaction implements Serializable {
     private int status;
 
     public int getMoneyInt() {
-        return (int) Float.parseFloat(money);
+        try {
+            // 支持 float/double 字符串，先按 double 解析，再四舍五入为 int
+            return (int) Math.round(Double.parseDouble(money));
+        } catch (NumberFormatException e) {
+            // 解析失败时可根据业务需要决定返回值，这里返回 0
+            return 0;
+        }
     }
 
     public int getMoneyAbsInt() {
         return Math.abs(getMoneyInt());
+    }
+
+    public double getMoneyDouble() {
+        try {
+            return Double.parseDouble(money);
+        } catch (NumberFormatException e) {
+            return 0.0;
+        }
+    }
+
+    public double getMoneyAbsDouble() {
+        return Math.abs(getMoneyDouble());
     }
 
     public String getCreatedDate() {
