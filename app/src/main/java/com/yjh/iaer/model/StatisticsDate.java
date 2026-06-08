@@ -1,6 +1,8 @@
 package com.yjh.iaer.model;
 
+import com.google.gson.annotations.JsonAdapter;
 import com.google.gson.annotations.SerializedName;
+import com.yjh.iaer.util.IntFromDecimalTypeAdapter;
 
 public class StatisticsDate {
     @SerializedName("year")
@@ -8,6 +10,7 @@ public class StatisticsDate {
     @SerializedName("month")
     private int month;
     @SerializedName("money")
+    @JsonAdapter(IntFromDecimalTypeAdapter.class)
     private int money;
 
     public StatisticsDate(int year, int month, int money) {

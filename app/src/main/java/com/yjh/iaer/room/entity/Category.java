@@ -4,7 +4,9 @@ import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
+import com.google.gson.annotations.JsonAdapter;
 import com.google.gson.annotations.SerializedName;
+import com.yjh.iaer.util.IntFromDecimalTypeAdapter;
 
 import java.io.Serializable;
 
@@ -45,6 +47,7 @@ public class Category implements Serializable {
     @ColumnInfo(name = FIELD_MONTH)
     private int month;
     @SerializedName(FIELD_MONEY)
+    @JsonAdapter(IntFromDecimalTypeAdapter.class)
     @ColumnInfo(name = FIELD_MONEY)
     private int money;
     @SerializedName(FIELD_CREATED)
