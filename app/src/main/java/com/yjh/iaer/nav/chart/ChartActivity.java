@@ -94,6 +94,42 @@ public class ChartActivity extends BaseActivity {
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        refreshCurrentTab();
+    }
+
+    private void refreshCurrentTab() {
+        if (mChartPagerAdapter == null || getCurrentFragment() == null) {
+            return;
+        }
+        switch (viewPager.getCurrentItem()) {
+            case 0:
+                loadSelectedMonth(mMonthSelection);
+                break;
+            case 1:
+                loadSelectedYear(mYearSelection);
+                break;
+            case 2: {
+                BaseChartFragment fragment = getCurrentFragment();
+                if (fragment != null) {
+                    fragment.setChartDate(0, 0);
+                }
+                break;
+            }
+            case 3: {
+                BaseChartFragment fragment = getCurrentFragment();
+                if (fragment != null) {
+                    fragment.summary(mTypeSelection + 1);
+                }
+                break;
+            }
+            default:
+                break;
+        }
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem menuItem) {
         List<BaseChartFragment> fragments = new ArrayList<>();
 
@@ -130,7 +166,10 @@ public class ChartActivity extends BaseActivity {
 
     private void showChartByAll() {
         spinner.setVisibility(View.GONE);
-        getCurrentFragment().setChartDate(0, 0);
+        BaseChartFragment fragment = getCurrentFragment();
+        if (fragment != null) {
+            fragment.setChartDate(0, 0);
+        }
     }
 
     private void summary() {
@@ -140,11 +179,18 @@ public class ChartActivity extends BaseActivity {
                 android.R.layout.simple_spinner_dropdown_item, typeArray);
         spinner.setAdapter(typeAdapter);
         spinner.setSelection(mTypeSelection);
+        BaseChartFragment fragment = getCurrentFragment();
+        if (fragment != null) {
+            fragment.summary(mTypeSelection + 1);
+        }
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                 mTypeSelection = i;
-                getCurrentFragment().summary(mTypeSelection + 1);
+                BaseChartFragment currentFragment = getCurrentFragment();
+                if (currentFragment != null) {
+                    currentFragment.summary(mTypeSelection + 1);
+                }
             }
 
             @Override
@@ -173,17 +219,12 @@ public class ChartActivity extends BaseActivity {
                 android.R.layout.simple_spinner_dropdown_item, monthArray);
         spinner.setAdapter(monthAdapter);
         spinner.setSelection(mMonthSelection);
+        loadSelectedMonth(mMonthSelection);
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                int currentYear = Calendar.getInstance().get(Calendar.YEAR);
-                int currentMonth = Calendar.getInstance().get(Calendar.MONTH);
                 mMonthSelection = i;
-                boolean thisYear = currentMonth - mMonthSelection >= 0;
-                int month = currentMonth - mMonthSelection + 1;
-                getCurrentFragment().setChartDate(
-                        thisYear ? currentYear : currentYear - 1,
-                        month > 0 ? month : month + 12);
+                loadSelectedMonth(i);
             }
 
             @Override
@@ -205,13 +246,12 @@ public class ChartActivity extends BaseActivity {
                 android.R.layout.simple_spinner_dropdown_item, yearArray);
         spinner.setAdapter(yearAdapter);
         spinner.setSelection(mYearSelection);
+        loadSelectedYear(mYearSelection);
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                 mYearSelection = i;
-                getCurrentFragment().setChartDate(
-                        Calendar.getInstance().get(Calendar.YEAR) - mYearSelection,
-                        0);
+                loadSelectedYear(i);
             }
 
             @Override
@@ -221,8 +261,40 @@ public class ChartActivity extends BaseActivity {
         });
     }
 
+    private void loadSelectedMonth(int selection) {
+        BaseChartFragment fragment = getCurrentFragment();
+        if (fragment == null) {
+            return;
+        }
+        int currentYear = Calendar.getInstance().get(Calendar.YEAR);
+        int currentMonth = Calendar.getInstance().get(Calendar.MONTH);
+        boolean thisYear = currentMonth - selection >= 0;
+        int month = currentMonth - selection + 1;
+        fragment.setChartDate(
+                thisYear ? currentYear : currentYear - 1,
+                month > 0 ? month : month + 12);
+    }
+
+    private void loadSelectedYear(int selection) {
+        BaseChartFragment fragment = getCurrentFragment();
+        if (fragment == null) {
+            return;
+        }
+        fragment.setChartDate(
+                Calendar.getInstance().get(Calendar.YEAR) - selection,
+                0);
+    }
+
+    @Nullable
     private BaseChartFragment getCurrentFragment() {
-        return mChartPagerAdapter.getItem(viewPager.getCurrentItem());
+        if (mChartPagerAdapter == null) {
+            return null;
+        }
+        BaseChartFragment fragment = mChartPagerAdapter.getItem(viewPager.getCurrentItem());
+        if (!fragment.isAdded() || fragment.getView() == null) {
+            return null;
+        }
+        return fragment;
     }
 
     public String getMonth() {

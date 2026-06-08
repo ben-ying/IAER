@@ -2,7 +2,7 @@ package com.yjh.iaer.model;
 
 import com.google.gson.annotations.JsonAdapter;
 import com.google.gson.annotations.SerializedName;
-import com.yjh.iaer.util.IntFromDecimalTypeAdapter;
+import com.yjh.iaer.util.DecimalTypeAdapter;
 
 public class StatisticsDate {
     @SerializedName("year")
@@ -10,10 +10,10 @@ public class StatisticsDate {
     @SerializedName("month")
     private int month;
     @SerializedName("money")
-    @JsonAdapter(IntFromDecimalTypeAdapter.class)
-    private int money;
+    @JsonAdapter(DecimalTypeAdapter.class)
+    private double money;
 
-    public StatisticsDate(int year, int month, int money) {
+    public StatisticsDate(int year, int month, double money) {
         this.year = year;
         this.month = month;
         this.money = money;
@@ -35,11 +35,11 @@ public class StatisticsDate {
         this.month = month;
     }
 
-    public int getMoney() {
+    public double getMoney() {
         return money;
     }
 
-    public void setMoney(int money) {
+    public void setMoney(double money) {
         this.money = money;
     }
 }

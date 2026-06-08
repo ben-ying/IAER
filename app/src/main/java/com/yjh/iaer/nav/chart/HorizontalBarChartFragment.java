@@ -80,8 +80,8 @@ public class HorizontalBarChartFragment extends BaseChartFragment {
     private int mSummaryType;
     private int mMinMoney = 500;
     private String mLabelText;
-    private int mIncome;
-    private int mExpenditure;
+    private double mIncome;
+    private double mExpenditure;
 
     public static HorizontalBarChartFragment newInstance(int i) {
 
@@ -113,6 +113,7 @@ public class HorizontalBarChartFragment extends BaseChartFragment {
         YAxis leftAxis = chart.getAxisLeft();
         leftAxis.setAxisMinimum(0f);
         chart.getAxisRight().setEnabled(false);
+
         chart.setOnChartValueSelectedListener(new OnChartValueSelectedListener() {
             @Override
             public void onValueSelected(Entry e, Highlight h) {
@@ -135,6 +136,12 @@ public class HorizontalBarChartFragment extends BaseChartFragment {
     }
 
     @Override
+    protected void observeChartData() {
+        mCategoryViewModel.getTopList()
+                .observe(getViewLifecycleOwner(), this::setTopList);
+    }
+
+    @Override
     public void setChartDate(int year, int month) {
         super.setChartDate(year, month);
 
@@ -145,8 +152,13 @@ public class HorizontalBarChartFragment extends BaseChartFragment {
     public void setData(List<Category> categories) {
         super.setData(categories);
 
+        if (categories.isEmpty()) {
+            clearChart();
+            return;
+        }
+
         if (categories.size() > 0) {
-            List<Integer> moneyList = new ArrayList<>();
+            List<Double> moneyList = new ArrayList<>();
             int listSize = categories.size();
             // 1 for income item.
             if (listSize < CHART_PAGE_SIZE + 1) {
@@ -155,7 +167,7 @@ public class HorizontalBarChartFragment extends BaseChartFragment {
                 }
             }
             for (Category data : categories) {
-                moneyList.add(data.getMoney());
+                moneyList.add(data.getSignedMoney());
             }
             chart.setData(generateBarData(moneyList));
             chart.invalidate();
@@ -193,8 +205,8 @@ public class HorizontalBarChartFragment extends BaseChartFragment {
         }
     }
 
-    private BarData generateBarData(List<Integer> moneyList) {
-        final DecimalFormat format = new DecimalFormat("###,###,###");
+    private BarData generateBarData(List<Double> moneyList) {
+        final DecimalFormat format = new DecimalFormat("#,##0.##");
         ArrayList<IBarDataSet> sets = new ArrayList<>();
         ArrayList<BarEntry> entries = new ArrayList<>();
         List<Integer> colors = new ArrayList<>();
@@ -202,18 +214,16 @@ public class HorizontalBarChartFragment extends BaseChartFragment {
         mExpenditure = 0;
 
         int i = 0;
-        for (int money : moneyList) {
-            BarEntry barEntry = new BarEntry(i, Math.abs(money));
+        for (double money : moneyList) {
+            BarEntry barEntry = new BarEntry(i, (float) Math.abs(money));
             barEntry.setData("");
-//            entries.add(barEntry);
             if (money > 0) {
                 colors.add(getActivity().getColor(R.color.google_red));
                 mIncome += money;
-            } else {
-                // only show expenditure items.
+            } else if (money < 0) {
                 entries.add(barEntry);
                 colors.add(getActivity().getColor(R.color.google_green));
-                mExpenditure -= money;
+                mExpenditure += Math.abs(money);
             }
             i++;
         }
@@ -258,7 +268,7 @@ public class HorizontalBarChartFragment extends BaseChartFragment {
 
         initLoadingView(false);
 
-        List<Integer> moneyList = new ArrayList<>();
+        List<Double> moneyList = new ArrayList<>();
         int listSize = list.size();
         if (listSize < CHART_PAGE_SIZE) {
             for (int i = 0; i < CHART_PAGE_SIZE - listSize; i++) {
@@ -298,12 +308,27 @@ public class HorizontalBarChartFragment extends BaseChartFragment {
     }
 
     private void setTopList(@Nullable Resource<List<Transaction>> listResource) {
+        if (listResource == null) {
+            return;
+        }
         if (listResource.getStatus() == Status.SUCCESS) {
             initLoadingView(false);
-            setTopListAdapter(listResource.getData());
+            List<Transaction> data = listResource.getData();
+            setTopListAdapter(data != null ? data : new ArrayList<>());
         } else if (listResource.getStatus() == Status.ERROR) {
             initLoadingView(false);
         }
+    }
+
+    private void clearChart() {
+        final DecimalFormat format = new DecimalFormat("#,##0.##");
+        chart.clear();
+        chart.invalidate();
+        incomeTextView.setText(String.format(getString(R.string.income), format.format(0)));
+        expenditureTextView.setText(String.format(
+                getString(R.string.expenditure), format.format(0)));
+        totalTextView.setText(String.format(getString(R.string.surplus), format.format(0)));
+        recyclerView.setAdapter(null);
     }
 
     @Override
@@ -312,9 +337,8 @@ public class HorizontalBarChartFragment extends BaseChartFragment {
         ChartActivity chartActivity = (ChartActivity) getActivity();
         if (chartActivity != null && !chartActivity.isFinishing() && !chartActivity.isDestroyed()) {
             initLoadingView(true);
-            mCategoryViewModel.loadTopList(
-                    MyApplication.sUser.getUserId(), year, month, category, mMinMoney)
-                    .observe(getViewLifecycleOwner(), this::setTopList);
+            mCategoryViewModel.requestTopList(
+                    MyApplication.sUser.getUserId(), year, month, category, mMinMoney);
         }
     }
 

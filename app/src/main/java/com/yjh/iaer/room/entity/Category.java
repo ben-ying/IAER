@@ -2,11 +2,13 @@ package com.yjh.iaer.room.entity;
 
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
+import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 
 import com.google.gson.annotations.JsonAdapter;
 import com.google.gson.annotations.SerializedName;
-import com.yjh.iaer.util.IntFromDecimalTypeAdapter;
+import com.yjh.iaer.util.CategoryDeserializer;
+import com.yjh.iaer.util.MoneyUtils;
 
 import java.io.Serializable;
 
@@ -14,6 +16,7 @@ import static com.yjh.iaer.room.entity.Category.TABLE_NAME;
 
 
 @Entity(tableName = TABLE_NAME)
+@JsonAdapter(CategoryDeserializer.class)
 public class Category implements Serializable {
     public static final String TABLE_NAME = "category_entity";
     public static final String FIELD_CATEGORY_ID = "category_id";
@@ -24,6 +27,10 @@ public class Category implements Serializable {
     public static final String FIELD_MONEY = "money";
     public static final String FIELD_CREATED = "created";
     public static final String FIELD_MODIFIED = "modified";
+
+    @Ignore
+    public Category() {
+    }
 
     public Category(String name, int money) {
         this.name = name;
@@ -47,9 +54,10 @@ public class Category implements Serializable {
     @ColumnInfo(name = FIELD_MONTH)
     private int month;
     @SerializedName(FIELD_MONEY)
-    @JsonAdapter(IntFromDecimalTypeAdapter.class)
     @ColumnInfo(name = FIELD_MONEY)
     private int money;
+    @Ignore
+    private Double preciseMoney;
     @SerializedName(FIELD_CREATED)
     @ColumnInfo(name = FIELD_CREATED)
     private String created;
@@ -119,5 +127,18 @@ public class Category implements Serializable {
 
     public void setMoney(int money) {
         this.money = money;
+    }
+
+    public void setPreciseMoney(double preciseMoney) {
+        this.preciseMoney = preciseMoney;
+    }
+
+    public Double getPreciseMoney() {
+        return preciseMoney;
+    }
+
+    public double getSignedMoney() {
+        double value = preciseMoney != null ? preciseMoney : money;
+        return MoneyUtils.normalizeSignedMoney(name, value);
     }
 }

@@ -2,6 +2,7 @@ package com.yjh.iaer.nav.chart;
 
 import androidx.lifecycle.ViewModelProvider;
 import android.os.Bundle;
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -54,13 +55,43 @@ public abstract class BaseChartFragment extends BaseFragment {
         return super.onCreateView(inflater, container, savedInstanceState);
     }
 
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        mCategoryViewModel.getStatisticsCategories()
+                .observe(getViewLifecycleOwner(), this::setCategoryList);
+        mCategoryViewModel.getStatisticsDates()
+                .observe(getViewLifecycleOwner(), this::setSummaryList);
+        observeChartData();
+    }
+
+    protected void observeChartData() {
+    }
+
     private void setCategoryList(@Nullable Resource<List<Category>> listResource) {
+        if (listResource == null) {
+            return;
+        }
+        if (listResource.getStatus() == Status.LOADING) {
+            initLoadingView(true);
+            return;
+        }
+        if (listResource.getStatus() == Status.ERROR) {
+            initLoadingView(false);
+            setData(new ArrayList<>());
+            return;
+        }
         if (listResource.getStatus() == Status.SUCCESS) {
+            initLoadingView(false);
             List<Category> categories = listResource.getData();
+            if (categories == null) {
+                setData(new ArrayList<>());
+                return;
+            }
             categories.sort(new CategoryComparator());
             List<Category> categoryList = new ArrayList<>();
             for (Category c : categories) {
-                if (c.getMoney() != 0) {
+                if (c.getSignedMoney() != 0) {
                     categoryList.add(c);
                 }
             }
@@ -69,11 +100,20 @@ public abstract class BaseChartFragment extends BaseFragment {
     }
 
     private void setSummaryList(@Nullable Resource<List<StatisticsDate>> listResource) {
+        if (listResource == null) {
+            return;
+        }
+        if (listResource.getStatus() == Status.LOADING) {
+            initLoadingView(true);
+            return;
+        }
         if (listResource.getStatus() == Status.SUCCESS) {
+            initLoadingView(false);
+            List<StatisticsDate> data = listResource.getData();
             noDataTextView.setVisibility(
-                    listResource.getData().size() > 0 ? View.GONE : View.VISIBLE);
+                    data != null && data.size() > 0 ? View.GONE : View.VISIBLE);
             noDataTextView.setText(noDataHint);
-            setSummaryData(listResource.getData());
+            setSummaryData(data != null ? data : new ArrayList<>());
         } else if (listResource.getStatus() == Status.ERROR) {
             initLoadingView(false);
         }
@@ -84,8 +124,9 @@ public abstract class BaseChartFragment extends BaseFragment {
     }
 
     public void setChartDate(int year, int month) {
-        mCategoryViewModel.loadStatisticsCategories(MyApplication.sUser.getToken(), year, month)
-                .observe(getViewLifecycleOwner(), this::setCategoryList);
+        selectedCategory = "";
+        mCategoryViewModel.requestStatisticsCategories(
+                MyApplication.sUser.getToken(), year, month);
 
         if (year == 0 && month == 0) {
             mDateString = "";
@@ -113,8 +154,7 @@ public abstract class BaseChartFragment extends BaseFragment {
     }
 
     public void summary(int type) {
-        mCategoryViewModel.loadDateCategories(MyApplication.sUser.getToken(), type)
-                .observe(getViewLifecycleOwner(), this::setSummaryList);
+        mCategoryViewModel.requestDateCategories(MyApplication.sUser.getToken(), type);
     }
 
     public void displayTopList(String month, String year, String category) {

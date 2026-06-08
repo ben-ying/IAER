@@ -45,4 +45,9 @@ public interface TransactionDao {
 
     @Query("SELECT Count(*) FROM " + Transaction.TABLE_NAME)
     int count();
+
+    @Query("SELECT * FROM " + Transaction.TABLE_NAME +
+            " WHERE " + Transaction.FIELD_USER_ID + " = :userId" +
+            " AND " + Transaction.FIELD_DATE + " LIKE :datePattern")
+    List<Transaction> loadByUserAndDatePattern(int userId, String datePattern);
 }

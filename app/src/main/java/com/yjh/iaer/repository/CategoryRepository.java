@@ -14,8 +14,10 @@ import com.yjh.iaer.network.NetworkBoundResource;
 import com.yjh.iaer.network.Resource;
 import com.yjh.iaer.network.Webservice;
 import com.yjh.iaer.room.dao.CategoryDao;
+import com.yjh.iaer.room.dao.TransactionDao;
 import com.yjh.iaer.room.entity.Category;
 import com.yjh.iaer.room.entity.Transaction;
+import com.yjh.iaer.util.StatisticsHelper;
 
 import java.util.List;
 
@@ -28,11 +30,14 @@ public class CategoryRepository {
 
     private final Webservice mWebservice;
     private final CategoryDao mDao;
+    private final TransactionDao mTransactionDao;
 
     @Inject
-    CategoryRepository(Webservice webservice, CategoryDao categoryDao) {
+    CategoryRepository(Webservice webservice, CategoryDao categoryDao,
+                       TransactionDao transactionDao) {
         this.mWebservice = webservice;
         this.mDao = categoryDao;
+        this.mTransactionDao = transactionDao;
     }
 
     public LiveData<Resource<List<Category>>> loadAllCategories() {
@@ -77,11 +82,22 @@ public class CategoryRepository {
     }
 
     public LiveData<Resource<List<Category>>> loadStatisticsCategories(String token, int year, int month) {
+        final int requestYear = year;
+        final int requestMonth = month;
         return new NetworkBoundResource<List<Category>,
                 CustomResponse<ListResponseResult<List<Category>>>>() {
             @Override
             protected void saveCallResult(
                     @NonNull CustomResponse<ListResponseResult<List<Category>>> item) {
+                List<Category> results = item.getResult().getResults();
+                if (!StatisticsHelper.hasStatisticsData(results)) {
+                    int userId = MyApplication.sUser.getUserId();
+                    String datePattern = StatisticsHelper.buildDatePattern(
+                            requestYear, requestMonth);
+                    List<Transaction> transactions = mTransactionDao.loadByUserAndDatePattern(
+                            userId, datePattern);
+                    StatisticsHelper.applyTransactionAggregation(results, transactions);
+                }
             }
 
             @Override

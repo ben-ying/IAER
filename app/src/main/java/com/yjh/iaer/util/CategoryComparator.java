@@ -6,6 +6,6 @@ import java.util.Comparator;
 
 public class CategoryComparator implements Comparator<Category> {
     public int compare(Category left, Category right) {
-        return Math.abs(left.getMoney()) > Math.abs(right.getMoney()) ? 1 : -1;
+        return Double.compare(Math.abs(left.getSignedMoney()), Math.abs(right.getSignedMoney()));
     }
 }
